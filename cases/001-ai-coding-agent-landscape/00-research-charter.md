@@ -2,7 +2,7 @@
 
 # Case 001 — 2026 AI Coding Agent Landscape
 
-> Research Charter v1.0
+> Research Charter v1.1
 >
 > Research date: August 2026
 >
@@ -843,20 +843,24 @@ TOP10 完成 Deep Research 后，不立即写总结，而是建立统一 Compari
 
 # 15. Research Workflow
 
-本 Case 的正式执行流程：
+## 15.1 Operational Rule
+
+> **本节是本 Case 的唯一 Operational Workflow。实际执行时，以本节的 Phase 顺序为准；§18 用于说明 Phase 与交付物的映射；§20 用于描述更高层的 Research Lifecycle，不定义第二套执行顺序。**
+
+整个 Case 采用“**广度筛选 → 深度研究 → 横向分析 → 决策 → 资产化**”的两阶段研究结构。
 
 ```text
 Phase 0 — Research Charter
         ↓
 Phase 1 — Candidate Universe
         ↓
-Phase 2 — Market & Evidence Collection
+Phase 2 — Broad Market & Evidence Collection
         ↓
 Phase 3 — Ranking & Final Top 10 Selection
         ↓
 Phase 4 — Deep Product Research
         ↓
-Phase 5 — Public Benchmark & Independent Evidence Analysis
+Phase 5 — Benchmark & Independent Evidence Analysis
         ↓
 Phase 6 — Cross-product Analysis
         ↓
@@ -865,11 +869,218 @@ Phase 7 — Decision & Research Conclusions
 Phase 8 — Research Asset Production
 ```
 
-### Important Change
+### Phase 0 — Research Charter
 
-本 Case **不设置独立的“自建 Benchmark / Hands-on Benchmark”阶段**。
+**Objective**：定义研究问题、范围、分类体系、评价框架和研究方法。
 
-公开 Benchmark 是贯穿 Phase 2–6 的 Supporting Evidence。
+**Main Activities**：
+
+- Research Mission / Core Questions
+- Scope & Taxonomy
+- Research Population Definition
+- Ranking & Selection Framework
+- Source Strategy
+- Evidence Rules
+- Research Quality Gates
+
+**Primary Deliverable**：`00-research-charter.md`
+
+**Exit Criteria**：Charter Approved，且研究范围与执行方法稳定。
+
+### Phase 1 — Candidate Universe Construction
+
+**Objective**：建立尽可能完整的候选池，不提前只研究“TOP10”。
+
+**Main Activities**：
+
+- Product discovery
+- Company / Product Family deduplication
+- Product Surface classification
+- Initial inclusion / exclusion
+- Candidate rationale recording
+
+**Primary Deliverable**：`01-candidate-universe.md`
+
+**Exit Criteria**：Candidate Universe 足以覆盖主要市场参与者，且候选对象已有基本分类与入池理由。
+
+### Phase 2 — Broad Market & Evidence Collection
+
+**Objective**：对候选进行**广度、浅层、可比较的证据收集**，为 Top 10 Selection 提供输入。
+
+**Main Activities**：
+
+- Market Adoption evidence
+- Basic Product / Agent Capability evidence
+- Product / Workflow Innovation signals
+- Ecosystem / Strategic evidence
+- Momentum evidence
+- Initial public benchmark signals
+- Source and Evidence Grade recording
+
+**Important Boundary**：Phase 2 不要求对所有候选执行完整 Deep Product Research。Phase 2 只回答“这个产品是否值得进入 Top 10，以及为什么”。
+
+**Primary Deliverable**：`02-market-evidence.md`
+
+**Exit Criteria**：主要候选能够基于统一维度进行横向筛选，Composite Assessment 所需证据基本齐备。
+
+### Phase 3 — Ranking & Final Top 10 Selection
+
+**Objective**：基于 Phase 2 的广度证据完成综合评分、跨来源复核和 Research Judgment，锁定最终研究对象。
+
+**Main Activities**：
+
+- Cross-source normalization
+- Composite scoring
+- Ranking review
+- Selected / Rejected decision
+- Explicit inclusion / exclusion rationale
+
+**Primary Deliverables**：
+
+- `03-ranking-methodology.md`
+- `03-top10-selection.md`
+
+**Exit Criteria**：Top 10 已锁定；重要落选产品有可复盘的理由；任何偏离 Composite Score 的判断均有证据与解释。
+
+### Phase 4 — Deep Product Research
+
+**Objective**：仅对最终 Top 10 进行系统、统一模板的深度研究。
+
+**Main Activities**：
+
+- Product Identity
+- Positioning
+- Architecture
+- Agent Loop
+- Workflow
+- Capability
+- Economics
+- Ecosystem
+- Unique Insight
+
+**Primary Deliverables**：
+
+- `04-products/product-01.md`
+- `04-products/product-02.md`
+- …
+
+即目录 `04-products/` 下的 Top 10 产品研究文件。
+
+**Exit Criteria**：Top 10 全部完成统一深度研究，且核心事实、架构、Workflow 与能力分析均有证据支撑。
+
+### Phase 5 — Public Benchmark & Independent Evidence Analysis
+
+**Objective**：系统整理并审查公开 Benchmark 与高质量独立证据，验证关键产品结论。
+
+**Main Activities**：
+
+- Benchmark methodology review
+- Model-level vs Agent-level distinction
+- Independent evaluation comparison
+- Limitations / comparability analysis
+- Relevance assessment
+
+**Important Boundary**：Public Benchmark 并不是只在 Phase 5 才开始出现。它是贯穿 Phase 2–6 的 Supporting Evidence；Phase 5 的作用是集中、系统地进行整理和深度验证。
+
+**Primary Deliverable**：`05-benchmarks.md`
+
+**Exit Criteria**：关键 Benchmark 已正确解释其能够证明与不能证明的内容，且没有发生 Model Benchmark 与 Agent Product Benchmark 混淆。
+
+### Phase 6 — Cross-product Analysis
+
+**Objective**：将 Top 10 的产品研究、Benchmark 和独立证据转化为统一横向 Comparison Matrix，并识别市场与技术模式。
+
+**Main Activities**：
+
+- Market Matrix
+- Product Matrix
+- Agent Matrix
+- Architecture Matrix
+- Pattern / Paradigm identification
+
+**Primary Deliverable**：`06-cross-product-analysis.md`
+
+**Exit Criteria**：主要产品差异、共性、Agent Architecture Paradigm 与 Software Engineering Workflow Paradigm 已被系统识别。
+
+### Phase 7 — Decision & Research Conclusions
+
+**Objective**：基于完整 Evidence System 形成最终 Market View、Capability / Workflow View 与 Research-backed Decisions。
+
+**Main Activities**：
+
+- Market Landscape Ranking
+- Capability / Workflow View
+- Category Leaders
+- Research-backed Decision Matrix
+- Final Conclusions
+- Future Research Questions
+
+**Primary Deliverable**：`07-decision.md`
+
+**Exit Criteria**：最终判断能够追溯到前面的 Evidence、Analysis 与明确的 Research Judgment。
+
+### Phase 8 — Research Asset Production
+
+**Objective**：将已经完成的研究转化为可长期复用、更新和展示的 Research Assets。
+
+**Main Activities**：
+
+- Research Note
+- Structured Dataset
+- Sources consolidation
+- Interactive HTML
+- Executive PPT
+- Optional PDF / Excel / CSV
+
+**Primary Deliverables**：
+
+- `08-research-note.md`
+- `08-dataset/`
+- `08-presentation/`
+- `08-sources.md`
+
+**Exit Criteria**：Research Note、Dataset、主要 Presentation Asset 和 Sources 已完成，Case 可以被复盘、更新和复用。
+
+### 15.2 Broad Research vs Deep Research Boundary
+
+为了避免研究范围失控，本 Case 明确区分两种研究深度：
+
+```text
+Phase 1–3
+= Broad Research
+= Candidate Discovery + Screening + Selection
+
+Phase 4–7
+= Deep Research
+= Product Understanding + Validation + Comparison + Decision
+
+Phase 8
+= Knowledge / Asset Production
+```
+
+因此：
+
+> **Phase 3 选择 Top 10 不要求完成 Phase 4 的完整 Product Research。**
+
+Phase 2 的证据只需要足以支持：
+
+> “这个候选是否值得进入 Top 10？”
+
+而 Phase 4 才回答：
+
+> “这个产品到底是如何工作的，以及它代表了什么 Agent / Workflow Paradigm？”
+
+### 15.3 Public Benchmark Positioning
+
+Public Benchmark 是贯穿式 Supporting Evidence：
+
+```text
+Phase 2 → collect initial benchmark signals
+Phase 3 → optionally use benchmark as selection evidence
+Phase 4 → incorporate relevant benchmark into product research
+Phase 5 → systematically review and validate benchmarks
+Phase 6 → use validated benchmark evidence in cross-product analysis
+```
 
 ---
 
@@ -1017,7 +1228,7 @@ PPT 作为高层摘要，而不是原始研究材料。
 
 # 18. Recommended Repository Structure
 
-本 Case 建议最终形成：
+本 Case 的推荐结构必须与 §15 的 Phase 顺序保持一一对应。目录结构表达“产物是什么”，§15 表达“什么时候产生这些产物”。
 
 ```text
 cases/
@@ -1026,25 +1237,50 @@ cases/
     ├── 01-candidate-universe.md
     ├── 02-market-evidence.md
     ├── 03-ranking-methodology.md
-    ├── 04-top10-selection.md
-    ├── 05-products/
+    ├── 03-top10-selection.md
+    ├── 04-products/
     │   ├── product-01.md
     │   ├── product-02.md
     │   └── ...
-    ├── 06-benchmarks.md
-    ├── 07-cross-product-analysis.md
-    ├── 08-decision.md
-    ├── 09-research-note.md
-    ├── 10-sources.md
-    ├── data/
+    ├── 05-benchmarks.md
+    ├── 06-cross-product-analysis.md
+    ├── 07-decision.md
+    ├── 08-research-note.md
+    ├── 08-sources.md
+    ├── 08-dataset/
     │   ├── candidates.csv
     │   └── products.csv
-    └── presentation/
+    └── 08-presentation/
         ├── landscape.html
         └── executive-summary.pptx
 ```
 
-目录可以随着研究实际推进进行调整，不要求在研究开始前一次性创建所有文件。
+### Phase → Deliverable Mapping
+
+| Phase | Goal | Primary Deliverable | Exit Criteria |
+|---|---|---|---|
+| Phase 0 | 定义研究 | `00-research-charter.md` | Charter Approved |
+| Phase 1 | 建立候选池 | `01-candidate-universe.md` | Candidate Universe Stable |
+| Phase 2 | 广度证据收集 | `02-market-evidence.md` | Candidates Comparable |
+| Phase 3 | 评分与选 Top 10 | `03-ranking-methodology.md` + `03-top10-selection.md` | Top 10 Locked |
+| Phase 4 | 深度产品研究 | `04-products/*.md` | All Top 10 Researched |
+| Phase 5 | Benchmark / Independent Validation | `05-benchmarks.md` | Major Claims Validated |
+| Phase 6 | 横向分析 | `06-cross-product-analysis.md` | Major Patterns Identified |
+| Phase 7 | 最终判断 | `07-decision.md` | Research Conclusions Stable |
+| Phase 8 | 资产化 | `08-research-note.md` + `08-dataset/` + `08-presentation/` + `08-sources.md` | Case Complete |
+
+### Structural Rule
+
+> **阶段性主交付物的文件名前缀必须与 Phase 编号一致。**
+
+例如：
+
+- Phase 3 → `03-ranking-methodology.md`、`03-top10-selection.md`
+- Phase 4 → `04-products/*.md`
+- Phase 7 → `07-decision.md`
+- Phase 8 → `08-research-note.md`、`08-dataset/`、`08-presentation/`
+
+目录可以随着研究实际推进进行调整，但不能改变已经定义好的 Phase 编号与核心交付物语义，除非 Charter 经过版本化更新。
 
 ---
 
@@ -1109,7 +1345,7 @@ cases/
 
 > **建立一个能够解释 2026 年 AI Coding Agent 市场、技术与工作流变化的证据体系，并基于该体系形成可复盘、可更新、可迁移的判断。**
 
-最终研究链条：
+这里的流程图不是第二套 Operational Workflow，而是对整个 Research Lifecycle 的抽象：
 
 ```text
 Problem Framing
@@ -1118,34 +1354,37 @@ Scope & Taxonomy
       ↓
 Candidate Universe
       ↓
-Market Evidence
+Broad Evidence Collection
       ↓
-Product Evidence
+Screening & Research Judgment
       ↓
-Public Benchmarks
+Research Population
       ↓
-Cross-source Analysis
+Deep Research
       ↓
-Research Judgment
-      ↓
-Market Leaders / Representative Leaders
-      ↓
-Deep Product Research
+Independent Validation
       ↓
 Cross-product Analysis
       ↓
 Decision
       ↓
-Research Note
-      ↓
-Dataset
-      ↓
-HTML / Presentation
+Knowledge Asset Production
       ↓
 Evaluation
       ↓
 Reusable Research Workflow
 ```
+
+其中：
+
+- **Broad Evidence Collection** 对应 Phase 2
+- **Screening & Research Judgment** 对应 Phase 3
+- **Deep Research** 对应 Phase 4
+- **Independent Validation** 对应 Phase 5
+- **Cross-product Analysis** 对应 Phase 6
+- **Decision** 对应 Phase 7
+- **Knowledge Asset Production** 对应 Phase 8
+- **Evaluation** 作为 Case 完成后的质量复盘活动，而不是一个额外的、与 §15 平行的 Research Phase
 
 > **本 Case 的真正成果不是一份 AI Coding Agent 排行榜，而是第一次完整验证一套 AI-native Research Workflow。**
 
@@ -1154,6 +1393,8 @@ Reusable Research Workflow
 ## Charter Status
 
 **Status:** Approved for execution
+
+**Research Charter Version:** v1.1
 
 **Research Cutoff:** August 2026
 
