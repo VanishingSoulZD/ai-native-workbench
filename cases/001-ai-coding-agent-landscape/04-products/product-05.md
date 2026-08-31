@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Subscription / usage based on agent compute units and enterprise arrangements | Confirmed at conceptual level |
 | Status Aug 2026 | Mature autonomous-SWE / agent-fleet platform | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Devin is the clearest Top-10 example of the proposition **“AI employee/engineer rather than AI editor.”** The product asks the user to decide what should be built while agents perform repository work, chase edge cases, run tests and return artifacts.
 
@@ -26,7 +26,7 @@ By August 2026, Devin Desktop is described as the home for coding agents and a c
 
 The product therefore changes the role of the human from hands-on implementer to **planner, delegator, reviewer and exception handler**.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -58,7 +58,7 @@ Parallel sessions and child sessions are central. Programmatic session managemen
 
 Devin is explicitly positioned around implementation + testing. The desktop surface exposes review/debug workflows; cloud sessions can wait on CI-like external processes and continue after feedback. The exact internal success gate is Unknown.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Human goal
@@ -100,7 +100,7 @@ Review / redirect / merge
 
 This outer loop is the distinctive part of Devin.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Devin role |
 |---|---|
@@ -120,7 +120,7 @@ This outer loop is the distinctive part of Devin.
 
 The defining change is not a new editor but a new **organizational unit of labor**: the agent session.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -142,19 +142,19 @@ The defining change is not a new editor but a new **organizational unit of labor
 | Sandbox | Confirmed / environment-dependent | Cloud/local runtime controls; exact isolation details vary |
 | Cloud agent | Confirmed | Core product surface |
 
-## 9.7 Economics
+## 7. Economics
 
 Devin uses a usage-oriented agent compute model rather than pretending every autonomous session has fixed cost. Documentation exposes session-level ACU limits and usage management; the exact consumer/enterprise packaging is time-sensitive.
 
 Economically, Devin is optimized for **engineering throughput per supervised seat**. The relevant unit is increasingly “how much work can one engineer delegate,” not “how many autocomplete requests can one user generate.”
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Devin has an API/MCP layer, repository integrations, IDE/editor connectivity, playbooks, knowledge management and scheduling. This turns the agent into an orchestratable service that external agents and internal automation systems can control.
 
 The strongest ecosystem signal is that MCP can expose Devin capabilities to other AI agents, enabling **agent-to-agent orchestration** rather than only human-to-agent interaction.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Devin’s innovation is to package autonomous coding as a unit of organizational labor.**
 

@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Replit subscription + agent credits/effort-based usage; enterprise custom | Confirmed |
 | Status Aug 2026 | Mature product-building agent with broad scope beyond repository-centric coding | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Replit Agent is not best understood as a conventional software-engineering copilot. Its distinctive proposition is **idea → application → deployment in one integrated cloud environment**.
 
@@ -28,7 +28,7 @@ The workflow paradigm is therefore **Idea → Production Application**.
 
 This also explains why Replit belongs in the Top 10 despite its weaker fit to the classic repository/IDE mental model: its product is evidence that coding agents can own a wider software-creation workflow.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -58,7 +58,7 @@ Agent 3 is documented as running for hours independently, self-testing, fixing i
 
 Project context is naturally persistent because the agent operates inside the same cloud project. However, Replit does not publicly expose a memory architecture equivalent to Claude Code auto memory or Qoder's explicit memory store. Treat semantic long-term memory as **partially confirmed / implementation Unknown**.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Idea / user goal
@@ -94,7 +94,7 @@ Shared project integration
 Human creative review
 ```
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Replit Agent role |
 |---|---|
@@ -114,7 +114,7 @@ Human creative review
 
 This is materially different from repo-centric agents. The agent can own not just implementation but also runtime provisioning and delivery.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -136,19 +136,19 @@ This is materially different from repo-centric agents. The agent can own not jus
 | Sandbox | Confirmed | Managed cloud runtime |
 | Cloud agent | Confirmed | Core product model |
 
-## 9.7 Economics
+## 7. Economics
 
 Current Replit pricing exposes free daily agent usage, Core at $20/month (or $17/month annualized), Pro at $100/month (or $95/month annualized), with more agent usage and parallel-agent capacity at higher tiers. Enterprise is custom. Replit also exposes effort-based/pay-as-you-go controls.
 
 The economics reflect a different value proposition from IDE agents: the customer is buying not only model calls, but **managed compute + environment + database + deployment + agent labor**.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Replit's main ecosystem advantage is vertical integration: development workspace, runtime, database, hosting/deployment and agent are one system. This substantially lowers infrastructure friction for non-specialist builders.
 
 The platform also creates a broad user base outside professional software engineers, making Replit strategically important for the expansion of software creation to product/design/business users.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Replit shows that the strongest coding-agent product may not start from the repository at all.**
 

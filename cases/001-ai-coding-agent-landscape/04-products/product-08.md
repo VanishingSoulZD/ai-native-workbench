@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Open-source MIT software; optional OpenCode Zen pay-as-you-go model routing | Confirmed |
 | Status Aug 2026 | One of the most significant open-source agent harnesses, with large GitHub/community adoption | Confirmed |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 OpenCode is best understood as an **open agent harness**, rather than simply an open-source alternative UI to Claude Code.
 
@@ -26,7 +26,7 @@ Its key strategic decisions are: provider agnosticism, first-class terminal/TUI 
 
 The workflow paradigm is **Open, provider-agnostic terminal agent harness**. It demonstrates that the agent layer can be decoupled from the model vendor and can function as infrastructure-like software for developers.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -58,7 +58,7 @@ OpenCode supports project configuration and reusable skills, and its agent defin
 
 The Plan agent is read-only and intended for analysis/review; Build has full tool access. This creates an explicit “analysis → execution” separation. Runtime commands/tests are performed by the agent through the terminal tool loop.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Task
@@ -96,7 +96,7 @@ Result summary
 Main agent continues
 ```
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | OpenCode role |
 |---|---|
@@ -116,7 +116,7 @@ Main agent continues
 
 OpenCode is notable because its main competitive moat is not model ownership or hosted infrastructure but **control over the harness layer**.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -138,7 +138,7 @@ OpenCode is notable because its main competitive moat is not model ownership or 
 | Sandbox | Partially confirmed | Local permissions/isolation; hosted sandbox is not primary proposition |
 | Cloud agent | Not primary | Client/server can be remote-controlled, but product is primarily local/open harness |
 
-## 9.7 Economics
+## 7. Economics
 
 The core OpenCode software is open source under MIT. OpenCode Zen is a separate managed model-routing layer with pay-as-you-go pricing per 1M tokens. Because OpenCode is provider-agnostic, users can also bring providers/models outside Zen.
 
@@ -148,13 +148,13 @@ This gives the product a distinctive economic model:
 - model access remains interchangeable;
 - hosted routing can monetize convenience without owning the agent codebase.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 The ecosystem consists of GitHub contributors, model providers, OpenCode Zen, MCP servers, skills, community configurations and the broader terminal/Neovim culture.
 
 The provider-agnostic strategy matters because users can switch between proprietary frontier models, open models and local/self-hosted endpoints without replacing the harness.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **OpenCode proves that the agent harness itself can become an open software layer independent of model vendors.**
 

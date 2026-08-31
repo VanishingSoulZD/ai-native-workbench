@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Free and paid individual plans; Business/Enterprise; usage-metered GitHub AI Credits for agent/chat/CLI capabilities | Confirmed |
 | Status Aug 2026 | Broadest lifecycle-integrated agent family among major developer platforms | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 GitHub Copilot is not a single coding UI. By 2026 it is best understood as a **GitHub-centered agent platform spanning the software-delivery lifecycle**.
 
@@ -26,7 +26,7 @@ Its differentiator is not simply model quality or IDE UX. It owns the surroundin
 
 The fundamental workflow transformation is **issue → code → PR → review**, with the platform itself becoming an agent operating environment.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -60,7 +60,7 @@ Custom instructions operate at global/repository scope. Copilot Memory can build
 
 Hooks provide deterministic lifecycle actions such as linting, formatting or security scans. Agent workflows can build/test/validate changes in the configured environment and then create PR-oriented artifacts.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Issue / Prompt / Intent
@@ -98,7 +98,7 @@ Review
 Merge
 ```
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Copilot role |
 |---|---|
@@ -118,7 +118,7 @@ Merge
 
 Copilot is the strongest example of the coding agent becoming part of a pre-existing software delivery platform rather than replacing the platform.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -140,7 +140,7 @@ Copilot is the strongest example of the coding agent becoming part of a pre-exis
 | Sandbox | Confirmed | Cloud development environment |
 | Cloud agent | Confirmed | Core product surface |
 
-## 9.7 Economics
+## 7. Economics
 
 Current individual pricing is tiered: Free, Pro ($10/month), Pro+ ($39/month), Max ($100/month) according to GitHub’s current plan page. Agent/chat/CLI usage consumes GitHub AI Credits; code completion does not. Credits are denominated as $0.01 each, so the product economics explicitly separate lightweight completion from metered agent work.
 
@@ -148,13 +148,13 @@ For organizations, Business and Enterprise provide centralized policy/admin cont
 
 This is strategically important: GitHub is building an **agent consumption marketplace inside a developer platform**, with model selection and task complexity directly affecting cost.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Copilot has perhaps the broadest ecosystem of the Top 10: GitHub repositories/issues/PRs, GitHub Actions, enterprise identity, IDE integrations, MCP, agent skills, plugins, custom agents and the wider GitHub developer community.
 
 The platform advantage is distribution. A new agent capability can be inserted into an existing developer workflow without forcing migration to a new repository host or IDE.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **GitHub Copilot’s deepest advantage is owning the software-delivery graph, not the editor.**
 

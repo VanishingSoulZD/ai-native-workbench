@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Claude subscription plans and enterprise offerings; usage/limits vary by plan | Confirmed |
 | Status Aug 2026 | Mature Software Engineering Agent with a strong terminal-first identity and expanding multi-surface/runtime model | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Claude Code is best understood as an **agentic software-engineering harness around Claude models**, not as a model-specific “chat box for code.” Anthropic explicitly describes the harness as the layer supplying tools, context management, and execution environment; the model reasons while tools act. The product therefore turns a natural-language engineering objective into a sequence of repository exploration, edits, command execution, verification and repair.
 
@@ -26,7 +26,7 @@ The defining workflow change is from **file-centric assistance to repository-tas
 
 Compared with a traditional IDE assistant, the important unit is no longer “the next line” or “the current file”; it is the **software task and its surrounding execution environment**.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -68,7 +68,7 @@ Verification is not a separately branded post-processing service; it is part of 
 
 **Unknown:** Anthropic does not fully disclose hidden verification heuristics or an internal success classifier beyond the observable tool-driven loop.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Human Task
@@ -97,7 +97,7 @@ Final Change / Commit / PR artifact
 
 The important feature is that the loop is **adaptive**: a simple question may stop after context gathering; a bug fix can trigger dozens of actions; a refactor may have a large verification tail. The user can interrupt and redirect at any stage.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Claude Code role |
 |---|---|
@@ -116,7 +116,7 @@ The important feature is that the loop is **adaptive**: a simple question may st
 
 Claude Code changes the center of gravity from “IDE interaction” to “engineering environment interaction.” The most consequential shift is that the terminal is not just a place to execute commands after code has been written; it becomes the primary action surface of an autonomous coding agent.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -138,7 +138,7 @@ Claude Code changes the center of gravity from “IDE interaction” to “engin
 | Sandbox | Confirmed / surface-dependent | Permissions and isolated environments; exact internals not fully public |
 | Cloud agent | Confirmed | Anthropic-managed VMs |
 
-## 9.7 Economics
+## 7. Economics
 
 Claude Code is monetized primarily through Anthropic subscription and enterprise plans rather than exposing a separate “coding-agent-only” meter as the main public abstraction. Anthropic’s public guidance describes Pro and Max usage tiers and enterprise access. The economics are effectively **model-consumption mediated through subscription/rate limits**, while higher-volume users pay for higher plans.
 
@@ -146,7 +146,7 @@ Current public reference: Pro/Max access and limits are documented by Anthropic;
 
 Model/API economics are not identical to subscription economics, so a user’s marginal cost per task is not directly recoverable from the product UI alone.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Claude Code benefits from Anthropic’s model ecosystem, IDE integrations, MCP ecosystem, open-ended shell environment and a rapidly growing community of project-level instruction files and Skills. The product is especially ecosystem-friendly because its primitives are filesystem- and protocol-oriented rather than locked to one IDE.
 
@@ -157,7 +157,7 @@ The most important ecosystem effects are:
 3. **CLAUDE.md as a lightweight repository operating contract**.
 4. **CLI compatibility with existing Git/Unix tooling**.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Claude Code’s biggest innovation is not “better code generation”; it is making the terminal itself a persistent agent operating environment.**
 

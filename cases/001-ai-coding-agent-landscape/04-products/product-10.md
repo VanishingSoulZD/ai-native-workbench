@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Subscription tiers + usage; enterprise/custom deployment | Confirmed at public-plan level |
 | Status Aug 2026 | Enterprise autonomous SWE / agent-orchestration platform with strong deploy-anywhere positioning | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Factory's core concept is the **Droid**: an autonomous software agent that can take a natural-language engineering objective, plan and execute changes, run tools/tests and return a shippable artifact. Rather than tying autonomy to one IDE or hosted sandbox, Factory emphasizes that Droids can run wherever enterprise engineering work already executes: developer machines, CI, VMs, Kubernetes, private environments and air-gapped deployments.
 
@@ -26,7 +26,7 @@ That makes Factory different from a purely cloud-hosted coding assistant. It is 
 
 Its workflow paradigm is **Enterprise autonomous software engineering / Droids**: encode repeatable engineering jobs as agents, let them execute in controlled infrastructure, and supervise outcomes at team scale.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -70,7 +70,7 @@ The Droid loop includes execution and testing rather than returning only text. F
 
 Factory also documents adjustable autonomy, allowing organizations to place human approval gates where risk requires them.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Human / system goal
@@ -112,7 +112,7 @@ Ship or retry
 
 The outer orchestration and governance layer is unusually important in Factory's architecture.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Factory role |
 |---|---|
@@ -132,7 +132,7 @@ The outer orchestration and governance layer is unusually important in Factory's
 
 Factory's distinctive move is to package the agent as an **operational unit that can be deployed into an organization's existing engineering infrastructure**.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -154,7 +154,7 @@ Factory's distinctive move is to package the agent as an **operational unit that
 | Sandbox | Confirmed / deployment-dependent | VMs/devcontainers/K8s/air-gapped controls |
 | Cloud agent | Partially confirmed | Hosted/control-plane option exists, but deploy-anywhere runtime is the stronger product proposition |
 
-## 9.7 Economics
+## 7. Economics
 
 Public individual/team pricing has historically centered on subscription tiers such as Pro, Plus, Max and Teams, with higher tiers increasing usage and access to agent-compute features; enterprise pricing is custom. Publicly listed 2026 prices include approximately $20/month Pro, $100/month Plus, $200/month Max and $60/user/month Teams, with enterprise sales-led.
 
@@ -162,13 +162,13 @@ Factory's deeper economic distinction is deployment flexibility. The same agent 
 
 The economically relevant unit is therefore **agent work performed under organizational policy**, not autocomplete volume.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Factory integrates with IDEs, terminal, browser, Slack and enterprise infrastructure. Its deploy-anywhere model connects the agent to existing CI/CD, Kubernetes and security environments rather than asking enterprises to rebuild their stack around a new hosted runtime.
 
 Model-provider diversity is another ecosystem advantage: the Droid layer can survive model-provider changes because the harness is the stable organizational abstraction.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Factory's strongest idea is that enterprise coding agents should be deployable software infrastructure, not only SaaS features.**
 

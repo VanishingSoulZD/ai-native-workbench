@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Subscription + usage/model economics; enterprise plans and self-hosted agent infrastructure | Confirmed |
 | Status Aug 2026 | Major AI-native IDE and agent platform; corporate ownership transition is a separate strategic issue | Confirmed |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Cursor began as an AI-native code editor built on a VS Code/VSCodium foundation, but by 2026 its product proposition had expanded to **a distributed engineering workspace in which local and cloud agents are interchangeable work executors**.
 
@@ -26,7 +26,7 @@ The key workflow change is the move from “developer sits in IDE with AI” to 
 
 Cursor therefore represents the **AI-native IDE → cloud/background engineering** paradigm.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -62,7 +62,7 @@ Cursor exposes repository/team rules, skills, plugins, subagents, hooks and MCP.
 
 Cursor strongly emphasizes executable environments: agents build/test changed software and can control a browser/desktop. Cloud agents produce logs, screenshots and videos to help humans verify outcomes. This makes verification more concrete than a pure diff review.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Intent
@@ -98,7 +98,7 @@ Artifacts + diffs + tests
 Human review / merge
 ```
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Cursor role |
 |---|---|
@@ -118,7 +118,7 @@ Human review / merge
 
 Cursor is especially important because it turns the **development environment** into a product primitive. An agent without dependencies, network access and a runnable app can only produce code; Cursor explicitly treats those environmental affordances as prerequisites for autonomy.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -140,19 +140,19 @@ Cursor is especially important because it turns the **development environment** 
 | Sandbox | Confirmed | Dedicated VM/cloud worker model |
 | Cloud agent | Confirmed | Core strategic surface |
 
-## 9.7 Economics
+## 7. Economics
 
 Current Cursor pricing is subscription-based with model/agent consumption layered into the offering. Public pricing pages list free/individual/team/enterprise tiers; paid plans include agent access, frontier models, MCP/skills/hooks and Cloud Agents. Model usage is economically relevant because different model choices have different consumption rates.
 
 A notable architecture-economics coupling is that **remote agent execution requires real compute infrastructure**. Cursor’s 2026 self-hosted offering separates the control plane from customer-managed workers, allowing enterprise buyers to trade managed convenience for security/network control.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Cursor’s ecosystem includes VS Code-compatible extension compatibility, model providers, MCP, plugins/skills, GitHub/GitLab/Azure DevOps/Bitbucket repository connectivity, Slack/GitHub/Linear entry points, enterprise identity/security and customer-managed infrastructure.
 
 The self-hosted worker model is strategically significant because it turns “agent deployment” into infrastructure architecture rather than a browser-only SaaS feature.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Cursor’s most important lesson is that agent quality is bounded by the quality of the environment in which the agent runs.**
 

@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Product/enterprise access tied to Google/Gemini ecosystem; exact August 2026 consumer packaging is time-sensitive | Partially confirmed |
 | Status Aug 2026 | Standalone agent command center rather than conventional IDE | Confirmed |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Antigravity 2.0 is explicitly **not an IDE**. Google describes it as a standalone desktop command center for launching, steering, monitoring and orchestrating agents that perform coding and broader knowledge tasks.
 
@@ -26,7 +26,7 @@ This is a significant category boundary. Instead of optimizing the human’s edi
 
 Its workflow paradigm is therefore **agent command center + parallel asynchronous work**.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -56,7 +56,7 @@ A plugin is a bundle that can contain skills, agents, rules, MCP servers and hoo
 
 The product emphasizes **artifacts as the verification surface**: agents can create implementation plans, code changes and other artifacts; users inspect them and provide feedback. Coding tasks can include system execution and testing, but a full internal evaluator architecture is not public.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Human intent
@@ -94,7 +94,7 @@ Intervene selectively
 
 The second loop is as important as the first.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Antigravity role |
 |---|---|
@@ -114,7 +114,7 @@ The second loop is as important as the first.
 
 Google is treating “agent supervision” as a first-class product surface, closer to an operations console than a coding editor.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -136,19 +136,19 @@ Google is treating “agent supervision” as a first-class product surface, clo
 | Sandbox | Confirmed / internal detail limited | Terminal sandbox is documented |
 | Cloud agent | Partially confirmed | Enterprise runtime exists; product is primarily desktop/CLI command center |
 
-## 9.7 Economics
+## 7. Economics
 
 Antigravity is tied to Google’s broader Gemini and Google Cloud ecosystem. Consumer/individual pricing is less central to its architecture than Google’s distribution through Gemini and enterprise cloud infrastructure.
 
 Enterprise teams can route agent inference through Google Cloud’s Agent Platform, with regional model endpoints and Google Cloud privacy controls. This creates an enterprise deployment path in which agent usage becomes part of existing cloud procurement and security boundaries.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Antigravity benefits from Google’s Gemini ecosystem, Chrome/browser integration, Google Cloud, MCP and a plugin architecture that bundles agents, skills, rules, hooks and MCP.
 
 The explicit migration lineage from Gemini CLI toward Antigravity CLI is also ecosystem-significant: it reduces fragmentation inside Google’s coding-agent stack and brings an established CLI developer community into the new product family.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Antigravity’s key innovation is replacing the IDE as the primary human interface with an agent operations console.**
 

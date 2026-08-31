@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,13 +18,13 @@
 | Business model | Included in ChatGPT plans with plan-dependent limits; team/enterprise also supports Codex-only pay-as-you-go seats for eligible plans | Confirmed |
 | Status Aug 2026 | Mature multi-surface software-engineering agent with explicit multi-agent and background-work positioning | Strongly indicated |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Codex is positioned less as an “AI coding assistant” and more as a **delegation and supervision system for software engineering agents**. OpenAI’s 2026 product language explicitly describes the Codex app as a command center for multiple agents, parallel work and long-running tasks. The product family therefore spans two modes: local interaction in terminal/IDE, and delegated execution in cloud/worktree environments.
 
 The fundamental workflow change is **from synchronous coding assistance to task delegation and supervision**. Instead of keeping one agent attached to the active editor, users can assign multiple coding tasks, move work between local and cloud environments, let background jobs continue while offline, and review outcomes later.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -54,7 +54,7 @@ Cloud Codex tasks run in isolated environments. The local CLI executes on the de
 
 The original Codex launch explicitly described agents iteratively running tests until they pass. 2026 product positioning further stresses end-to-end tasks, code review and background work. Verification remains an execution-stage loop rather than merely text-level critique.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Human Intent
@@ -96,7 +96,7 @@ Merge / ship
 
 **Key distinction:** Codex makes orchestration itself a first-class product object, not just an internal implementation detail.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Codex role |
 |---|---|
@@ -116,7 +116,7 @@ Merge / ship
 
 The new unit of work is the **delegated task**, and the new user role is increasingly **agent supervisor/orchestrator** rather than typist.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -138,7 +138,7 @@ The new unit of work is the **delegated task**, and the new user role is increas
 | Sandbox | Confirmed | Cloud isolated environments / worktrees |
 | Cloud agent | Confirmed | Core product surface |
 
-## 9.7 Economics
+## 7. Economics
 
 Codex is economically coupled to ChatGPT plans for many users. OpenAI’s 2026 pricing move also introduced Codex-only pay-as-you-go seats for Business and Enterprise pilots, billed on token consumption and without fixed seat rate limits; an update on June 24, 2026 stopped new PAYG Codex-only seats for Business while existing seats remained unaffected.
 
@@ -150,13 +150,13 @@ This creates a useful economic distinction:
 
 The latter is increasingly important because multi-agent workflows can turn one human seat into many concurrent agent workstreams.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Codex inherits the OpenAI ecosystem and integrates with GitHub, IDEs and the terminal. Its Skills and MCP surfaces provide a reusable extension layer, while Automations make it possible to connect the coding agent to organizational operating rhythms such as issue triage and CI monitoring.
 
 The strategically important ecosystem feature is **cross-surface continuity**: local terminal, IDE, desktop and cloud are increasingly different interfaces over one agentic product family.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Codex treats agent orchestration—not code generation—as the product.**
 

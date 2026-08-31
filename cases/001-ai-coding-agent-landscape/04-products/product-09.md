@@ -5,7 +5,7 @@
 > Research cutoff: August 31, 2026
 > Research unit: Product / Product Family
 
-## 9.1 Product Identity
+## 1. Product Identity
 
 | Field | Research finding | Evidence state |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Business model | Subscription + credits; enterprise seat plans; Cloud Agent sandbox billed separately from Aug 10, 2026 | Confirmed |
 | Status Aug 2026 | Rapidly expanding agentic coding platform with unusually explicit harness, memory and cloud-runtime primitives | Confirmed |
 
-## 9.2 Product Positioning
+## 2. Product Positioning
 
 Qoder has moved beyond “AI coding plugin” into a **task-centric agentic coding platform**. The current product language explicitly says work is shifting from codebases to agent tasks and from hands-on production to delegation and review.
 
@@ -32,7 +32,7 @@ Its distinctive workflow is the combination of:
 
 The best workflow label is **IDE → cloud agent platform / persistent agent workflow**.
 
-## 9.3 Product Architecture
+## 3. Product Architecture
 
 ### Model layer
 
@@ -64,7 +64,7 @@ Qoder supports custom agents/subagents, isolated worktree execution for batch op
 
 Built-in `/verify`, `/debug`, `/run` skills and the harness’s explicit verification/self-correction loop provide unusually direct evidence of post-execution validation. The current product also advertises proactive detection of unresolved errors, missing tests and inconsistent logic.
 
-## 9.4 Agent Loop
+## 4. Agent Loop
 
 ```text
 Intent
@@ -108,7 +108,7 @@ Delivery
 
 This is a strong example of turning **specification into executable agent plan**.
 
-## 9.5 Workflow
+## 5. Workflow
 
 | Stage | Qoder role |
 |---|---|
@@ -128,7 +128,7 @@ This is a strong example of turning **specification into executable agent plan**
 
 Qoder is distinctive because it explicitly combines **spec-driven planning, persistent memory and cloud execution** rather than offering them as isolated features.
 
-## 9.6 Capability
+## 6. Capability
 
 | Capability | State | Notes |
 |---|---|---|
@@ -150,7 +150,7 @@ Qoder is distinctive because it explicitly combines **spec-driven planning, pers
 | Sandbox | Confirmed | Cloud containers; local permissions/isolation |
 | Cloud agent | Confirmed | Core product surface |
 
-## 9.7 Economics
+## 7. Economics
 
 International Qoder pricing currently lists Free, Pro ($20/month), Pro+ ($60/month) and Ultra ($200/month), using monthly Credits quotas. Credit packs are also sold separately. Cloud Agent sandbox runtime began metered billing on Aug 10, 2026.
 
@@ -158,13 +158,13 @@ Qoder CN has a separate China pricing structure and was renamed from Tongyi Ling
 
 This is a strong example of **agent economics separating model/resource consumption from base seat subscription**. Cloud runtime introduces an additional infrastructure cost dimension.
 
-## 9.8 Ecosystem
+## 8. Ecosystem
 
 Qoder’s ecosystem includes IDE integrations, JetBrains/VS Code surfaces, GitHub repositories, 70+ plugins, thousands of skills/connectors, MCP, enterprise workspaces and cloud APIs. The ecosystem is unusually explicit about “Skills + Plugins + Connectors” as reusable system components.
 
 China/global family convergence is strategically important because the CN lineage is not merely a localized fork; the product documentation identifies it as the renamed continuation of the former Tongyi Lingma product family.
 
-## 9.9 Unique Insight
+## 9. Unique Insight
 
 > **Qoder is one of the clearest examples of the coding agent becoming a persistent task runtime rather than a transient chat session.**
 
