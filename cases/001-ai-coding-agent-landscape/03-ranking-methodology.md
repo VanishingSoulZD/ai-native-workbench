@@ -120,7 +120,7 @@ Community Signal
 
 > **Vendor Claim ≠ Independent Market Fact**
 
-例如，2026 年 8 月 JetBrains 调查给出了 Claude Code、Codex、GitHub Copilot、Cursor、OpenCode、Google Antigravity 等在专业开发者工作场景中的 adoption signal；这些数字用于横向判断相对 market significance，但不被解释为全球市场份额。citeturn445595search0
+例如，2026 年 8 月 JetBrains 调查给出了 Claude Code、Codex、GitHub Copilot、Cursor、OpenCode、Google Antigravity 等在专业开发者工作场景中的 adoption signal；这些数字用于横向判断相对 market significance，但不被解释为全球市场份额。[^market1]
 
 ### 3.3 Product / Agent capability normalization
 
@@ -368,25 +368,25 @@ Community Evidence
 
 #### 8.1 Claude Code market leadership
 
-JetBrains 的 May–July 2026 survey 显示 Claude Code 在 professional developers at work 的 adoption signal 达约 39%，显著高于其他单一产品；Anthropic 自身 2026 年研究也显示 Claude Code 用户、任务范围与企业使用继续增长。前者是 Independent Evidence，后者是 Vendor / proprietary evidence，不能混为一谈，但两者方向一致。citeturn445595search0turn819036search1
+JetBrains 的 May–July 2026 survey 显示 Claude Code 在 professional developers at work 的 adoption signal 达约 39%，显著高于其他单一产品；Anthropic 自身 2026 年研究也显示 Claude Code 用户、任务范围与企业使用继续增长。前者是 Independent Evidence，后者是 Vendor / proprietary evidence，不能混为一谈，但两者方向一致。[^market1][^market3]
 
 #### 8.2 Devin / Qoder / TRAE user counts
 
 Devin、Qoder、TRAE 都有较大的厂商口径用户数字，但这些数字并没有与 JetBrains 等独立 survey 形成完全可比的 denominator。因此它们可以提高 Market Significance 判断，但不能被当成与 Claude Code / Codex / Copilot adoption survey 完全同口径的全球市场份额。
 
-Qoder 在 2026-08 的官方材料给出 6M+ users worldwide / 100K+ businesses，并在 2026-08-26/27 推出新的 agentic platform。TRAE 则公布了 2025 年底 6M registered users、约 60M sessions，并在 2026 年演进到 TRAE Work + TRAE IDE 双产品结构。这些均属于 Vendor Claim / product evidence。citeturn543612search0turn543612search1turn543612search4turn543612search2
+Qoder 在 2026-08 的官方材料给出 6M+ users worldwide / 100K+ businesses，并在 2026-08-26/27 推出新的 agentic platform。TRAE 则公布了 2025 年底 6M registered users、约 60M sessions，并在 2026 年演进到 TRAE Work + TRAE IDE 双产品结构。这些均属于 Vendor Claim / product evidence。[^qoder][^trae]
 
 #### 8.3 Cursor corporate transition
 
-Cursor 仍具极强 Product / Workflow significance，但 2026-08 的 SpaceX acquisition 与 OpenAI model-access dispute 改变了其战略环境。该事件影响 Ecosystem / Strategic 与 Momentum 判断，但不应被错误地解释为 Cursor agent capability 本身下降。citeturn445595news117turn612798search3
+Cursor 仍具极强 Product / Workflow significance，但 2026-08 的 SpaceX acquisition 与 OpenAI model-access dispute 改变了其战略环境。该事件影响 Ecosystem / Strategic 与 Momentum 判断，但不应被错误地解释为 Cursor agent capability 本身下降。[^cursor]
 
 #### 8.4 Amazon Q Developer / Kiro
 
-AWS 已明确写明 Amazon Q Developer CLI 已 rebrand 为 Kiro，并要求用户升级以获得之后仅 Kiro 才有的新功能；AWS 也宣布 2027-04-30 停止 Amazon Q Developer IDE plugin 支持。故 Phase 3 不将 Q Developer 作为独立 modern market family。citeturn445595search3turn445595search5
+AWS 已明确写明 Amazon Q Developer CLI 已 rebrand 为 Kiro，并要求用户升级以获得之后仅 Kiro 才有的新功能；AWS 也宣布 2027-04-30 停止 Amazon Q Developer IDE plugin 支持。故 Phase 3 不将 Q Developer 作为独立 modern market family。[^qdev]
 
 #### 8.5 Gemini CLI / Antigravity
 
-Google 已从 Gemini CLI 向 Antigravity CLI 迁移；2026-06-18 起个人账户 Gemini CLI 停止服务，而 Antigravity CLI 与 Antigravity 2.0 使用同一 harness。故不允许 Gemini CLI 与 Antigravity 双计。citeturn445595search1turn445595search8turn445595search9
+Google 已从 Gemini CLI 向 Antigravity CLI 迁移；2026-06-18 起个人账户 Gemini CLI 停止服务，而 Antigravity CLI 与 Antigravity 2.0 使用同一 harness。故不允许 Gemini CLI 与 Antigravity 双计。[^antigravity]
 
 ---
 
@@ -404,7 +404,7 @@ vs
 Product-level Evidence
 ```
 
-例如，一些 2026 SWE-bench 汇总显示 OpenHands、Cursor Background Agent、Cline、Factory 等存在很强的公开 agent-level 结果；这些结果可作为 Capability supporting evidence，但由于底层模型、harness、运行预算、评测方法和提交时间不同，不能直接作为市场排名。citeturn875248search0turn875248search11
+例如，一些 2026 SWE-bench 汇总显示 OpenHands、Cursor Background Agent、Cline、Factory 等存在很强的公开 agent-level 结果；这些结果可作为 Capability supporting evidence，但由于底层模型、harness、运行预算、评测方法和提交时间不同，不能直接作为市场排名。[^benchmark]
 
 Phase 3 的 benchmark use rule：
 
@@ -531,3 +531,12 @@ Final Top 10
 
 - SWE-bench ecosystem / agent summaries: https://www.swebench.com/
 - 2026 SWE-bench agent comparison references: https://github.com/VincentTLe/coding-agent/blob/main/docs/reference/swe-bench/leaderboard-verified-may-2026.md
+
+[^market1]: JetBrains, “AI Coding Agents: Adoption Trends”, August 2026. Independent professional-developer survey; figures are adoption signals, not global market share.
+[^market3]: Anthropic, “How AI is changing software development”, June 2026. Proprietary Claude Code usage research; not a market-wide census.
+[^qoder]: Qoder official product/changelog materials, August 2026. Vendor product and scale evidence.
+[^trae]: TRAE official product / TRAE Work materials, 2026. Vendor product and scale evidence.
+[^cursor]: Cursor product documentation and Reuters reporting, August 2026, for product and strategic-status context.
+[^qdev]: AWS documentation on Amazon Q Developer → Kiro migration and Q Developer IDE plugin end of support.
+[^antigravity]: Google Antigravity documentation and Gemini CLI → Antigravity CLI migration materials, 2026.
+[^benchmark]: SWE-bench public benchmark ecosystem and 2026 agent comparison references; benchmark results are supporting evidence only.

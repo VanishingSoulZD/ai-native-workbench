@@ -87,7 +87,7 @@ Phase 3 没有重新创建 Candidate Universe。
 
 ### Strongest independent adoption signals
 
-截至 Phase 3，JetBrains May–July 2026 survey 是最重要的独立市场信号之一：Claude Code 约 39%、GitHub Copilot 约 21%、Codex 约 16%、Cursor 约 12%、OpenCode 约 7%、Google Antigravity 约 6%；JetBrains AI / Junie 合计约 9%。这些是 professional developer survey adoption signals，而不是全球市场份额。citeturn445595search0
+截至 Phase 3，JetBrains May–July 2026 survey 是最重要的独立市场信号之一：Claude Code 约 39%、GitHub Copilot 约 21%、Codex 约 16%、Cursor 约 12%、OpenCode 约 7%、Google Antigravity 约 6%；JetBrains AI / Junie 合计约 9%。这些是 professional developer survey adoption signals，而不是全球市场份额。[^market1]
 
 这使 Claude Code、Copilot、Codex、Cursor 获得非常强的 market significance confidence，也让 OpenCode 和 Antigravity 的独立市场重要性明显高于只有 vendor/community evidence 的很多候选。
 
@@ -102,11 +102,11 @@ Phase 2 同时记录了：
 - Replit：50M+ platform users；
 - Factory：hundreds of thousands of developers、enterprise customers、$1.5B valuation。
 
-这些数字均按 Vendor Claim 处理，不能替代独立市场调查。fileciteturn10file0
+这些数字均按 Vendor Claim 处理，不能替代独立市场调查。[^phase2]
 
 ### China market caveat
 
-中国市场目前没有覆盖 Qoder、TRAE、CodeBuddy、Kimi Code、Qwen Code、Comate 等候选、且具有统一 denominator 的公开独立 market-share survey。因此中国候选不能因为厂商用户数就被机械排到全球前列。fileciteturn10file0
+中国市场目前没有覆盖 Qoder、TRAE、CodeBuddy、Kimi Code、Qwen Code、Comate 等候选、且具有统一 denominator 的公开独立 market-share survey。因此中国候选不能因为厂商用户数就被机械排到全球前列。[^phase2]
 
 ---
 
@@ -120,11 +120,11 @@ Phase 3 不做完整 architecture dossier，只判断是否存在足以影响 Se
 
 ### Strong differentiated capability
 
-**Kiro** 的 spec-driven workflow、**Qoder** 的 continuous planning + cloud agents + memory/skills/MCP、**Factory** 的 autonomous Droids、**OpenCode** 的 provider-agnostic open harness 都具有明显 selection-level differentiation。fileciteturn10file0
+**Kiro** 的 spec-driven workflow、**Qoder** 的 continuous planning + cloud agents + memory/skills/MCP、**Factory** 的 autonomous Droids、**OpenCode** 的 provider-agnostic open harness 都具有明显 selection-level differentiation。[^phase2]
 
 ### Open-source significance
 
-OpenCode、OpenHands、Cline、Qwen Code 等不应仅因为商业规模较小而排除，因为它们是 agent harness、provider abstraction、runtime、skills/subagents 等架构实验的重要载体。fileciteturn16file0
+OpenCode、OpenHands、Cline、Qwen Code 等不应仅因为商业规模较小而排除，因为它们是 agent harness、provider abstraction、runtime、skills/subagents 等架构实验的重要载体。[^phase1]
 
 ---
 
@@ -169,11 +169,11 @@ Devin 的 1M+ users / 4K+ enterprise customers 是 vendor claims。其 autonomou
 
 ### 7.4 Q Developer / Kiro
 
-Q Developer 不进入现代独立 ranking population。AWS 的 Q→Kiro migration evidence 足以支持 family normalization。citeturn445595search3turn445595search5
+Q Developer 不进入现代独立 ranking population。AWS 的 Q→Kiro migration evidence 足以支持 family normalization。[^qdev]
 
 ### 7.5 Gemini CLI / Antigravity
 
-Gemini CLI 不与 Antigravity 双计。Google migration evidence 支持 family normalization。citeturn445595search1turn445595search8turn445595search9
+Gemini CLI 不与 Antigravity 双计。Google migration evidence 支持 family normalization。[^antigravity]
 
 ---
 
@@ -194,7 +194,7 @@ Factory 的 composite score 低于 TRAE / Kiro 等部分 challengers，但仍进
 
 ### 8.2 Why TRAE is Near-miss instead
 
-TRAE 的产品路线很重要，尤其是 AI IDE → TRAE Work / agent workspace；中国市场代表性也很强。fileciteturn9file0
+TRAE 的产品路线很重要，尤其是 AI IDE → TRAE Work / agent workspace；中国市场代表性也很强。[^phase1]
 
 但它与 Cursor / Qoder / Antigravity 的 workflow space 存在较强重叠，同时独立 adoption evidence 仍不足。因此在最后席位竞争中略低于 Factory。
 
@@ -376,16 +376,16 @@ Qoder 是最终 Top 10 中最重要的中国 market/product representative。
 
 ## 12. Most Important Evidence for Selection
 
-1. **JetBrains Aug 2026 independent survey**：为 Claude Code、Copilot、Codex、Cursor、OpenCode、Antigravity 提供共同 survey frame。citeturn445595search0
-2. **OpenAI Codex 5M+ WAU vendor claim**：显著提升 Codex market significance，但仍标记 Vendor Claim。fileciteturn10file0
-3. **GitHub Copilot 4.7M paid subscribers / 77K+ organizations**：强 ecosystem / enterprise evidence，但仍是 vendor-reported。fileciteturn10file0
-4. **Devin 1M+ users / 4K+ enterprises**：支持其 autonomous SWE market significance，但不能与 independent survey 完全等价。fileciteturn10file0
-5. **Qoder 6M+ users / 100K+ businesses**：支持其中国/全球 market significance，但 confidence 受 vendor-only limitation 约束。fileciteturn10file0
-6. **OpenCode OSS scale + independent survey signal**：使其成为“市场较小但架构代表性很高”的典型。fileciteturn10file0
-7. **Qoder Cloud Agents / memory / skills / MCP / browser / batch**：支持其从 AI IDE 向 agent platform 的 workflow significance。fileciteturn10file0
-8. **Replit Agent 4 evaluation**：支持 Idea → Production 与传统 SWE benchmark 不同的 workflow boundary。fileciteturn10file0
-9. **AWS Q→Kiro migration**：是产品家族去重与 Kiro market interpretation 的关键 evidence。citeturn445595search3turn445595search5
-10. **Google Gemini CLI→Antigravity CLI migration**：是 Google product-family deduplication 的关键 evidence。citeturn445595search1turn445595search8turn445595search9
+1. **JetBrains Aug 2026 independent survey**：为 Claude Code、Copilot、Codex、Cursor、OpenCode、Antigravity 提供共同 survey frame。[^market1]
+2. **OpenAI Codex 5M+ WAU vendor claim**：显著提升 Codex market significance，但仍标记 Vendor Claim。[^phase2]
+3. **GitHub Copilot 4.7M paid subscribers / 77K+ organizations**：强 ecosystem / enterprise evidence，但仍是 vendor-reported。[^phase2]
+4. **Devin 1M+ users / 4K+ enterprises**：支持其 autonomous SWE market significance，但不能与 independent survey 完全等价。[^phase2]
+5. **Qoder 6M+ users / 100K+ businesses**：支持其中国/全球 market significance，但 confidence 受 vendor-only limitation 约束。[^phase2]
+6. **OpenCode OSS scale + independent survey signal**：使其成为“市场较小但架构代表性很高”的典型。[^phase2]
+7. **Qoder Cloud Agents / memory / skills / MCP / browser / batch**：支持其从 AI IDE 向 agent platform 的 workflow significance。[^phase2]
+8. **Replit Agent 4 evaluation**：支持 Idea → Production 与传统 SWE benchmark 不同的 workflow boundary。[^phase2]
+9. **AWS Q→Kiro migration**：是产品家族去重与 Kiro market interpretation 的关键 evidence。[^qdev]
+10. **Google Gemini CLI→Antigravity CLI migration**：是 Google product-family deduplication 的关键 evidence。[^antigravity]
 
 ---
 
@@ -523,3 +523,9 @@ Phase 3 至此完成，下一阶段应进入：
 - `02-market-evidence.md`
 - `01-candidate-universe.md`
 - `00-research-charter.md`
+
+[^market1]: JetBrains, “AI Coding Agents: Adoption Trends”, August 2026. Independent professional-developer survey; figures are adoption signals, not global market share.
+[^qdev]: AWS documentation on Amazon Q Developer → Kiro migration and Q Developer IDE plugin end of support.
+[^antigravity]: Google Antigravity documentation and Gemini CLI → Antigravity CLI migration materials, 2026.
+[^phase1]: Phase 1 evidence base: `01-candidate-universe.md`.
+[^phase2]: Phase 2 evidence base: `02-market-evidence.md`.
