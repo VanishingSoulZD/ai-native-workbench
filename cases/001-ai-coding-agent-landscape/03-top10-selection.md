@@ -202,7 +202,7 @@ TRAE 的产品路线很重要，尤其是 AI IDE → TRAE Work / agent workspace
 
 Kiro 的 spec-driven development 是本研究中最清晰的 workflow innovation 之一，甚至在 Workflow Innovation 上可与 Top 10 相当。
 
-但其绝对 adoption 仍然较 Unknown，而且 Amazon Q→Kiro migration 使当前 market baseline 很难与成熟产品直接比较。因此本阶段保留为 Near-miss，而不为了 AWS 战略重要性强行塞入 Top 10。
+但其绝对 adoption 仍较 Unknown，而且 Amazon Q→Kiro migration 使当前 market baseline 很难与成熟产品直接比较。因此本阶段保留为 Near-miss，而不为了 AWS 战略重要性强行塞入 Top 10。
 
 ### 8.4 Why OpenCode enters
 
@@ -524,8 +524,12 @@ Phase 3 至此完成，下一阶段应进入：
 - `01-candidate-universe.md`
 - `00-research-charter.md`
 
+---
+
+## Footnotes
+
 [^market1]: JetBrains, “AI Coding Agents: Adoption Trends”, August 2026. Independent professional-developer survey; figures are adoption signals, not global market share.
+[^phase1]: Phase 1 candidate universe and coverage analysis: `01-candidate-universe.md`.
+[^phase2]: Phase 2 market and product evidence base: `02-market-evidence.md`.
 [^qdev]: AWS documentation on Amazon Q Developer → Kiro migration and Q Developer IDE plugin end of support.
 [^antigravity]: Google Antigravity documentation and Gemini CLI → Antigravity CLI migration materials, 2026.
-[^phase1]: Phase 1 evidence base: `01-candidate-universe.md`.
-[^phase2]: Phase 2 evidence base: `02-market-evidence.md`.
