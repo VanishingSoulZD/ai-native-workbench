@@ -116,7 +116,7 @@ PRODUCTS = [
       paradigm="Idea-to-Production Agent",
       categories=["Idea-to-Production Agent"],
       leadership=["Idea-to-Production Leader"],
-      evidenceGrade="A", confidence="Medium-High",
+      evidenceGrade="B", confidence="Medium-High",
       stratum="Stratum B — strategic-scale agent platform",
       surfaces=["Web", "Cloud", "Mobile", "Runtime/Deploy"],
       surfacesRaw="Web/cloud workspace with design, code, runtime, database and deployment; mobile/web creation flows",
@@ -140,7 +140,7 @@ PRODUCTS = [
       paradigm="Persistent Task-centric Agent",
       categories=["Persistent Task-centric Agent"],
       leadership=["Persistent Task-centric Leader"],
-      evidenceGrade="A", confidence="Medium-High",
+      evidenceGrade="B", confidence="Medium-High",
       stratum="Stratum B — strategic-scale agent platform",
       surfaces=["IDE", "CLI", "Cloud", "SDK/API", "Mobile"],
       surfacesRaw="IDE, CLI, JetBrains/VS Code ecosystem, QoderWork/CN surfaces, Cloud Agents, SDK/API",
@@ -152,7 +152,7 @@ PRODUCTS = [
       paradigm="Enterprise Autonomous SWE Control Plane",
       categories=["Enterprise Autonomous SWE Control Plane"],
       leadership=["Enterprise Deploy-anywhere Runtime Leader"],
-      evidenceGrade="C", confidence="Medium",
+      evidenceGrade="Unknown", confidence="Medium",
       stratum="Stratum B — strategic-scale agent platform",
       surfaces=["Web/Control plane", "IDE", "Terminal", "Slack", "Browser", "CI/VM/K8s/Air-gapped"],
       surfacesRaw="Web/control plane, IDE integrations, terminal, Slack, browser, CI/VM/Kubernetes/air-gapped",
@@ -253,7 +253,7 @@ COMPETITIVE = [
     ("Architecture alternatives", ["OpenCode ↔ vendor-owned harnesses","Factory ↔ SaaS-only cloud agents","Cursor self-hosted ↔ vendor-hosted agents"]),
 ]
 
-WORKFLOW = ["Code Completion","Code / File Editing","Issue / Task Resolution","Repository-level Execution",
+WORKFLOW = ["Code Completion","File/Component Editing","Issue / Task Resolution","Repository-level Execution",
             "Project / Product Work","Delegated Agent Workstream","Parallel Agent Portfolio","Engineering Workflow Automation"]
 
 SCENARIOS = [
@@ -508,7 +508,7 @@ function buildFilters(){
   html+='<div class="row"><label>Category</label>'+allCategories.map(c=>`<span class="chip" data-k="category" data-v="${c}">${c}</span>`).join('')+'</div>';
   html+='<div class="row"><label>Surface</label><select id="fsurf"><option value="">Any</option>'+allSurfaces.map(s=>`<option>${s}</option>`).join('')+'</select></div>';
   html+='<div class="row"><label>Leadership role</label>'+allLead.map(l=>`<span class="chip" data-k="lead" data-v="${l}">${l}</span>`).join('')+'</div>';
-  html+='<div class="row"><label>Evidence grade</label>'+['A','B','C','D'].filter(g=>allGrades.includes(g)).map(g=>`<span class="chip" data-k="grade" data-v="${g}">${g}</span>`).join('')+' <span class="chip" data-k="grade" data-v="">Any</span></div>';
+  html+='<div class="row"><label>Evidence grade</label>'+allGrades.map(g=>`<span class="chip" data-k="grade" data-v="${g}">${g}</span>`).join('')+' <span class="chip" data-k="grade" data-v="">Any</span></div>';
   html+='<div class="row"><label>Capability</label><span class="chip" data-k="cap" data-v="Confirmed">Confirmed</span><span class="chip" data-k="cap" data-v="Partial">Partial</span><span class="chip" data-k="cap" data-v="Unknown">Unknown</span> <span class="btn" id="freset">Reset</span></div>';
   f.innerHTML=html;
   $('#fq').addEventListener('input',e=>{state.q=e.target.value.toLowerCase();renderProducts();});
@@ -895,7 +895,19 @@ for i, r in enumerate(DATA["risks"]):
     txt(s, x + Inches(0.12), y + Inches(0.5), half - Inches(0.24), Inches(1.0), r["desc"], size=11, color=INK)
 footer(s, 12)
 
-# 13. Final Takeaway
+# 13. Sources & Method
+s = add_slide(); title_bar(s, "Sources & Method", "Traceability — every claim maps to 08-sources.md")
+bullets(s, Inches(0.6), Inches(1.5), SW - Inches(1.2), Inches(5.2), [
+    ("Source ledger", "08-sources.md registers 36 claims (C001–C036) and 131 sources (S001–S123 external + S200–S208 internal)."),
+    ("Traceability chain", "Claim → Evidence → Source → Date → Evidence Grade → Confidence → Phase — unchanged from Phase 8 Task 2."),
+    ("Vendor claims", "Codex >5M WAU, Copilot 4.7M/77K, Devin 1M+/4K, Qoder 6M+/100K, Replit 50M platform, Factory scale — retained as vendor claims, never market shares."),
+    ("Surveys ≠ shares", "JetBrains figures are multi-select (sum to 110%) and are never rendered as a single denominator."),
+    ("Benchmarks ≠ productivity", "Automated grader pass overstates maintainer acceptance by ~24.2 pts; no clean productivity estimate exists (C013, C014)."),
+    ("Rendering only", "This deck introduces no new research, score, share, ranking or strategic claim. Phase 0–7 unmodified."),
+], size=15)
+footer(s, 13)
+
+# 14. Final Takeaway
 s = add_slide()
 rect(s, 0, 0, SW, SH, NAVY)
 rect(s, 0, Inches(2.5), SW, Pt(3), ACCENT)
