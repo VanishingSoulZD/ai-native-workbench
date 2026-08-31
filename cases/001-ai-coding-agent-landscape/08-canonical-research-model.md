@@ -46,9 +46,9 @@ numbering or redefine any core deliverable, which is the only thing §18 forbids
 
 ### 0.4 Out of scope for automated banned-pattern scanning
 
-The banned-token list in `08-dataset/tools/phase8_data.py` (`BANNED_PATTERNS`) applies to
-**generated presentation assets**. This document necessarily *names* hazard categories while
-describing them; those occurrences are descriptive and must not be treated as asset content.
+The banned-pattern list (§30) applies to **generated presentation assets**. This document
+necessarily *names* hazard categories while describing them; those occurrences are descriptive
+and must not be treated as asset content.
 
 ---
 
@@ -541,8 +541,6 @@ Phase 3 §3.1 labels Jules `Boundary / Reserve` (one compound label). No candida
 `Reserve` alone.
 
 **Mitigation:** vocabulary value is `Boundary`; verbatim `Boundary / Reserve` preserved.
-Note: `08-dataset/tools/phase8_data.py` currently lists `Reserve` as a vocabulary value —
-recommend removal (see §11).
 
 ### H-10 — Two capability schemas, neither a subset of the other
 
@@ -763,8 +761,8 @@ is described as the historical baseline, not a current form.
 - **Invariant:** 20 Phase 3 scored candidates = 17 Core − 1 (Amazon Q) + 4 Secondary
   (Augment Code, Factory, Jules, Qwen Code). Verified.
 - **Invariant:** shared capability cells — 60/60 agreement between Phase 4 and Phase 6 (verified).
-- **Banned-pattern scan:** the `BANNED_PATTERNS` list in `08-dataset/tools/phase8_data.py`,
-  run over the four generated presentation/dataset assets only (see §0.4).
+- **Banned-pattern scan:** the banned-pattern list (§30), run over the four generated
+  presentation/dataset assets only (see §0.4).
 - **Sum check:** JetBrains adoption figures must never be rendered as a normalized whole.
 
 ### 10.3 Human review gates (Charter §16.10)
@@ -796,29 +794,6 @@ Automation cannot approve judgment. Required human sign-off on:
 | … | | | | | | |
 
 Populated during Task 2; sign-off required before Task 3.
-
----
-
-## Appendix B — Relation to `08-dataset/tools/phase8_data.py`
-
-An untracked partial registry already exists at `08-dataset/tools/phase8_data.py`. It is a
-usable head start for Task 2 and is **not modified by this Task 1**. Required refinements when
-Task 2 adopts it:
-
-1. **Remove `Reserve`** from `PHASE3_STATUS_VOCAB` (H-09).
-2. **Add `*_raw` companion fields** for every normalized value (§5.3). Currently the module
-   stores canonical values without the verbatim source string.
-3. **Split the two evidence scales** — `EXPECTED_SCORES` is fine as a read-only record, but
-   evidence grade must not be merged with Phase 2 coverage grade (H-01, H-08).
-4. **Add `score_discrepancy_flag`** rather than relying only on the inline comment for Jules
-   (H-02).
-5. **Add a `provenance_note` column** for records whose Phase 1 provenance is narrative-only
-   (H-15).
-6. **Keep `EXPECTED_CAPABILITY_MATRIX` (Phase 6, 10 columns) and `EXPECTED_CAPABILITY_MATRIX_PH4`
-   (4 columns) as the seed of the 21-key set**, and extend to the full union (§3.4).
-
-The module's `BANNED_PATTERNS` and `JUDGMENT_LOCKED` lists are retained as-is and are the
-mechanical basis for gates G3 and G1 respectively.
 
 ---
 

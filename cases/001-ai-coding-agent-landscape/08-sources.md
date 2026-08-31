@@ -393,24 +393,6 @@ Phase 1's own snapshot is **2026-08-30**, one day earlier. Where Phase 2 or Phas
 versioned correction to a Phase 1 state (notably Amazon Q Developer → Kiro), the correction
 governs and is recorded in `notes` under rule R6.
 
-## C6 — Relation to `08-dataset/tools/phase8_data.py`
-
-An untracked partial registry exists at that path. It is a useful head start but is **out of
-sync** with the canonical dataset on the following points, and must be re-derived from the CSVs
-before it is used as a validator in Task 3–5:
-
-1. It lists `Reserve` as a selection-status vocabulary value; `Reserve` never occurs
-   standalone (R1 / H-09).
-2. It stores canonical capability values with **no** `*_raw` companion fields, so R3–R5
-   normalizations are invisible.
-3. It records Claude Code `sandbox` as `Confirmed`; rule R4 gives `Partial`.
-4. It has no `score_discrepancy_flag`, relying instead on an inline comment for Jules (H-02).
-5. It has no `provenance_note` mechanism for records whose Phase 1 provenance is
-   narrative-only (H-15).
-
-Its `BANNED_PATTERNS` and `JUDGMENT_LOCKED` lists remain valid and were used as the basis for
-the Task 2 banned-phrasing gate.
-
 ---
 
 ## Research Status
