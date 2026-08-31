@@ -74,8 +74,8 @@ Phase 1 已建立约 44 个 active candidate product families / candidates，以
 | Qoder / Qoder CN / Tongyi Lingma lineage | One family | 研究单位是 product family；2026 命名迁移后不重复计数 |
 | Devin / Devin Desktop / Windsurf legacy | One family | Devin Desktop 官方明确为 Windsurf 的新名称 |
 | Google Antigravity / Antigravity CLI / Gemini CLI lineage | One family | Gemini CLI 已向 Antigravity CLI 迁移，避免 Google 内部重复计算 |
-| Amazon Q Developer / Q CLI → Kiro lineage | **Kiro family only for modern selection** | AWS 已正式将 Q CLI 重品牌为 Kiro，并持续引导 Q IDE 用户迁移；Q Developer 因此视为 transitional lineage，而非独立现代 market family |
-| JetBrains AI / Junie | One family | Charter 已要求本阶段按 family 处理，后续 capability matrix 可拆 surface |
+| Amazon Q Developer / Q CLI → Kiro lineage | Kiro family only for modern selection | AWS 已将 Q CLI 重品牌为 Kiro，并持续引导用户迁移；Q Developer 保留为历史 / transitional evidence |
+| JetBrains AI / Junie | One family | 本阶段按 family 处理，后续 capability matrix 可拆 surface |
 
 ### 2.3 Important boundary decisions
 
@@ -386,7 +386,7 @@ AWS 已明确写明 Amazon Q Developer CLI 已 rebrand 为 Kiro，并要求用�
 
 #### 8.5 Gemini CLI / Antigravity
 
-Google 已从 Gemini CLI 向 Antigravity CLI 迁移；2026-06-18 起个人账户 Gemini CLI 停止服务，而 Antigravity CLI 与 Antigravity 2.0 使用同一 harness。故不允许 Gemini CLI 与 Antigravity 双计。[^antigravity]
+Google 已从 Gemini CLI 向 Antigravity CLI 迁移；因此不允许 Gemini CLI 与 Antigravity 双计。[^antigravity]
 
 ---
 
@@ -404,7 +404,7 @@ vs
 Product-level Evidence
 ```
 
-例如，一些 2026 SWE-bench 汇总显示 OpenHands、Cursor Background Agent、Cline、Factory 等存在很强的公开 agent-level 结果；这些结果可作为 Capability supporting evidence，但由于底层模型、harness、运行预算、评测方法和提交时间不同，不能直接作为市场排名。[^benchmark]
+公开 SWE-bench 结果可以作为 Capability supporting evidence，但由于底层模型、harness、运行预算、评测方法和提交时间不同，不能直接作为市场排名。[^benchmark]
 
 Phase 3 的 benchmark use rule：
 
@@ -532,9 +532,13 @@ Final Top 10
 - SWE-bench ecosystem / agent summaries: https://www.swebench.com/
 - 2026 SWE-bench agent comparison references: https://github.com/VincentTLe/coding-agent/blob/main/docs/reference/swe-bench/leaderboard-verified-may-2026.md
 
+---
+
+## Footnotes
+
 [^market1]: JetBrains, “AI Coding Agents: Adoption Trends”, August 2026. Independent professional-developer survey; figures are adoption signals, not global market share.
 [^market3]: Anthropic, “How AI is changing software development”, June 2026. Proprietary Claude Code usage research; not a market-wide census.
-[^qoder]: Qoder official product/changelog materials, August 2026. Vendor product and scale evidence.
+[^qoder]: Qoder official product and changelog materials, August 2026. Vendor product and scale evidence.
 [^trae]: TRAE official product / TRAE Work materials, 2026. Vendor product and scale evidence.
 [^cursor]: Cursor product documentation and Reuters reporting, August 2026, for product and strategic-status context.
 [^qdev]: AWS documentation on Amazon Q Developer → Kiro migration and Q Developer IDE plugin end of support.
