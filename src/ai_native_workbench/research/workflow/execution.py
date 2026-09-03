@@ -56,12 +56,12 @@ class WorkflowRunner:
             if node.step.human_gate.required and step_id not in current_context.approved_gates:
                 return WorkflowRunResult("blocked", tuple(results), blocked_step_id=step_id)
             try:
-                outputs = self._executor.execute(node.step, current_context)
+                recorded_outputs = dict(self._executor.execute(node.step, current_context))
+                _validate_declared_outputs(node.step, recorded_outputs)
             except Exception as error:
                 results.append(StepExecutionResult(step_id, "failed", {}, str(error)))
                 return WorkflowRunResult("failed", tuple(results))
 
-            recorded_outputs = dict(outputs)
             results.append(StepExecutionResult(step_id, "succeeded", recorded_outputs))
             next_outputs = dict(current_context.step_outputs)
             next_outputs[step_id] = recorded_outputs
@@ -72,3 +72,19 @@ class WorkflowRunner:
                 approved_gates=current_context.approved_gates,
             )
         return WorkflowRunResult("succeeded", tuple(results))
+
+
+def _validate_declared_outputs(step: WorkflowStep, outputs: Mapping[str, object]) -> None:
+    expected = {output.name for output in step.outputs}
+    actual = set(outputs)
+    if actual != expected:
+        missing = sorted(expected - actual)
+        undeclared = sorted(actual - expected)
+        details: list[str] = []
+        if missing:
+            details.append(f"missing declared outputs: {missing}")
+        if undeclared:
+            details.append(f"undeclared outputs: {undeclared}")
+        raise WorkflowExecutionError(
+            f"Step {step.id!r} returned outputs that violate its contract ({'; '.join(details)})."
+        )

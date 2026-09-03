@@ -62,3 +62,27 @@ def test_success_requires_every_step_to_succeed(workflow):
     result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {}))
     assert result.status == "succeeded"
     assert all(step.status == "succeeded" for step in result.steps)
+
+
+def test_executor_missing_declared_output_fails_the_step(workflow):
+    class MissingOutputExecutor:
+        def execute(self, step, context):
+            return {}
+
+    result = WorkflowRunner(workflow, MissingOutputExecutor()).run(WorkflowExecutionContext("case", {}))
+
+    assert result.status == "failed"
+    assert result.steps[-1].status == "failed"
+    assert "missing declared outputs" in result.steps[-1].error
+
+
+def test_executor_undeclared_output_fails_the_step(workflow):
+    class UndeclaredOutputExecutor:
+        def execute(self, step, context):
+            return {"output": "declared", "extra": "undeclared"}
+
+    result = WorkflowRunner(workflow, UndeclaredOutputExecutor()).run(WorkflowExecutionContext("case", {}))
+
+    assert result.status == "failed"
+    assert result.steps[-1].status == "failed"
+    assert "undeclared outputs" in result.steps[-1].error

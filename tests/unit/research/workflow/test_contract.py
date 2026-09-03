@@ -78,3 +78,19 @@ def test_workflow_step_exposes_no_prompt_model_or_runtime_field():
     field_names = {field.name for field in fields(WorkflowStep)}
 
     assert not field_names.intersection({"prompt", "model", "tool", "agent", "runtime", "executor"})
+
+
+@pytest.mark.parametrize(
+    ("field", "item"),
+    [
+        ("inputs", StepInput("", "ResearchQuestion")),
+        ("inputs", StepInput("research_question", "")),
+        ("inputs", StepInput("   ", "ResearchQuestion")),
+        ("outputs", StepOutput("", "EvidenceSet")),
+        ("outputs", StepOutput("evidence_set", "")),
+        ("outputs", StepOutput("evidence_set", "   ")),
+    ],
+)
+def test_input_and_output_fields_must_be_non_empty(field: str, item: object):
+    with pytest.raises(StepValidationError):
+        validate_step_contract(make_valid_step(**{field: (item,)}))

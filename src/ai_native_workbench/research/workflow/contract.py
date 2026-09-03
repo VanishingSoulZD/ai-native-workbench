@@ -57,6 +57,8 @@ def validate_step_contract(step: WorkflowStep) -> None:
         raise StepValidationError("WorkflowStep must declare at least one input.")
     if not step.outputs:
         raise StepValidationError("WorkflowStep must declare at least one output.")
+    _validate_artifact_fields("input", step.inputs)
+    _validate_artifact_fields("output", step.outputs)
     if len({item.name for item in step.inputs}) != len(step.inputs):
         raise StepValidationError("WorkflowStep input names must be unique.")
     if len({item.name for item in step.outputs}) != len(step.outputs):
@@ -69,3 +71,11 @@ def validate_step_contract(step: WorkflowStep) -> None:
         raise StepValidationError("A required human gate must declare its type.")
     if step.provenance.required and not step.provenance.rules:
         raise StepValidationError("Required provenance must declare at least one rule.")
+
+
+def _validate_artifact_fields(label: str, artifacts: tuple[StepInput, ...] | tuple[StepOutput, ...]) -> None:
+    for artifact in artifacts:
+        if not artifact.name or not artifact.name.strip():
+            raise StepValidationError(f"WorkflowStep {label} names must not be empty.")
+        if not artifact.kind or not artifact.kind.strip():
+            raise StepValidationError(f"WorkflowStep {label} kinds must not be empty.")
