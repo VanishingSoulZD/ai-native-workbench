@@ -98,8 +98,8 @@ Research System v1 freezes semantic and process contracts, not future infrastruc
 
 ```yaml
 id
- title
 request
+title
 decision_context
 requester
 created_at
@@ -116,7 +116,7 @@ superseded
 
 **Invalid states**:
 
-- accepted request without an owner/requester or creation timestamp;
+- accepted request without requester or creation timestamp;
 - using the request as authority for scope after a Charter has been approved.
 
 **Relationships**:
@@ -139,7 +139,7 @@ ResearchRequest 1 → 1..n ResearchCharter
 
 **Who may modify**: Human authority. Material scope changes require a new version and may require a new snapshot.
 
-**Consumers**: ResearchCase, ResearchQuestion, Workflow planning and evaluation.
+**Consumers**: ResearchCase, ResearchQuestion, workflow planning and evaluation.
 
 **Minimum fields**:
 
@@ -212,7 +212,7 @@ archived
 **Invalid states**:
 
 - case without a valid Charter reference;
-- two cases sharing the same case identifier;
+- duplicate case identifier;
 - completed case with no valid completed snapshot.
 
 **Relationships**:
@@ -237,7 +237,7 @@ ResearchCase 1 → n ResearchSnapshot
 
 **Who may modify**: Human authority while the case is active; approved historical questions require versioning.
 
-**Consumers**: Workflow, Claims, Analysis, Evaluation, Delivery.
+**Consumers**: Workflow, Claims, Analysis, Evaluation and Delivery.
 
 **Minimum fields**:
 
@@ -276,11 +276,11 @@ superseded
 
 **Created by**: Workflow execution under the ResearchCase; publication requires human authority.
 
-**Content authority**: Snapshot membership/version boundary and historical state.
+**Content authority**: Snapshot membership, version boundary and historical state.
 
-**Who may modify**: Active draft snapshots may be edited according to workflow rules. Validated/published/superseded/archived snapshots are immutable by default; corrections create a new versioned action and normally a new snapshot.
+**Who may modify**: Draft snapshots may be edited under workflow rules. Validated/published/superseded/archived snapshots are immutable by default; corrections create a new versioned action and normally a new snapshot.
 
-**Consumers**: Canonical Model, Evaluation, Delivery, Update workflows and audit.
+**Consumers**: Canonical Model, Evaluation, Delivery, Update workflows and Audit.
 
 **Minimum fields**:
 
@@ -445,6 +445,21 @@ evaluation
 delivery
 ```
 
+**Valid states**:
+
+```text
+draft
+active
+superseded
+archived
+```
+
+**Invalid states**:
+
+- artifact without a declared class;
+- delivery artifact used as semantic authority when canonical objects exist;
+- historical artifact silently replaced without a new version.
+
 **Core authority rule**:
 
 > Artifacts carry research work; canonical objects carry semantic authority.
@@ -459,7 +474,13 @@ A Markdown document may contain a Claim, Evidence or Judgment, but the document 
 
 Represents a research subject.
 
-Minimum fields:
+**Created by**: Workflow or researcher during research execution.
+
+**Authority**: Canonical semantic state of the represented subject within a Snapshot.
+
+**Consumers**: Claims, Relationships, Metrics, Scores, Analysis and Delivery.
+
+**Minimum fields**:
 
 ```yaml
 entity_id
@@ -471,11 +492,19 @@ attributes
 
 `entity_type` remains extensible. Domain-specific taxonomies are not frozen globally in v1.
 
+---
+
 ### Claim
 
 Represents an atomic assertion carried by the canonical model.
 
-Minimum fields:
+**Created by**: Evidence/analysis workflow with researcher oversight as required.
+
+**Authority**: Statement, status, confidence and evidence bindings.
+
+**Consumers**: Analysis, Judgment, Evaluation and Delivery.
+
+**Minimum fields**:
 
 ```yaml
 claim_id
@@ -489,11 +518,19 @@ evidence_ids[]
 
 A factual claim without required provenance is invalid.
 
+---
+
 ### Evidence
 
 Represents an observed or extracted piece of support/challenge.
 
-Minimum fields:
+**Created by**: Evidence collection/normalization workflow or researcher.
+
+**Authority**: Observation and its provenance binding; not the truth of the resulting claim.
+
+**Consumers**: Claims, Analysis, Evaluation and Audit.
+
+**Minimum fields**:
 
 ```yaml
 evidence_id
@@ -509,11 +546,19 @@ note
 
 Evidence is not itself a conclusion.
 
+---
+
 ### Source
 
 Represents a citable information source.
 
-Minimum fields:
+**Created by**: Researcher or evidence workflow.
+
+**Authority**: Source identity and citation metadata.
+
+**Consumers**: Evidence, Claims, Audit and Delivery.
+
+**Minimum fields**:
 
 ```yaml
 source_id
@@ -528,11 +573,19 @@ quality_tier
 
 A Source may point to an original document, official page, dataset, study, vendor publication or other citable source type.
 
+---
+
 ### Analysis
 
 Represents an explicit transformation of evidence/claims into comparison, model, inference or structured reasoning.
 
-Minimum fields:
+**Created by**: Researcher or workflow.
+
+**Authority**: The declared analytical method and resulting analysis statement/model.
+
+**Consumers**: Judgment, Recommendation, Decision and Delivery.
+
+**Minimum fields**:
 
 ```yaml
 analysis_id
@@ -546,11 +599,17 @@ status
 
 Analysis must remain distinguishable from externally verified fact.
 
+---
+
 ### Relationship
 
 Represents a typed relation between canonical objects.
 
-Minimum fields:
+**Created by**: Researcher or workflow.
+
+**Authority**: Relationship predicate and endpoint references.
+
+**Minimum fields**:
 
 ```yaml
 relationship_id
@@ -561,11 +620,17 @@ evidence_ids[]
 status
 ```
 
+---
+
 ### Metric
 
 Defines a quantitative measure.
 
-Minimum fields:
+**Created by**: Researcher / methodology owner.
+
+**Authority**: Definition, unit, method and qualifier semantics.
+
+**Minimum fields**:
 
 ```yaml
 metric_id
@@ -577,11 +642,17 @@ source_refs[]
 qualifiers[]
 ```
 
+---
+
 ### Score
 
 Represents a value assigned to an object under a specific Metric in a Snapshot.
 
-Minimum fields:
+**Created by**: Scoring workflow / researcher.
+
+**Authority**: Historical scored value within its Snapshot and declared Metric.
+
+**Minimum fields**:
 
 ```yaml
 score_id
@@ -604,7 +675,13 @@ Historical scores are read-only records within a Snapshot unless a versioned hum
 
 Represents a synthesized research judgment.
 
-Minimum fields:
+**Created by**: Researcher with AI assistance permitted.
+
+**Authority**: The research judgment and its declared basis, not the underlying factual sources.
+
+**Consumers**: Decision, Recommendation, Delivery and Evaluation.
+
+**Minimum fields**:
 
 ```yaml
 judgment_id
@@ -618,11 +695,19 @@ status
 
 Judgment requires an explicit basis chain to supporting analysis/claims/evidence where applicable.
 
+---
+
 ### Recommendation
 
 Represents a proposed action or preference.
 
-Minimum fields:
+**Created by**: Human or AI-assisted workflow.
+
+**Authority**: Recommendation text and basis; not final action authority.
+
+**Consumers**: Decision, Delivery and Human Gate review.
+
+**Minimum fields**:
 
 ```yaml
 recommendation_id
@@ -634,11 +719,19 @@ status
 
 Recommendation may be AI-generated. It is not a decision.
 
+---
+
 ### Decision
 
 Represents an authoritative choice with consequences.
 
-Minimum fields:
+**Created by**: Human decision authority, possibly assisted by AI-generated analysis/recommendations.
+
+**Authority**: Designated human authority.
+
+**Consumers**: Delivery, downstream case execution and audit.
+
+**Minimum fields**:
 
 ```yaml
 decision_id
@@ -652,11 +745,19 @@ status
 
 Decision authority belongs to the designated human authority unless a future system explicitly establishes a different approved authority model.
 
+---
+
 ### Hypothesis
 
 Represents an unconfirmed explanatory proposition.
 
-Minimum fields:
+**Created by**: Human or AI-assisted analysis workflow.
+
+**Authority**: Hypothesis state only; it is not factual authority.
+
+**Consumers**: Future research questions, Analysis, Delivery and Evaluation.
+
+**Minimum fields**:
 
 ```yaml
 hypothesis_id
@@ -669,11 +770,19 @@ status
 
 A hypothesis must not be rendered as an established fact.
 
+---
+
 ### Unknown
 
 Represents a material unresolved research state.
 
-Minimum fields:
+**Created by**: Human or workflow when evidence is insufficient, ambiguous or unavailable.
+
+**Authority**: The unresolved state of the specified question/scope.
+
+**Consumers**: Evaluation, Decision, Delivery and Update workflows.
+
+**Minimum fields**:
 
 ```yaml
 unknown_id
@@ -683,7 +792,7 @@ scope
 status
 ```
 
-Semantic rule:
+**Semantic rule**:
 
 ```text
 Unknown ≠ No
@@ -697,9 +806,202 @@ Unknown is not a null formatting convention. It is a first-class knowledge state
 
 ---
 
+## 2.6 Operational / governance objects
+
+### Evaluation
+
+**Definition**: A structured assessment of a research artifact, canonical snapshot, workflow or delivery against declared quality criteria.
+
+**Problem solved**: Makes research quality itself inspectable and reusable.
+
+**Created by**: Evaluator workflow and/or human reviewer.
+
+**Content authority**: The recorded evaluation result and its evaluation context; it does not alter the evaluated research state.
+
+**Who may modify**: Evaluator/reviewer through a versioned evaluation record.
+
+**Consumers**: ResearchCase lifecycle, workflow promotion, delivery gating and audit.
+
+**Minimum fields**:
+
+```yaml
+evaluation_id
+target_ref
+evaluation_type
+criteria
+results
+status
+evaluator
+created_at
+```
+
+**Valid states**:
+
+```text
+draft
+in_progress
+passed
+failed
+superseded
+```
+
+**Invalid states**:
+
+- passed evaluation without results against declared criteria;
+- evaluation whose target cannot be resolved;
+- modifying a historical passed evaluation without a new version.
+
+---
+
+### HumanGate
+
+**Definition**: A governance checkpoint at which a designated human must make or approve a consequential research decision.
+
+**Problem solved**: Prevents AI assistance from becoming implicit authority.
+
+**Created by**: Workflow system when a gate is required; completed by the designated human authority.
+
+**Content authority**: The human decision recorded at that gate.
+
+**Who may modify**: Designated human authority; system may append audit metadata but cannot substitute a human decision.
+
+**Consumers**: Workflow execution, Snapshot publication, Evaluation and Audit.
+
+**Minimum fields**:
+
+```yaml
+gate_id
+type
+subject_refs[]
+reviewer
+decision
+timestamp
+rationale
+status
+```
+
+**Valid types**:
+
+```text
+H1_SCOPE
+H2_POPULATION_SELECTION
+H3_JUDGMENT_DECISION
+H4_FINAL_DELIVERY
+H5_UPDATE_CORRECTION
+```
+
+**Valid states**:
+
+```text
+pending
+passed
+rejected
+superseded
+```
+
+**Invalid states**:
+
+- required gate marked passed without a human reviewer and decision;
+- system-generated approval that bypasses the designated human authority;
+- historical gate decision silently replaced.
+
+---
+
+### Delivery
+
+**Definition**: A projection of a validated canonical snapshot into an audience- or machine-specific representation.
+
+**Problem solved**: Separates communication/reuse formats from semantic authority.
+
+**Created by**: Rendering workflow.
+
+**Content authority**: None over canonical semantics. Delivery owns representation metadata only.
+
+**Who may modify**: Renderer/build process; final acceptance requires H4 human review where applicable.
+
+**Consumers**: Intended audience, downstream analysis, systems and audit.
+
+**Minimum fields**:
+
+```yaml
+delivery_id
+snapshot_id
+delivery_type
+renderer_version
+created_at
+content_uri
+status
+```
+
+**Valid states**:
+
+```text
+draft
+built
+validated
+published
+superseded
+archived
+```
+
+**Invalid states**:
+
+- delivery with no source Snapshot;
+- delivery introducing untracked semantic content;
+- published delivery whose rendering/version context cannot be identified.
+
+---
+
+### Build
+
+**Definition**: A recorded transformation execution that turns declared inputs and canonical state into one or more artifacts/deliveries.
+
+**Problem solved**: Makes reproducible transformation context explicit without prescribing infrastructure.
+
+**Created by**: Build/transformation workflow.
+
+**Content authority**: Build metadata and execution provenance, not the semantic truth of the resulting research objects.
+
+**Who may modify**: Build system may create records; historical build records are append-only/versioned.
+
+**Consumers**: Evaluation, Audit, Reproducibility and Delivery.
+
+**Minimum fields**:
+
+```yaml
+build_id
+snapshot_id
+workflow_version
+schema_version
+transformation_version
+input_refs[]
+configuration_hash
+assumptions_hash
+outputs[]
+status
+created_at
+```
+
+**Valid states**:
+
+```text
+started
+succeeded
+failed
+superseded
+```
+
+**Invalid states**:
+
+- successful build without declared input/version context;
+- build record that claims reproducibility while omitting required context;
+- historical build metadata silently overwritten.
+
+---
+
 # 3. Object Relationships
 
-The system-level relationship model is:
+The definition-to-execution spine is:
 
 ```text
 ResearchRequest
@@ -731,7 +1033,7 @@ Evidence
 Source
 ```
 
-The actual navigation is bidirectional enough to answer both:
+The graph must be navigable in both directions so that the system can answer both:
 
 ```text
 Which Evidence supports this Claim?
@@ -750,6 +1052,20 @@ Claim / Evidence
  Recommendation
         ↓
      Decision
+```
+
+Governance chain:
+
+```text
+WorkflowStep
+      ↓
+ HumanGate
+      ↓
+ Evaluation
+      ↓
+ ResearchSnapshot status
+      ↓
+ Delivery / Build
 ```
 
 `Hypothesis` and `Unknown` are first-class side branches and must not be silently promoted into established facts or resolved negatives.
@@ -785,7 +1101,7 @@ constraints:
 
 human_gate:
   required: true | false
-  gate_type: <H1-H5 or other declared gate>
+  gate_type: <H1-H5 or declared gate>
 
 validation:
   - <machine-checkable and/or reviewable criteria>
@@ -848,6 +1164,8 @@ Hypothesis
 Unknown
 ```
 
+Evaluation, HumanGate, Delivery and Build are governance/operational objects around the canonical semantic core rather than research facts themselves.
+
 The exact serialization is intentionally not frozen. Markdown, YAML, JSON, CSV or a database representation may be used by an implementation.
 
 ## 5.2 Content authority
@@ -864,6 +1182,9 @@ Historical score       → Score within Snapshot
 Recommendation         → Recommendation
 Human decision         → Decision
 Unknown state          → Unknown
+Evaluation result      → Evaluation
+Gate decision          → HumanGate
+Build provenance       → Build
 ```
 
 A rendering layer may format, filter, select or compress. It must not silently become authority for these values.
@@ -872,7 +1193,7 @@ A rendering layer may format, filter, select or compress. It must not silently b
 
 The canonical model MUST be usable without requiring PPT, HTML, Dataset or Research Note to exist.
 
-Conversely, a delivery MUST be rebuildable from the canonical model plus declared rendering configuration/code.
+Conversely, a Delivery MUST be rebuildable from the canonical model plus declared rendering configuration/code.
 
 ## 5.4 Historical snapshots
 
@@ -906,7 +1227,7 @@ At minimum, the following identifiers are required where the object class exists
 
 ```text
 source_id
- evidence_id
+evidence_id
 claim_id
 ```
 
@@ -926,7 +1247,7 @@ If the Claim is itself a conclusion based on multiple conflicting sources, the c
 
 ## 6.4 Quantitative claims
 
-A quantitative claim MUST additionally preserve:
+A quantitative Claim MUST additionally preserve:
 
 ```text
 metric definition
@@ -999,19 +1320,11 @@ Human review of factual accuracy, citation integrity, uncertainty, wording, audi
 
 Corrections affecting a historical snapshot require explicit, versioned human action. Automated rebuilds cannot silently rewrite history.
 
-## Gate record minimum
+## Gate record
 
-```yaml
-gate_id
-type
-subject_refs[]
-reviewer
-decision
-timestamp
-rationale
-```
+The `HumanGate` object defined in §2.6 records the subject references, human reviewer, decision, timestamp, rationale and state.
 
-A required gate without a recorded decision is not passed.
+A required gate without a recorded human decision is not passed.
 
 ---
 
@@ -1051,7 +1364,7 @@ Reasoning Quality
 Final Answer Usefulness
 ```
 
-Human evaluation records should preserve both score/assessment and the review context where material.
+Human evaluation records should preserve both assessment and review context where material.
 
 ## 8.3 Research Run completion
 
@@ -1098,6 +1411,8 @@ Assumptions
 +
 Relevant Model-Generated Inputs
 ```
+
+A Build records this context for an actual transformation execution.
 
 A compact conceptual identity is:
 
@@ -1214,6 +1529,9 @@ Schema Version
 Transformation Version
 ResearchArtifact Version
 Delivery Version
+Evaluation Version
+HumanGate Version
+Build Record Version
 ```
 
 ## Versioning rules
@@ -1225,6 +1543,7 @@ Delivery Version
 5. Material assumptions, scope, or consequential historical judgments require versioned research state.
 6. A historical published Snapshot is not silently rewritten.
 7. Supersession is explicit; old states remain recoverable.
+8. Evaluation and HumanGate records are historical governance records; corrections append/version rather than silently overwrite.
 
 No v1 contract requires a general-purpose schema migration engine.
 
@@ -1262,7 +1581,7 @@ MUST-008
 Delivery cannot introduce untracked facts, scores, rankings, judgments or decisions.
 
 MUST-009
-Required Human Gates have an explicit recorded decision before Research Run completion.
+Required Human Gates have an explicit recorded human decision before Research Run completion.
 
 MUST-010
 Contradictory evidence can be represented without silently deleting one side.
@@ -1278,6 +1597,12 @@ A Hypothesis cannot be represented as an established factual Claim without an ex
 
 MUST-014
 A Recommendation is not equivalent to a Decision unless a human-authorized transition records that decision.
+
+MUST-015
+A successful Build records the reproducibility context needed to explain its transformation.
+
+MUST-016
+A Delivery must reference the Snapshot it projects from.
 ```
 
 ## 12.2 SHOULD
