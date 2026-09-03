@@ -14,21 +14,21 @@ class EchoExecutor:
 
 def test_runner_executes_in_dependency_order(workflow):
     executor = EchoExecutor()
-    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {"input": "value"}))
     assert executor.calls == ["define", "collect", "synthesize"]
     assert result.status == "succeeded"
 
 
 def test_runner_passes_prior_outputs_in_context(workflow):
     executor = EchoExecutor()
-    WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {"request": "value"}))
-    assert executor.contexts[1].inputs == {"request": "value"}
+    WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {"input": "value", "request": "value"}))
+    assert executor.contexts[1].inputs == {"input": "value"}
     assert executor.contexts[1].step_outputs == {"define": {"output": "define:output"}}
 
 
 def test_required_gate_blocks_before_step_execution(workflow_with_required_gate):
     executor = EchoExecutor()
-    result = WorkflowRunner(workflow_with_required_gate, executor).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow_with_required_gate, executor).run(WorkflowExecutionContext("case", {"input": "value"}))
     assert result.status == "blocked"
     assert result.blocked_step_id == "select"
     assert executor.calls == ["define"]
@@ -36,7 +36,7 @@ def test_required_gate_blocks_before_step_execution(workflow_with_required_gate)
 
 def test_approved_gate_allows_execution(workflow_with_required_gate):
     executor = EchoExecutor()
-    result = WorkflowRunner(workflow_with_required_gate, executor).run(WorkflowExecutionContext("case", {}, approved_gates=frozenset({"select"})))
+    result = WorkflowRunner(workflow_with_required_gate, executor).run(WorkflowExecutionContext("case", {"input": "value"}, approved_gates=frozenset({"select"})))
     assert result.status == "succeeded"
     assert executor.calls == ["define", "select"]
 
@@ -49,7 +49,7 @@ def test_executor_failure_returns_failed_result_and_stops_downstream(workflow):
             return super().execute(step, context)
 
     executor = FailingExecutor()
-    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {"input": "value"}))
     assert result.status == "failed"
     assert result.steps[-1].step_id == "collect"
     assert result.steps[-1].status == "failed"
@@ -59,7 +59,7 @@ def test_executor_failure_returns_failed_result_and_stops_downstream(workflow):
 
 def test_success_requires_every_step_to_succeed(workflow):
     executor = EchoExecutor()
-    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {"input": "value"}))
     assert result.status == "succeeded"
     assert all(step.status == "succeeded" for step in result.steps)
 
@@ -69,7 +69,7 @@ def test_executor_missing_declared_output_fails_the_step(workflow):
         def execute(self, step, context):
             return {}
 
-    result = WorkflowRunner(workflow, MissingOutputExecutor()).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow, MissingOutputExecutor()).run(WorkflowExecutionContext("case", {"input": "value"}))
 
     assert result.status == "failed"
     assert result.steps[-1].status == "failed"
@@ -81,8 +81,35 @@ def test_executor_undeclared_output_fails_the_step(workflow):
         def execute(self, step, context):
             return {"output": "declared", "extra": "undeclared"}
 
-    result = WorkflowRunner(workflow, UndeclaredOutputExecutor()).run(WorkflowExecutionContext("case", {}))
+    result = WorkflowRunner(workflow, UndeclaredOutputExecutor()).run(WorkflowExecutionContext("case", {"input": "value"}))
 
     assert result.status == "failed"
     assert result.steps[-1].status == "failed"
     assert "undeclared outputs" in result.steps[-1].error
+
+
+def test_missing_declared_input_fails_before_executor_and_stops_downstream(workflow):
+    executor = EchoExecutor()
+
+    result = WorkflowRunner(workflow, executor).run(WorkflowExecutionContext("case", {}))
+
+    assert result.status == "failed"
+    assert result.steps[-1].step_id == "define"
+    assert result.steps[-1].status == "failed"
+    assert "missing declared inputs" in result.steps[-1].error
+    assert executor.calls == []
+
+
+def test_executor_receives_only_declared_inputs(workflow):
+    executor = EchoExecutor()
+
+    result = WorkflowRunner(workflow, executor).run(
+        WorkflowExecutionContext(
+            "case",
+            {"input": "research question", "secret_extra": "should-not-be-visible"},
+        )
+    )
+
+    assert result.status == "succeeded"
+    assert executor.contexts[0].inputs == {"input": "research question"}
+    assert "secret_extra" not in executor.contexts[0].inputs

@@ -56,7 +56,8 @@ class WorkflowRunner:
             if node.step.human_gate.required and step_id not in current_context.approved_gates:
                 return WorkflowRunResult("blocked", tuple(results), blocked_step_id=step_id)
             try:
-                recorded_outputs = dict(self._executor.execute(node.step, current_context))
+                step_context = _step_execution_context(node.step, current_context)
+                recorded_outputs = dict(self._executor.execute(node.step, step_context))
                 _validate_declared_outputs(node.step, recorded_outputs)
             except Exception as error:
                 results.append(StepExecutionResult(step_id, "failed", {}, str(error)))
@@ -88,3 +89,21 @@ def _validate_declared_outputs(step: WorkflowStep, outputs: Mapping[str, object]
         raise WorkflowExecutionError(
             f"Step {step.id!r} returned outputs that violate its contract ({'; '.join(details)})."
         )
+
+
+def _step_execution_context(
+    step: WorkflowStep,
+    context: WorkflowExecutionContext,
+) -> WorkflowExecutionContext:
+    declared_input_names = {input_.name for input_ in step.inputs}
+    missing = sorted(declared_input_names - context.inputs.keys())
+    if missing:
+        raise WorkflowExecutionError(
+            f"Step {step.id!r} is missing declared inputs: {missing}."
+        )
+    return WorkflowExecutionContext(
+        case_id=context.case_id,
+        inputs={name: context.inputs[name] for name in declared_input_names},
+        step_outputs=context.step_outputs,
+        approved_gates=context.approved_gates,
+    )
