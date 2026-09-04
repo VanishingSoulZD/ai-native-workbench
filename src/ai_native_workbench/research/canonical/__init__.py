@@ -9,6 +9,7 @@ from .errors import (
     SnapshotError,
 )
 from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
+from .registry import CanonicalRegistry
 
 from .identity import (
     CanonicalObjectType,
@@ -22,6 +23,7 @@ __all__ = [
     "CanonicalObject",
     "CanonicalObjectType",
     "CanonicalRef",
+    "CanonicalRegistry",
     "CanonicalValidationError",
     "Claim",
     "Entity",
