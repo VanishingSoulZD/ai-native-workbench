@@ -100,7 +100,7 @@ def test_relationship_evidence_must_resolve_to_evidence():
         validate_object_references(relationship, registry)
 
 
-def test_reverse_support_link_must_match_forward_claim_link():
+def test_forward_claim_evidence_without_reverse_link_is_valid():
     registry = CanonicalRegistry()
     source = Source("source-1", "Title", "Vendor", "https://example.com", "docs", "", "", "A")
     entity = Entity("product-x", "product", "Product X", "active", {})
@@ -109,12 +109,30 @@ def test_reverse_support_link_must_match_forward_claim_link():
     for obj in (source, entity, claim, evidence):
         registry.register(obj)
 
-    with pytest.raises(IntegrityError, match=r"claim:claim-1\.evidence_ids is missing reverse link from evidence:evidence-1"):
-        registry.validate()
+    registry.validate()
+
+
+def test_forward_link_with_matching_support_reverse_link_is_valid():
+    registry, _, _, _, _ = build_valid_registry()
+
+    registry.validate()
+
+
+def test_forward_link_with_matching_contradiction_reverse_link_is_valid():
+    registry = CanonicalRegistry()
+    source = Source("source-1", "Title", "Vendor", "https://example.com", "docs", "", "", "A")
+    entity = Entity("product-x", "product", "Product X", "active", {})
+    claim_ref = CanonicalRef(CanonicalObjectType.CLAIM, "claim-1")
+    evidence = Evidence("evidence-1", source.canonical_ref, "Observation", "", "documentation", "A", (), (claim_ref,), "")
+    claim = Claim("claim-1", "Product X supports indexing.", entity.canonical_ref, "factual", "active", 0.95, (evidence.canonical_ref,))
+    for obj in (source, entity, claim, evidence):
+        registry.register(obj)
+
+    registry.validate()
 
 
 @pytest.mark.parametrize("field", ["supports_claim_ids", "contradicts_claim_ids"])
-def test_reverse_claim_link_without_forward_claim_link_fails(field):
+def test_declared_reverse_claim_link_without_forward_link_fails(field):
     registry = CanonicalRegistry()
     source = Source("source-1", "Title", "Vendor", "https://example.com", "docs", "", "", "A")
     entity = Entity("product-x", "product", "Product X", "active", {})

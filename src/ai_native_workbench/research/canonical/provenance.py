@@ -63,20 +63,6 @@ def _validate_reverse_provenance_links(registry: object) -> None:
         obj.canonical_ref: obj for obj in current_objects if isinstance(obj, Claim)
     }
 
-    for claim in claim_states.values():
-        for evidence_ref in claim.evidence_ids:
-            evidence = evidence_states.get(evidence_ref)
-            if evidence is None:
-                continue
-            if (
-                claim.canonical_ref not in evidence.supports_claim_ids
-                and claim.canonical_ref not in evidence.contradicts_claim_ids
-            ):
-                raise IntegrityError(
-                    f"{claim.canonical_ref}.evidence_ids is missing reverse link from "
-                    f"{evidence.canonical_ref}."
-                )
-
     for evidence in evidence_states.values():
         for field_name, claim_refs in (
             ("supports_claim_ids", evidence.supports_claim_ids),
