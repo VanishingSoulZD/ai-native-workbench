@@ -9,6 +9,7 @@ from .errors import (
     SnapshotError,
 )
 from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
+from .provenance import validate_object_references, validate_registry_integrity
 from .registry import CanonicalRegistry
 
 from .identity import (
@@ -36,5 +37,7 @@ __all__ = [
     "Source",
     "Unknown",
     "canonical_fingerprint",
+    "validate_object_references",
+    "validate_registry_integrity",
     "canonical_serialize",
 ]
