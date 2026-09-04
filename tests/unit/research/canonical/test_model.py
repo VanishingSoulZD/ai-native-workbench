@@ -134,3 +134,21 @@ def test_reference_collections_require_their_declared_reference_types():
         Evidence("evidence-1", CanonicalRef(CanonicalObjectType.SOURCE, "source-1"), "Observation", "", "documentation", "A", (CanonicalRef(CanonicalObjectType.ENTITY, "not-a-claim"),), (), "")
     with pytest.raises(CanonicalValidationError):
         Relationship("relationship-1", CanonicalRef(CanonicalObjectType.ENTITY, "product-x"), "supports", CanonicalRef(CanonicalObjectType.ENTITY, "feature-y"), (CanonicalRef(CanonicalObjectType.CLAIM, "not-evidence"),), "asserted")
+
+
+def test_entity_attributes_are_immune_to_nested_caller_mutation():
+    attributes = {
+        "metadata": {"tier": "pro"},
+        "regions": ["global"],
+    }
+    result = Entity("product-x", "product", "Product X", "active", attributes)
+
+    attributes["metadata"]["tier"] = "basic"
+    attributes["regions"].append("regional")
+
+    assert result.attributes["metadata"]["tier"] == "pro"
+    assert result.attributes["regions"] == ("global",)
+    with pytest.raises(TypeError):
+        result.attributes["metadata"]["tier"] = "enterprise"
+    with pytest.raises(AttributeError):
+        result.attributes["regions"].append("enterprise")

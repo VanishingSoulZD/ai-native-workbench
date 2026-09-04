@@ -37,6 +37,16 @@ def _require_ref_tuple(
         _require_ref(reference, field_name, expected_type)
 
 
+def _freeze_attribute_value(value: object) -> object:
+    if isinstance(value, Mapping):
+        return MappingProxyType(
+            {key: _freeze_attribute_value(item) for key, item in value.items()}
+        )
+    if isinstance(value, (list, tuple)):
+        return tuple(_freeze_attribute_value(item) for item in value)
+    return value
+
+
 @dataclass(frozen=True)
 class Entity:
     id: str
@@ -50,7 +60,11 @@ class Entity:
             _require_non_empty(getattr(self, field_name), field_name)
         if not isinstance(self.attributes, Mapping):
             raise CanonicalValidationError("attributes must be a mapping.")
-        object.__setattr__(self, "attributes", MappingProxyType(dict(self.attributes)))
+        object.__setattr__(
+            self,
+            "attributes",
+            _freeze_attribute_value(self.attributes),
+        )
 
     @property
     def object_type(self) -> CanonicalObjectType:
