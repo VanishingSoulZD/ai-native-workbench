@@ -1,4 +1,4 @@
-"""Public interfaces for canonical knowledge identity."""
+"""Public interfaces for canonical knowledge objects and identity."""
 
 from .errors import (
     CanonicalError,
@@ -8,6 +8,8 @@ from .errors import (
     ResolutionError,
     SnapshotError,
 )
+from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
+
 from .identity import (
     CanonicalObjectType,
     CanonicalRef,
@@ -17,13 +19,20 @@ from .identity import (
 
 __all__ = [
     "CanonicalError",
+    "CanonicalObject",
     "CanonicalObjectType",
     "CanonicalRef",
     "CanonicalValidationError",
+    "Claim",
+    "Entity",
+    "Evidence",
     "IntegrityError",
     "RegistryError",
     "ResolutionError",
+    "Relationship",
     "SnapshotError",
+    "Source",
+    "Unknown",
     "canonical_fingerprint",
     "canonical_serialize",
 ]
