@@ -2,9 +2,17 @@
 
 from dataclasses import fields
 
-from .errors import CanonicalValidationError, IntegrityError, RegistryError, ResolutionError
+from .errors import (
+    CanonicalError,
+    CanonicalValidationError,
+    IntegrityError,
+    RegistryError,
+    ResolutionError,
+    SnapshotError,
+)
 from .identity import CanonicalObjectType, CanonicalRef, canonical_fingerprint
 from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
+from .snapshot import ResearchSnapshot
 
 
 _CANONICAL_OBJECT_CLASSES = (Entity, Claim, Evidence, Source, Unknown, Relationship)
@@ -75,6 +83,54 @@ class CanonicalRegistry:
         from .provenance import validate_registry_integrity
 
         validate_registry_integrity(self)
+
+    def snapshot(
+        self,
+        snapshot_id: str,
+        refs: tuple[CanonicalRef, ...],
+        *,
+        case_id: str = "synthetic-case",
+        cutoff: str = "",
+        workflow_version: str = "",
+        schema_version: str = "1",
+        transformation_version: str = "1",
+        configuration_hash: str | None = None,
+        assumptions_hash: str | None = None,
+        status: str = "draft",
+    ) -> ResearchSnapshot:
+        """Freeze current fingerprints for *refs* into an immutable snapshot."""
+        if not isinstance(refs, tuple):
+            raise SnapshotError("refs must be a tuple of CanonicalRef values.")
+
+        members: dict[CanonicalRef, str] = {}
+        for ref in refs:
+            if not isinstance(ref, CanonicalRef):
+                raise SnapshotError("Snapshot refs must be CanonicalRef values.")
+            if ref in members:
+                raise SnapshotError(f"Snapshot contains duplicate member ref: {ref}.")
+            try:
+                current_state = self.get(ref)
+                fingerprint = self._current[ref]
+                self._validate_intrinsic_state(ref, current_state)
+                self.get_state(ref, fingerprint)
+            except (CanonicalError, KeyError) as error:
+                raise SnapshotError(f"Snapshot ref cannot be resolved: {ref}.") from error
+            members[ref] = fingerprint
+
+        snapshot = ResearchSnapshot(
+            snapshot_id,
+            case_id,
+            cutoff,
+            workflow_version,
+            schema_version,
+            transformation_version,
+            configuration_hash,
+            assumptions_hash,
+            status,
+            members,
+        )
+        snapshot.validate(self)
+        return snapshot
 
     def _validate_registry_structure(self) -> None:
         """Check consistency of current and historical state mappings."""

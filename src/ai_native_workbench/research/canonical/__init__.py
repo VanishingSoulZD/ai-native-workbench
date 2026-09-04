@@ -11,6 +11,7 @@ from .errors import (
 from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
 from .provenance import validate_object_references, validate_registry_integrity
 from .registry import CanonicalRegistry
+from .snapshot import ResearchSnapshot
 
 from .identity import (
     CanonicalObjectType,
@@ -32,6 +33,7 @@ __all__ = [
     "IntegrityError",
     "RegistryError",
     "ResolutionError",
+    "ResearchSnapshot",
     "Relationship",
     "SnapshotError",
     "Source",
