@@ -9,6 +9,7 @@ from ai_native_workbench.research.canonical import (
     IntegrityError,
     RegistryError,
     ResolutionError,
+    Unknown,
     canonical_fingerprint,
 )
 
@@ -63,6 +64,64 @@ def test_changed_state_creates_new_historical_state():
 
     assert registry.get(v1.canonical_ref) == v2
     assert registry.get_state(v1.canonical_ref, fingerprint_v1) == v1
+
+
+def test_unknown_is_a_valid_canonical_object():
+    registry = CanonicalRegistry()
+    unknown = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability affects recommendation validity.",
+        "Product X public availability data.",
+        "open",
+    )
+
+    ref = registry.register(unknown)
+
+    assert ref == unknown.canonical_ref
+    assert registry.get(ref) == unknown
+
+
+def test_unknown_historical_states_remain_recoverable():
+    registry = CanonicalRegistry()
+    unknown_v1 = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability affects recommendation validity.",
+        "Product X public availability data.",
+        "open",
+    )
+    unknown_v2 = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability affects recommendation validity.",
+        "Product X public availability data.",
+        "resolved",
+    )
+    fingerprint_v1 = canonical_fingerprint(unknown_v1)
+    fingerprint_v2 = canonical_fingerprint(unknown_v2)
+
+    registry.register(unknown_v1)
+    registry.register(unknown_v2)
+
+    assert registry.get(unknown_v1.canonical_ref) == unknown_v2
+    assert registry.get_state(unknown_v1.canonical_ref, fingerprint_v1) == unknown_v1
+    assert registry.get_state(unknown_v1.canonical_ref, fingerprint_v2) == unknown_v2
+
+
+def test_unknown_does_not_require_provenance():
+    registry = CanonicalRegistry()
+    unknown = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability matters.",
+        "Product X.",
+        "open",
+    )
+
+    registry.register(unknown)
+
+    registry.validate()
 
 
 def test_historical_state_remains_recoverable_after_registration():
@@ -173,6 +232,34 @@ def test_validate_detects_corrupt_current_state_mapping():
         registry.validate()
 
 
+def test_validate_detects_semantically_invalid_historical_unknown_state():
+    registry = CanonicalRegistry()
+    unknown_v1 = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability matters.",
+        "Product X.",
+        "open",
+    )
+    unknown_v2 = Unknown(
+        "unknown-1",
+        "Does Product X support region Y?",
+        "Regional availability matters.",
+        "Product X.",
+        "resolved",
+    )
+    fingerprint_v1 = canonical_fingerprint(unknown_v1)
+    registry.register(unknown_v1)
+    registry.register(unknown_v2)
+
+    object.__setattr__(unknown_v1, "question", "")
+    registry._states[unknown_v1.canonical_ref].pop(fingerprint_v1)
+    registry._states[unknown_v1.canonical_ref][canonical_fingerprint(unknown_v1)] = unknown_v1
+
+    with pytest.raises(IntegrityError, match="Historical object fails intrinsic validation"):
+        registry.validate()
+
+
 def test_different_logical_ids_with_identical_content_remain_distinct():
     registry = CanonicalRegistry()
     first = Entity("a", "product", "Same", "active", {})
@@ -201,6 +288,36 @@ def test_validate_includes_provenance_integrity():
     registry.register(subject)
     registry.register(claim)
 
+    with pytest.raises(IntegrityError, match=r"claim:claim-1\.evidence_ids references missing evidence:missing"):
+        registry.validate()
+
+
+def test_validate_checks_provenance_for_noncurrent_historical_states():
+    registry = CanonicalRegistry()
+    subject = entity()
+    claim_v1 = Claim(
+        "claim-1",
+        "Product X supports indexing.",
+        subject.canonical_ref,
+        "factual",
+        "active",
+        0.9,
+        (CanonicalRef(CanonicalObjectType.EVIDENCE, "missing"),),
+    )
+    claim_v2 = Claim(
+        "claim-1",
+        "Product X may support indexing.",
+        subject.canonical_ref,
+        "derived",
+        "proposed",
+        0.5,
+        (),
+    )
+    registry.register(subject)
+    registry.register(claim_v1)
+    registry.register(claim_v2)
+
+    assert registry.get(claim_v1.canonical_ref) == claim_v2
     with pytest.raises(IntegrityError, match=r"claim:claim-1\.evidence_ids references missing evidence:missing"):
         registry.validate()
 
