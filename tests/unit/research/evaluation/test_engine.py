@@ -87,3 +87,13 @@ def test_factual_support_rule_uses_historical_snapshot_states():
  assert snapshot.resolve(registry, claim_ref) == claim_v1
  result = evaluate_factual_claim_support(rule("support"), _context(registry, snapshot))
  assert result.status is EvaluationResultStatus.FAIL
+
+
+def test_factual_support_resolution_failure_becomes_run_failure():
+ registry, _, _, claim_ref, _ = _snapshot_with_claim(reverse_support=False)
+ snapshot = registry.snapshot("missing-evidence", tuple(ref for ref in registry._current if ref.logical_id != "evidence"))
+ assert claim_ref in snapshot.refs()
+ completed = EvaluationEngine({"support": rule("support")}, {"support": type("Support", (), {"evaluate": staticmethod(evaluate_factual_claim_support)})()}).run(run(("support@1",)), target=snapshot, canonical_registry=registry)
+ assert completed.status is EvaluationRunStatus.FAILED
+ assert completed.results == ()
+ assert not any(result.rule_id == "support" and result.status is EvaluationResultStatus.FAIL for result in completed.results)

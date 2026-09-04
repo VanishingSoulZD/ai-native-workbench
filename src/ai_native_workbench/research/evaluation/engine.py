@@ -89,10 +89,7 @@ def evaluate_factual_claim_support(rule: EvaluationRule, context: EvaluationCont
             continue
         supporting = False
         for evidence_ref in claim.evidence_ids:
-            try:
-                evidence = snapshot.resolve(registry, evidence_ref)  # type: ignore[arg-type]
-            except CanonicalError:
-                continue
+            evidence = snapshot.resolve(registry, evidence_ref)  # type: ignore[arg-type]
             if isinstance(evidence, Evidence) and claim_ref in evidence.supports_claim_ids:
                 supporting = True
                 break
