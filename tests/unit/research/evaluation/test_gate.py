@@ -17,3 +17,14 @@ def test_rejected_review_turns_inconclusive_result_into_fail(): assert gate(run(
 def test_needs_revision_review_keeps_gate_at_review(): assert gate(run(result_status=EvaluationResultStatus.INCONCLUSIVE),(review(HumanReviewDecision.NEEDS_REVISION),)).outcome is GateOutcome.REVIEW
 def test_gate_evaluation_is_immutable():
  with pytest.raises(FrozenInstanceError): gate(run()).finding="x"
+def test_failed_run_cannot_produce_pass():
+ evaluation = gate(run(status=EvaluationRunStatus.FAILED))
+ assert evaluation.outcome is GateOutcome.REVIEW
+ assert evaluation.finding == "Evaluation run failed before all evaluation criteria were completed."
+def test_created_or_running_run_cannot_produce_pass():
+ for status in (EvaluationRunStatus.CREATED, EvaluationRunStatus.RUNNING):
+  assert gate(run(status=status)).outcome is GateOutcome.REVIEW
+def test_accepted_review_does_not_resolve_non_human_required_inconclusive_result():
+ mechanical = EvaluationRule("r", "Rule", "desc", EvaluationTargetType.SNAPSHOT, EvaluationMode.MECHANICAL, "critical", "1")
+ evaluation = evaluate_quality_gate(QualityGatePolicy("gate", "1", ("r",)), run(result_status=EvaluationResultStatus.INCONCLUSIVE), rules={"r": mechanical}, human_reviews=(review(HumanReviewDecision.ACCEPTED),))
+ assert evaluation.outcome is GateOutcome.REVIEW

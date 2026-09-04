@@ -108,7 +108,7 @@ Evaluation asks:
 
 > Does the state satisfy a declared quality criterion?
 
-Existing Step 3 validation remains the authority for canonical structural integrity. Step 4 may consume validation outcomes but MUST NOT duplicate the same validation authority.
+Step 3 validation remains the authority for canonical structural and intrinsic integrity. Step 4 may consume validation outcomes but MUST NOT duplicate the same validation authority. Step 4 MUST NOT attempt to manufacture a canonical-invalid state merely to demonstrate an evaluation failure.
 
 ## 1.4 Evaluation is contextual
 
@@ -813,7 +813,7 @@ The system MUST NOT treat human review as an undocumented escape hatch of the fo
 FAIL → click override → PASS
 ```
 
-Human review must correspond to a declared evaluation requirement or review path.
+Human review must correspond to a declared evaluation requirement or review path. In v1, `HumanReviewRecord` is explicitly a review of the entire matching EvaluationRun and target, not an individual rule assignment; therefore its decision applies only to that run’s human-required `INCONCLUSIVE` results. A future per-rule review contract must add an explicit rule association rather than silently narrowing or broadening this meaning.
 
 ---
 
@@ -926,6 +926,14 @@ Step 4 consumes Step 3 through stable public semantics.
 ## 16.1 Canonical validation
 
 A mechanical integrity evaluation may invoke the existing canonical validation capability.
+
+## 16.2 Factual support is an evaluation-quality criterion
+
+`factual_claim_support` does not repeat the intrinsic Step 3 rule that a factual Claim has non-empty `evidence_ids`. It assesses whether each factual Claim in a valid snapshot has at least one snapshot-resolved Evidence named in its forward `evidence_ids` whose `supports_claim_ids` explicitly contains that Claim’s `CanonicalRef`. This uses existing Claim, Evidence, CanonicalRef, and ResearchSnapshot semantics without adding schema. A legal canonical state may therefore pass canonical integrity while failing this stricter evaluation-quality criterion when its forward evidence relationship is not explicitly supporting.
+
+## 16.3 Execution failure is not quality failure
+
+`EvaluationRun.status == FAILED` records evaluator execution failure and does not fabricate an `EvaluationResult(status=FAIL)`. A Quality Gate evaluates results normally only for a `COMPLETED` run. A `FAILED`, `CREATED`, or `RUNNING` run cannot receive `PASS`; v1 returns `REVIEW` for these incomplete execution states. This preserves the distinction between a research-quality failure and a failed attempt to evaluate it.
 
 Conceptually:
 

@@ -27,6 +27,10 @@ def evaluate_quality_gate(policy: QualityGatePolicy, run: EvaluationRun, *, rule
     for review in human_reviews: validate_human_review_for_run(review,run)
     by_rule={r.rule_id:r for r in run.results}; review_ids=tuple(r.review_id for r in human_reviews)
     result_ids=tuple(r.result_id for r in run.results if r.rule_id in policy.mandatory_rule_ids)
+    if run.status is EvaluationRunStatus.FAILED:
+        return QualityGateEvaluation(policy.gate_id,policy.version,run.run_id,GateOutcome.REVIEW,result_ids,review_ids,"Evaluation run failed before all evaluation criteria were completed.")
+    if run.status is not EvaluationRunStatus.COMPLETED:
+        return QualityGateEvaluation(policy.gate_id,policy.version,run.run_id,GateOutcome.REVIEW,result_ids,review_ids,"Evaluation run has not completed.")
     outcome=GateOutcome.PASS; finding="All mandatory evaluation conditions are satisfied."
     for rule_id in policy.mandatory_rule_ids:
         if rule_id not in rules: raise EvaluationValidationError(f"Mandatory rule is unknown: {rule_id}.")
@@ -35,6 +39,7 @@ def evaluate_quality_gate(policy: QualityGatePolicy, run: EvaluationRun, *, rule
         if result.status is EvaluationResultStatus.FAIL: outcome=GateOutcome.FAIL; finding=f"Mandatory rule {rule_id} failed."; break
         if result.status is EvaluationResultStatus.NOT_APPLICABLE: outcome=GateOutcome.REVIEW; finding=f"Mandatory rule {rule_id} is not applicable without declared optionality."; break
         if result.status is EvaluationResultStatus.INCONCLUSIVE:
+            if rules[rule_id].mode.value != "human_required": outcome=GateOutcome.REVIEW; finding=f"Mandatory rule {rule_id} is inconclusive."; break
             decisions={r.decision for r in human_reviews}
             if HumanReviewDecision.REJECTED in decisions: outcome=GateOutcome.FAIL; finding=f"Human review rejected mandatory rule {rule_id}."; break
             if HumanReviewDecision.ACCEPTED not in decisions: outcome=GateOutcome.REVIEW; finding=f"Mandatory rule {rule_id} requires human review."; break

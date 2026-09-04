@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - **Evaluation assesses canonical research state; it does not become the authority for canonical research knowledge.**
-- Existing Step 3 validation remains the authority for canonical structural integrity; Step 4 may consume validation outcomes but MUST NOT duplicate the same validation authority.
+- Step 3 validation remains the authority for canonical structural/intrinsic integrity; Step 4 may consume validation outcomes but MUST NOT duplicate it or manufacture canonical-invalid state for an evaluation scenario.
 - Evaluation MUST NOT silently mutate canonical objects.
 - Every `EvaluationRun` MUST identify an explicit immutable evaluation target.
 - A completed `EvaluationRun` MUST NOT be mutated in place; later evaluation creates a new run.
@@ -286,7 +286,7 @@ def test_result_metadata_must_match_run(): ...
 def test_unknown_rule_raises_resolution_error(): ...
 def test_engine_does_not_mutate_registry_or_snapshot(): ...
 def test_snapshot_integrity_rule_delegates_to_registry_validate(): ...
-def test_factual_support_rule_finds_unsupported_factual_claims(): ...
+def test_factual_support_rule_finds_evaluation_level_failure(): ...
 def test_factual_support_rule_uses_historical_snapshot_states(): ...
 ```
 
@@ -384,7 +384,7 @@ Requirements:
 
 - target must be a `ResearchSnapshot` and the Registry must be supplied;
 - iterate exact snapshot members and recover historical state through `snapshot.resolve(registry, ref)` rather than `registry.get(ref)`;
-- collect factual `Claim` objects whose `evidence_ids` are empty;
+- for every factual `Claim`, resolve its declared `evidence_ids` through the same snapshot and require at least one resolved `Evidence.supports_claim_ids` to contain the Claim ref; this is an evaluation-level support-quality criterion, not Step 3’s non-empty-forward-reference invariant;
 - return one aggregated `EvaluationResult`:
   - `PASS` when no unsupported factual claims exist;
   - `FAIL` when one or more exist;
@@ -510,16 +510,17 @@ def evaluate_quality_gate(
 
 Apply these exact rules in order:
 
-1. A mandatory rule with no corresponding result causes `REVIEW`.
-2. A mandatory result with `FAIL` causes `FAIL`. Human review MUST NOT silently override an explicit failure.
-3. A mandatory result with `PASS` satisfies the rule.
-4. A mandatory result with `NOT_APPLICABLE` satisfies the rule only when the rule itself declares applicability is optional through the policy/configuration used by that rule; do not infer N/A from missing evidence.
-5. A mandatory `INCONCLUSIVE` result with no accepted human review causes `REVIEW`.
-6. An accepted human review for an `INCONCLUSIVE` result satisfies that human-required assessment.
-7. A rejected review for an `INCONCLUSIVE` result causes `FAIL`.
-8. A `NEEDS_REVISION` review keeps the gate at `REVIEW`.
-9. If every mandatory condition is satisfied, outcome is `PASS`.
-10. The gate implementation does not inspect `CanonicalRegistry`, `ResearchSnapshot`, or canonical objects.
+1. A `FAILED` run returns `REVIEW` with “Evaluation run failed before all evaluation criteria were completed.” A `CREATED` or `RUNNING` run also returns `REVIEW`; none can receive `PASS`. This is execution-state handling, not a fabricated quality `FAIL`.
+2. A mandatory rule with no corresponding result causes `REVIEW`.
+3. A mandatory result with `FAIL` causes `FAIL`. Human review MUST NOT silently override an explicit failure.
+4. A mandatory result with `PASS` satisfies the rule.
+5. A mandatory result with `NOT_APPLICABLE` satisfies the rule only when the rule itself declares applicability is optional through the policy/configuration used by that rule; do not infer N/A from missing evidence.
+6. A mandatory `INCONCLUSIVE` result with no accepted human review causes `REVIEW`.
+7. In v1 a matching `HumanReviewRecord` explicitly reviews the entire run, so an accepted decision may resolve its human-required `INCONCLUSIVE` results; a future per-rule model must add explicit association.
+8. A rejected review for an `INCONCLUSIVE` result causes `FAIL`.
+9. A `NEEDS_REVISION` review keeps the gate at `REVIEW`.
+10. If every mandatory condition is satisfied, outcome is `PASS`.
+11. The gate implementation does not inspect `CanonicalRegistry`, `ResearchSnapshot`, or canonical objects.
 
 The gate uses explicit policy. It does not use numeric weighting, averages, thresholds across heterogeneous dimensions, or a secondary state machine.
 
@@ -552,67 +553,38 @@ git commit -m "feat: add evaluation quality gate"
 - Consumes: complete Task 1–3 Evaluation Core and existing Step 3 canonical APIs.
 - Produces: integration proof of snapshot-bound evaluation, human review, gate outcomes, and non-mutation.
 
-- [ ] **Step 1: Write the failing synthetic scenario**
+- [ ] **Step 1: Write independent failing synthetic scenarios**
 
-Construct a small synthetic case entirely from literals, following the existing Step 3 pattern:
+Construct legal canonical snapshots entirely from literals; do not use Case 001 or bypass Step 3 validation.
 
-```text
-Source
-Entity
-Evidence
-supported factual Claim
-unsupported factual Claim
-Unknown
-Relationship
-ResearchSnapshot
-```
-
-Create:
-
-```text
-canonical_integrity
-factual_claim_support
-reasoning_quality
-```
-
-with modes:
-
-```text
-MECHANICAL
-MECHANICAL
-HUMAN_REQUIRED
-```
-
-The reasoning-quality executor returns an `INCONCLUSIVE` result because no human decision exists yet.
-
-- [ ] **Step 2: Assert the mechanical failure and Gate behavior**
-
-Run evaluation against the snapshot and assert:
+**Scenario A** contains a factual Claim with non-empty `evidence_ids` but Evidence whose `supports_claim_ids` does not name the Claim. It must prove:
 
 ```text
 canonical_integrity = PASS
 factual_claim_support = FAIL
-reasoning_quality = INCONCLUSIVE
+Gate = FAIL
 ```
 
-Run the Quality Gate and assert:
+This is a valid canonical snapshot with an evaluation-specific quality failure.
 
-```text
-FAIL
-```
-
-because factual support is a mandatory blocking failure.
-
-- [ ] **Step 3: Create a clean synthetic snapshot for the human-review path**
-
-Use a second snapshot with no unsupported factual Claims. Assert:
+**Scenario B** contains explicitly supporting Evidence and a human-required `reasoning_quality` result of `INCONCLUSIVE`. It must prove:
 
 ```text
 canonical_integrity = PASS
 factual_claim_support = PASS
-reasoning_quality = INCONCLUSIVE
-Gate = REVIEW
+Gate without review = REVIEW
+accepted review = PASS
+rejected review = FAIL
+needs_revision review = REVIEW
 ```
+
+- [ ] **Step 2: Prove immutability and historical state recovery**
+
+Capture the snapshot’s Claim v1, then `registry.replace(claim_ref, claim_v2)` and assert current registry state is v2 while `snapshot.resolve(registry, claim_ref)` remains v1. Also prove the input run, completed run/result records, snapshot membership, registry current state, and registry historical states remain unchanged by evaluation.
+
+- [ ] **Step 3: Add gate and engine regressions**
+
+Include `test_failed_run_cannot_produce_pass`, executor-crash/no-fabricated-result, non-mutation, validation delegation, evaluation-level factual-support failure, and historical snapshot-state tests.
 
 - [ ] **Step 4: Add HumanReviewRecord and prove Gate PASS**
 
