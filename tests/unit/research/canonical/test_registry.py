@@ -184,3 +184,32 @@ def test_different_logical_ids_with_identical_content_remain_distinct():
 
     assert registry.get(first.canonical_ref) == first
     assert registry.get(second.canonical_ref) == second
+
+
+def test_validate_includes_provenance_integrity():
+    registry = CanonicalRegistry()
+    subject = entity()
+    claim = Claim(
+        "claim-1",
+        "Product X supports indexing.",
+        subject.canonical_ref,
+        "factual",
+        "active",
+        0.9,
+        (CanonicalRef(CanonicalObjectType.EVIDENCE, "missing"),),
+    )
+    registry.register(subject)
+    registry.register(claim)
+
+    with pytest.raises(IntegrityError, match=r"claim:claim-1\.evidence_ids references missing evidence:missing"):
+        registry.validate()
+
+
+def test_validate_preserves_structural_integrity_checks_before_provenance():
+    registry = CanonicalRegistry()
+    value = entity()
+    ref = registry.register(value)
+    registry._current[ref] = "sha256:" + "0" * 64
+
+    with pytest.raises(IntegrityError, match="Current state is missing from history"):
+        registry.validate()

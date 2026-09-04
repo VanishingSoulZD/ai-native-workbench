@@ -65,7 +65,14 @@ class CanonicalRegistry:
         return self.get(ref)
 
     def validate(self) -> None:
-        """Check consistency of the registry's current and historical state mappings."""
+        """Check structural and cross-object provenance integrity."""
+        self._validate_registry_structure()
+        from .provenance import validate_registry_integrity
+
+        validate_registry_integrity(self)
+
+    def _validate_registry_structure(self) -> None:
+        """Check consistency of current and historical state mappings."""
         for ref, fingerprint in self._current.items():
             self._require_ref(ref)
             if not isinstance(fingerprint, str) or not fingerprint:
