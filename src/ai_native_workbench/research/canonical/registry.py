@@ -1,8 +1,13 @@
 """In-memory lifecycle management for canonical object states."""
 
+from dataclasses import fields
+
 from .errors import CanonicalValidationError, IntegrityError, RegistryError, ResolutionError
 from .identity import CanonicalObjectType, CanonicalRef, canonical_fingerprint
-from .model import CanonicalObject
+from .model import CanonicalObject, Claim, Entity, Evidence, Relationship, Source, Unknown
+
+
+_CANONICAL_OBJECT_CLASSES = (Entity, Claim, Evidence, Source, Unknown, Relationship)
 
 
 class CanonicalRegistry:
@@ -91,6 +96,7 @@ class CanonicalRegistry:
             if known_type is not ref.object_type:
                 raise IntegrityError(f"Logical ID type mapping is invalid for {ref}.")
             for fingerprint, obj in states.items():
+                self._validate_intrinsic_state(ref, obj)
                 if canonical_fingerprint(obj) != fingerprint:
                     raise IntegrityError(f"Historical fingerprint does not match object state for {ref}.")
                 if self._canonical_ref_for(obj) != ref:
@@ -116,6 +122,20 @@ class CanonicalRegistry:
         if not isinstance(ref, CanonicalRef):
             raise CanonicalValidationError("obj must be a canonical object.")
         return ref
+
+    @staticmethod
+    def _validate_intrinsic_state(ref: CanonicalRef, obj: object) -> None:
+        """Revalidate every stored state without mutating registry history."""
+        if type(obj) not in _CANONICAL_OBJECT_CLASSES:
+            raise IntegrityError(f"Historical state for {ref} is not a canonical object.")
+        try:
+            type(obj)(
+                **{field.name: getattr(obj, field.name) for field in fields(obj)}
+            )
+        except (AttributeError, CanonicalValidationError, TypeError) as error:
+            raise IntegrityError(
+                f"Historical object fails intrinsic validation for {ref}."
+            ) from error
 
     def _ensure_logical_id_type(self, ref: CanonicalRef) -> None:
         known_type = self._logical_id_types.get(ref.logical_id)

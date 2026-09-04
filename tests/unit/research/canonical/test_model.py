@@ -74,9 +74,18 @@ def test_unknown_is_first_class_and_meaningful():
     assert unknown.status == "unresolved"
 
 
-def test_unknown_requires_meaningful_fields():
+@pytest.mark.parametrize(
+    "question, why_it_matters, scope, status",
+    [
+        ("", "This affects product selection.", "Product X public capabilities.", "open"),
+        ("Does Product X support feature Y?", "", "Product X public capabilities.", "open"),
+        ("Does Product X support feature Y?", "This affects product selection.", "", "open"),
+        ("Does Product X support feature Y?", "This affects product selection.", "Product X public capabilities.", ""),
+    ],
+)
+def test_unknown_requires_meaningful_fields(question, why_it_matters, scope, status):
     with pytest.raises(CanonicalValidationError):
-        Unknown("unknown-1", "", "", "", "unresolved")
+        Unknown("unknown-1", question, why_it_matters, scope, status)
 
 
 def test_valid_evidence_uses_source_reference():
