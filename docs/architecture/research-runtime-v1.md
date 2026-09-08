@@ -217,6 +217,7 @@ input digests
 runtime configuration
 current status
 current stage
+execution scope
 step executions
 human gates
 artifacts
@@ -225,6 +226,8 @@ completion / stop information
 ```
 
 A Run is durable on disk and must be restartable without relying on in-memory Python state.
+
+`execution_scope` records the requested lifecycle boundary for the Run. A normal build has full lifecycle scope; a bounded run such as `--until R3` has a partial scope.
 
 ---
 
@@ -250,9 +253,11 @@ Meaning:
 - `WAITING_FOR_HUMAN` — execution is intentionally paused at a required human decision.
 - `NEEDS_REVISION` — a human has rejected or requested revision of consequential research output.
 - `FAILED` — system or execution failure prevents normal continuation.
-- `COMPLETED` — the full requested lifecycle completed successfully.
+- `COMPLETED` — the requested execution scope completed successfully.
 
 `NEEDS_REVISION` is not an execution error, and `FAILED` is not a research-quality judgment.
+
+A Run may therefore be `COMPLETED` for a bounded execution scope without claiming that the entire Research Lifecycle completed. `completion_reason` and `execution_scope` make that distinction explicit.
 
 ### 6.2 Step State
 
@@ -294,7 +299,7 @@ Action = what an operator asks it to do next
 - `rerun` — create a new Attempt for the logical Step.
 - `resume` — continue an existing Run from its durable state.
 - `--from Rn` — start from an existing, validated checkpoint for `Rn`; it does not mean “ignore missing prerequisites”.
-- `--until Rn` — execute through `Rn`, then stop at that boundary without claiming the entire lifecycle completed.
+- `--until Rn` — execute through `Rn`, then mark the requested scope as completed at that boundary; this is not a claim that later lifecycle stages were completed.
 
 ### 6.5 Revision Semantics
 
@@ -1079,6 +1084,7 @@ D19 v1 implements DeepSeek only and has no automatic fallback.
 D20 Filesystem is the v1 durable Runtime Store.
 D21 Checkpoints are validated durable artifacts, not serialized process state.
 D22 Existing Canonical / Evaluation / Build cores remain authoritative for their domains.
+D23 `--until` is a bounded execution scope, not a new Run state.
 ```
 
 ---
