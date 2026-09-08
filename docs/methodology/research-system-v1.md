@@ -2,11 +2,11 @@
 
 > Repository-level design specification for `ai-native-workbench`
 >
-> Status: **Design baseline · Roadmap revised 2026-09-03**
+> Status: **Design baseline · Runtime-aligned 2026-09-08**
 >
 > Origin: Case 001 — 2026 AI Coding Agent Landscape retrospective
 >
-> Scope: Define the reusable Research Workbench architecture before implementing broader automation, Skills, or Agents.
+> Scope: Define the reusable Research System methodology and its boundary with the executable Research Runtime before broader automation, Skills, or Agents.
 
 ---
 
@@ -17,10 +17,10 @@
 The system does not aim to make research fully autonomous. Its purpose is to transform high-quality research from a prompt-dependent, person-dependent activity into a process that is:
 
 - **Definable** — research questions, scope, units, constraints, and success criteria are explicit.
-- **Executable** — recurring research work is represented as reusable workflow steps rather than ad-hoc prompts.
+- **Executable** — recurring research work is represented as reusable workflow steps and a durable Research Runtime rather than ad-hoc prompts.
 - **Traceable** — important judgments can be traced to claims, evidence, and sources.
 - **Evaluable** — research quality is checked through mechanical validation and human review.
-- **Reproducible** — structured research assets and deliveries can be rebuilt from declared inputs.
+- **Reproducible** — structured research assets and deliveries can be rebuilt from declared inputs and historical snapshots.
 - **Deliverable** — the same research knowledge can be rendered for different audiences and use cases.
 - **Updatable** — research exists as versioned snapshots that can be refreshed as evidence changes.
 
@@ -28,7 +28,7 @@ The central architectural principle is:
 
 > **One Workflow, Many Cases. One Canonical Research Model, Many Deliveries. Human Judgment around Automation, not replaced by Automation.**
 
-This document is a system-level design baseline. It is not an implementation specification for a Research Agent, and it does not require all future directories or components to be created immediately.
+This document is the methodology-level design baseline. It defines the Research System lifecycle, principles, contracts, and boundaries. It is intentionally separate from `docs/architecture/research-runtime-v1.md`, which defines how an approved Research Case is durably executed by the Runtime.
 
 ---
 
@@ -81,7 +81,7 @@ A workflow should be measured before its automation is expanded. A fast workflow
 
 ## 2.7 Reproducibility Without False Determinism
 
-Research is not always deterministic because sources, model outputs, and external information change. Reproducibility therefore means that the transformation logic, inputs, assumptions, versions, and provenance are explicit enough to rebuild and explain a research snapshot.
+Research is not always deterministic because sources, model outputs, and external information change. Reproducibility therefore means that the transformation logic, inputs, assumptions, versions, execution history, and provenance are explicit enough to reconstruct and explain a research snapshot. It does not mean LLM outputs are assumed to be bit-for-bit deterministic.
 
 ## 2.8 Minimal Sufficient Engineering
 
@@ -89,9 +89,9 @@ The repository must not create infrastructure merely because it is technically p
 
 ---
 
-# 3. System Scope
+# 3. System Scope and Boundary
 
-Research System v1 covers five layers:
+Research System v1 covers five logical layers:
 
 ```text
 Research Definition
@@ -105,19 +105,76 @@ Evaluation
 Delivery
 ```
 
-Supporting lifecycle concerns span all five layers:
+The executable Research Runtime is the mechanism that realizes the **Research Execution** layer and coordinates the other layers. The methodology remains above that runtime implementation boundary.
+
+## 3.1 Outside the Research Build System
+
+Under the current operating model, the following happens before a Research Case enters the Runtime:
 
 ```text
-Versioning / Provenance / Human Gates / Reproducible Build / Update
+Human
+  +
+ChatGPT / Claude / Gemini / other general AI
+        ↓
+Research Idea
+        ↓
+Research Framing
+        ↓
+Research Charter
+        ↓
+Source Selection
+        ↓
+Human Approval (H1)
 ```
+
+The external process produces, at minimum:
+
+```text
+cases/<case-id>/
+├── 00-research-charter.md
+└── inputs/
+    └── urls.yaml
+```
+
+The project intentionally does **not** attempt to replace general-purpose conversational AI for multi-turn problem framing in v1.
+
+## 3.2 Inside the Research Build System
+
+After H1, the Runtime begins with an approved Research Case:
+
+```text
+Approved Case
+    ↓
+Case Validation
+    ↓
+Research Run
+    ↓
+Source Acquisition
+    ↓
+R1 → R2 → R3 → H2 → R4 → H3 → R5 → R6 → H4
+    ↓
+Research Snapshot
+    ↓
+R7 Build / Delivery
+    ↓
+R8 Archive / Update
+```
+
+The Runtime does not perform autonomous web search in v1. It fetches sources explicitly declared by the Case.
+
+## 3.3 System Non-Goals
 
 The system does **not** yet define:
 
-- a fully autonomous research agent;
+- an embedded general-purpose research chatbot;
+- a fully autonomous Research Agent;
 - multi-agent orchestration;
+- autonomous source discovery or unrestricted web search;
+- browser-agent or MCP retrieval orchestration;
 - a universal database deployment;
 - autonomous final decision making;
-- automatic browsing of every source type;
+- automatic provider fallback;
+- distributed worker / queue infrastructure;
 - domain-specific expert reasoning as a guaranteed capability.
 
 Those are later-stage implementation questions and must be justified by real workflow evidence.
@@ -126,7 +183,7 @@ Those are later-stage implementation questions and must be justified by real wor
 
 # 4. Standard Research Lifecycle
 
-The canonical Research Lifecycle v1 is:
+The canonical Research Lifecycle v1 remains:
 
 ```text
 R0 Define
@@ -148,7 +205,7 @@ R7 Deliver
 R8 Archive / Update
 ```
 
-The lifecycle is a **logical workflow**, not a requirement that every case must produce exactly one file per step.
+This lifecycle is a **logical methodology**, not a requirement that every case produce one file per step. The Runtime may realize it as a DAG-capable workflow with a default linear execution path and explicit Gate Barriers.
 
 ## R0 — Define
 
@@ -170,13 +227,13 @@ Outputs:
 - cutoff date / snapshot definition;
 - success criteria.
 
-Human gate: **required**.
+Human gate: **H1 — required, and currently outside the Research Build System Runtime boundary**.
 
 ## R1 — Discover
 
 Purpose: establish the research population and information space.
 
-Outputs may include:
+Typical outputs include:
 
 - candidate universe;
 - source map;
@@ -232,18 +289,39 @@ Decision
 
 Important decisions should remain explicitly attributable to human judgment even when AI helped prepare the analysis.
 
-## R5 — Synthesize
+R4 is entered only after **H2 — Research Population / Selection Gate** has been resolved. H2 is a Runtime barrier rather than an ordinary research Step.
 
-Purpose: produce the canonical knowledge representation and durable narrative.
+## R5 — Synthesize / Canonicalize
 
-Outputs:
+Purpose: turn working research into accepted canonical knowledge and durable narrative.
+
+Typical outputs include:
 
 - Canonical Research Model / Registry;
 - Research Note;
 - Source Ledger;
-- normalized datasets.
+- normalized datasets;
+- Research Snapshot inputs.
 
-R5 is where working research becomes reusable knowledge.
+Within the Runtime, R5 is one lifecycle Step but follows an internal acceptance pipeline:
+
+```text
+Synthesis
+    ↓
+Candidate Canonical Output
+    ↓
+Schema Validation
+    ↓
+Provenance Validation
+    ↓
+Canonical Domain Validation
+    ↓
+Canonical Registry
+```
+
+R5 is therefore where working research becomes reusable knowledge, but candidate output is not authoritative until validation and acceptance succeed.
+
+R5 is entered only after **H3 — Judgment Gate** has been resolved.
 
 ## R6 — Evaluate
 
@@ -257,7 +335,7 @@ Mechanical Validation
 Human Review
 ```
 
-A research package should not be considered complete until mandatory evaluation gates pass.
+The Runtime invokes the existing Evaluation Core rather than reimplementing evaluation semantics. Evaluation failure blocks advancement to the final accepted Research Snapshot / Delivery boundary.
 
 ## R7 — Deliver
 
@@ -270,6 +348,10 @@ Standard delivery classes:
 - Interactive Explorer / HTML;
 - Dataset export;
 - Source Ledger / audit package.
+
+The Runtime coordinates R7 but reuses the existing Build Core. Delivery logic should not be duplicated inside the Runtime.
+
+R7 is entered only after **H4 — Final Delivery Gate** has been resolved.
 
 ## R8 — Archive / Update
 
@@ -290,6 +372,8 @@ New Snapshot
 ```
 
 Historical snapshots should remain recoverable rather than silently overwritten.
+
+H5 governs explicit correction or update of historical research state.
 
 ---
 
@@ -341,7 +425,15 @@ Prompts are implementation details of a workflow step. They are not the workflow
 
 A future implementation may use a prompt template, Python function, CLI command, LLM call, browser/search tool, human form, or a combination of these. The workflow contract remains stable even when execution technology changes.
 
-## 5.3 Reusability Criterion
+## 5.3 Standard Workflow and DAG Semantics
+
+The Standard Research Workflow is a reusable DAG-capable workflow. The default path is linear, but the model must not assume that every future case has exactly one predecessor or one attempt per logical step.
+
+Human gates H2, H3, and H4 are **Gate Barriers**, not ordinary research Steps. They represent durable control decisions between workflow regions.
+
+Source Acquisition is a Runtime capability invoked before R1, not a new R-lifecycle number.
+
+## 5.4 Reusability Criterion
 
 A workflow step is promoted from Case-specific procedure to reusable Workflow capability only when:
 
@@ -359,6 +451,7 @@ Research artifacts are grouped by role rather than by phase number.
 ```text
 Definition Artifacts
 Working Artifacts
+Execution / Control Artifacts
 Canonical Knowledge Artifacts
 Evaluation Artifacts
 Delivery Artifacts
@@ -366,31 +459,52 @@ Delivery Artifacts
 
 ## 6.1 Definition Artifacts
 
-Examples: Research Charter, Research Plan, taxonomy, scope rules, success criteria.
+Examples: Research Charter, Research Plan, taxonomy, scope rules, success criteria, source-selection input.
 
 Purpose: define the research.
 
 ## 6.2 Working Artifacts
 
-Examples: candidate universe, market evidence, product research, benchmark research, cross-product analysis, decision working paper.
+Examples: candidate universe, source map, market evidence, product research, benchmark research, cross-product analysis, decision working paper.
 
 Purpose: support research execution and preserve reasoning trace.
 
 These are important, but they are not automatically the final knowledge source of truth.
 
-## 6.3 Canonical Knowledge Artifacts
+## 6.3 Execution / Control Artifacts
+
+These are owned by the Research Runtime and include:
+
+```text
+Research Run
+Step State
+Step Attempt
+Human Gate Record
+Checkpoint Metadata
+Execution History
+Source Acquisition Record
+Execution Manifest
+```
+
+They answer:
+
+> What happened during this concrete execution, what state is it in, and how can it be resumed or audited?
+
+They are distinct from canonical research meaning.
+
+## 6.4 Canonical Knowledge Artifacts
 
 Examples: canonical registry, claims, evidence, sources, judgments, recommendations, hypotheses, unknowns, relationships, scores/metrics, research snapshot.
 
 Purpose: preserve what the research actually knows and how it knows it.
 
-## 6.4 Evaluation Artifacts
+## 6.5 Evaluation Artifacts
 
 Examples: validation report, citation audit, consistency report, coverage assessment, human review record, final quality report.
 
 Purpose: evaluate research quality.
 
-## 6.5 Delivery Artifacts
+## 6.6 Delivery Artifacts
 
 Examples: executive PPT, research report/note, HTML explorer, dataset export, source/audit package.
 
@@ -484,6 +598,26 @@ Historical rankings, scores, or decisions are immutable within a research snapsh
 
 A new system build must not silently “fix” an old snapshot.
 
+## 7.6 Knowledge Plane vs Control Plane
+
+The system distinguishes:
+
+```text
+Execution / Control Plane
+    Research Run
+    Step Attempts
+    Human Gates
+    Artifacts
+    Checkpoints
+    Execution History
+
+Knowledge Plane
+    Canonical Registry
+    Research Snapshot
+```
+
+The Runtime controls execution but does not become the authority for research meaning.
+
 ---
 
 # 8. Provenance and Citation Model
@@ -557,6 +691,8 @@ At minimum:
 - hypotheses → explicitly labeled as hypotheses and not represented as established facts;
 - unknowns → explicitly represented and preserved.
 
+Source acquisition provenance includes the declared URL, retrieval metadata, retrieval time, fetch status, and content digest where applicable.
+
 ---
 
 # 9. Human Judgment Gates
@@ -567,17 +703,25 @@ The system is intentionally Human-in-the-loop.
 
 Human approves research question, boundaries, research unit, key definitions, and cutoff/snapshot definition.
 
+Under the current operating model, H1 occurs **outside** the Research Build System Runtime. The Runtime accepts only an approved Research Case.
+
 ## H2 — Research Population / Selection Gate
 
 Human reviews consequential inclusion, exclusion, ranking, and exception decisions.
+
+H2 is a durable Runtime Gate Barrier between R3 Analyze and R4 Decide.
 
 ## H3 — Judgment Gate
 
 Human reviews important strategic conclusions, recommendations, major inference, and unresolved ambiguity.
 
+H3 is a durable Runtime Gate Barrier between R4 Decide and R5 Synthesize / Canonicalize.
+
 ## H4 — Final Delivery Gate
 
 Human reviews factual correctness, citation integrity, wording, uncertainty representation, audience appropriateness, and compression distortion.
+
+H4 is a durable Runtime Gate Barrier between R6 Evaluate / Snapshot readiness and R7 Deliver.
 
 ## H5 — Update / Correction Gate
 
@@ -625,6 +769,8 @@ Final Answer Usefulness
 
 A research case is complete only when mandatory mechanical checks pass and the required human review gates are explicitly recorded.
 
+The Runtime treats evaluation as a progression barrier: Evaluation Core owns evaluation rules and semantics; Runtime invokes them and blocks final snapshot/delivery progression when required evaluation fails.
+
 ## 10.4 Evaluation Is Reusable Knowledge
 
 Evaluation results should themselves be archived because they reveal where the workflow fails, where automation is unsafe, which steps deserve stronger validation, and what should change in the next workflow version.
@@ -647,6 +793,8 @@ Canonical Registry
 Validation
         ↓
 Evaluation Gates
+        ↓
+Research Snapshot
         ↓
 Delivery Rendering
         ↓
@@ -680,6 +828,8 @@ Where feasible, the build should generate:
 ## 11.3 Build Boundaries
 
 A renderer may transform, format, compress, visualize, or reorder canonical knowledge for presentation. It must not silently introduce new facts, scores, rankings, or judgments.
+
+R7 should reuse the existing Build Core. The Runtime is responsible for orchestration and boundary control, not for duplicating renderer or manifest semantics already owned by Build Core.
 
 ## 11.4 Case 001 Legacy Gap — Deferred
 
@@ -746,38 +896,62 @@ Optimized for source verification, citation review, discrepancy investigation, a
 
 ---
 
-# 13. Case Template Model
+# 13. Research Case Model
 
-Future cases should progressively converge toward a common logical structure:
+A Research Case is the **definition and input package** for executable research. It is not a Run and does not contain mutable execution state.
 
-```text
-Case
-├── Definition
-├── Working Research
-├── Canonical Knowledge
-├── Evaluation
-└── Delivery
-```
-
-A concrete file layout is intentionally **not fully frozen in v1**. The repository should only create structures that have been justified by actual case needs.
-
-A mature case template should support initializing a new research case without requiring the researcher to manually recreate the workflow from old prompts.
-
-Conceptually:
+The MVP case structure is intentionally small and conventional:
 
 ```text
-research init
-      ↓
-Case Skeleton
-      ↓
-Research Workflow
-      ↓
-Canonical Knowledge
-      ↓
-Evaluation
-      ↓
-Delivery
+cases/<case-id>/
+├── 00-research-charter.md
+├── inputs/
+│   └── urls.yaml
+└── runs/
 ```
+
+A separate `case.yaml` is not required in the MVP. Conventional filenames are sufficient until a real need for additional machine configuration is demonstrated.
+
+## 13.1 Case Responsibilities
+
+The Case provides:
+
+- approved Research Charter;
+- declared source URLs;
+- research-specific constraints present in the approved definition;
+- durable identity for the research problem.
+
+The Case does **not** define an arbitrary custom workflow in v1. Cases use the shared Standard Research Workflow unless a future version explicitly introduces workflow selection as a validated capability.
+
+## 13.2 `urls.yaml`
+
+`urls.yaml` is a source-selection input, not an evidence or claim store. Its entries identify sources the Runtime should attempt to acquire.
+
+Each source may declare whether it is required. Required-source acquisition failure blocks the Run before research execution. Optional-source failure is recorded but does not by itself block the Run.
+
+## 13.3 Research Run
+
+A Research Run is one concrete execution of one Case. Multiple Runs may exist for the same Case.
+
+The Run belongs to the Runtime control plane and records, at minimum:
+
+```text
+run_id
+case_id
+workflow identity
+input digests
+runtime configuration
+current status
+current stage
+execution scope
+step executions
+human gates
+artifacts
+execution history
+completion / stop information
+```
+
+A Run is durable on disk and must be restartable without relying on in-memory Python state.
 
 ---
 
@@ -817,16 +991,16 @@ not as the implementation template that Research System v1 must mechanically reb
 
 ---
 
-# 15. Validation Strategy
+# 15. Runtime-Oriented Validation Strategy
 
 Research System v1 must prove itself through execution, not through design claims alone.
 
-The validation sequence is:
+The validation sequence is now:
 
 ```text
-Case 001 (Reference / Legacy)
+Approved Research Case
         ↓
-Research System v1
+Research Runtime v1
         ↓
 End-to-End Validation Case
         ↓
@@ -835,13 +1009,31 @@ Meaningfully Different Generalization Case
 System Revision
 ```
 
-## 15.1 Reference Validation
+## 15.1 Runtime Validation
 
-Case 001 may be rerun using the new system after the system becomes executable. This checks whether the new workflow can represent a known complex research problem.
+Before claiming the Runtime is usable, validation must demonstrate at least:
+
+- durable Case and Run state;
+- declared-source acquisition;
+- correct Standard Research Workflow ordering;
+- persistent Human Gates;
+- Step Attempt history;
+- resume / retry / rerun semantics;
+- checkpoint validation and downstream invalidation;
+- candidate validation and acceptance boundaries;
+- Canonical Core integration;
+- Evaluation Core integration;
+- Research Snapshot creation;
+- Build Core reuse for delivery;
+- explicit failure and completion semantics.
+
+## 15.2 Reference Validation
+
+Case 001 may be rerun using the new system after the Runtime becomes executable. This checks whether the new workflow can represent a known complex research problem.
 
 The legacy Case 001 implementation itself is not a prerequisite and should not be repaired merely to satisfy this test.
 
-## 15.2 Generalization Validation
+## 15.3 Generalization Validation
 
 At least one **meaningfully different research problem** should be executed using the same core workflow.
 
@@ -855,7 +1047,7 @@ Reusing a research system
 
 A generalization case should differ materially in research object, evidence structure, decision pattern, or analytical method rather than merely changing the topic name.
 
-## 15.3 Reusability Claim
+## 15.4 Reusability Claim
 
 Research System v1 should not be considered reusable based on a single successful run.
 
@@ -866,7 +1058,8 @@ A credible v1 reusability claim requires evidence that:
 - canonical knowledge can represent both cases;
 - evaluation works across both cases;
 - delivery can be regenerated from canonical knowledge;
-- case-specific extensions are isolated from the shared core.
+- case-specific extensions are isolated from the shared core;
+- the Runtime preserves enough execution history to reconstruct what happened without relying on transient process state.
 
 ---
 
@@ -879,6 +1072,8 @@ Workflow Version
 Schema Version
 Research Snapshot Version
 ```
+
+The Runtime also records relevant execution identities such as prompt/schema/configuration versions and digests when applicable.
 
 ## 16.1 Workflow Version
 
@@ -911,15 +1106,36 @@ A new snapshot may be generated because of:
 
 Historical snapshots should remain recoverable.
 
+## 16.4 Execution Reproducibility
+
+Execution reproducibility means the Runtime records enough information to audit and reconstruct a Run:
+
+```text
+Case identity
+Run identity
+Workflow identity
+Input digests
+Source acquisition records
+Step Attempts
+Prompt / schema / config identity where relevant
+Human Gate decisions
+Execution history
+Accepted artifacts
+Checkpoint metadata
+```
+
+It does **not** imply deterministic LLM generation.
+
 ---
 
 # 17. Failure and Exception Model
 
 The system must represent research failure explicitly rather than forcing every case into a successful-looking output.
 
-Minimum exception classes:
+Minimum exception classes include:
 
 ```text
+Source Acquisition Failure
 Insufficient Evidence
 Contradictory Evidence
 Ambiguous Entity
@@ -929,6 +1145,9 @@ Validation Failure
 Evaluation Failure
 Renderer Failure
 Generalization Failure
+Runtime Execution Failure
+Checkpoint Invalidity
+Human Rejection / Needs Revision
 ```
 
 An exception should record:
@@ -941,6 +1160,15 @@ Impact
 Human disposition
 Whether the workflow should change
 ```
+
+The Runtime distinguishes at least:
+
+```text
+NEEDS_REVISION = research / human-quality decision
+FAILED         = system / execution failure
+```
+
+Human rejection does not automatically create an infinite corrective loop. Recovery is an explicit operator decision.
 
 A failure in one case should not automatically be hidden by manual patching. Where appropriate, it becomes evidence for workflow revision.
 
@@ -999,29 +1227,43 @@ Decision
 Final Review
 ```
 
+H1 is currently performed outside the Runtime by the human / general-purpose AI collaboration process.
+
 ## AI
 
 ```text
-Search Assistance
 Extraction
 Summarization
 Candidate Analysis
 Drafting
 Pattern Discovery
 Reasoning Assistance
+Candidate Generation
 ```
+
+LLM output remains candidate output and is never authoritative by itself.
 
 ## Deterministic Software
 
 ```text
+Case Validation
+Run State Management
+Workflow Ordering
+Source URL Validation
+HTTP Acquisition
 Schema Validation
-Transformation
+Provenance Validation
 Normalization
 Identifier Management
 Referential Integrity
+Checkpoint Validation
+Human Gate State Transitions
+Canonical Registry Rules
+Evaluation Invocation
 Build
 Rendering
 Mechanical Evaluation
+Execution History
 ```
 
 These are default responsibilities, not absolute limits. Any boundary change should be justified by evaluation evidence.
@@ -1030,72 +1272,88 @@ These are default responsibilities, not absolute limits. Any boundary change sho
 
 # 20. Architectural Summary
 
-The target architecture is:
+The methodology and Runtime now align around the following boundary:
 
 ```text
-                         RESEARCH REQUEST
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │   R0 DEFINE  │
-                         │    Charter   │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R1 DISCOVER   │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R2 EVIDENCE   │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R3 ANALYZE    │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R4 DECIDE     │
-                         └──────┬───────┘
-                                │
-                         HUMAN JUDGMENT
-                                │
-                                ▼
-                    ┌───────────────────────┐
-                    │ CANONICAL RESEARCH   │
-                    │ MODEL / REGISTRY     │
-                    └───────────┬───────────┘
-                                │
-                         VALIDATION
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R6 EVALUATE   │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ R7 DELIVER    │
-                         └──────┬───────┘
-                                │
-                ┌───────────────┼────────────────┐
-                ▼               ▼                ▼
-              PPT           Research Note     HTML
-                │               │                │
-                └───────────────┼────────────────┘
-                                │
-                         Dataset / Sources
-                                │
-                                ▼
-                         R8 ARCHIVE / UPDATE
+        OUTSIDE RUNTIME
+
+Human + General AI
+        │
+        ▼
+R0 Define / H1
+        │
+        ▼
+Approved Research Case
+        │
+        └────────────────────────────────────────────┐
+                                                     │
+        INSIDE RESEARCH RUNTIME                      │
+                                                     ▼
+                                              Case Validation
+                                                     │
+                                                     ▼
+                                             Source Acquisition
+                                                     │
+                                                     ▼
+                                              ┌────────────┐
+                                              │ R1 Discover│
+                                              └─────┬──────┘
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R2 Evidence│
+                                              └─────┬──────┘
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R3 Analyze │
+                                              └─────┬──────┘
+                                                    │
+                                                   H2
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R4 Decide  │
+                                              └─────┬──────┘
+                                                    │
+                                                   H3
+                                                    │
+                                              ┌─────▼───────────────┐
+                                              │ R5 Synthesize /     │
+                                              │    Canonicalize     │
+                                              └─────┬───────────────┘
+                                                    │
+                                              Candidate → Validate
+                                                    │
+                                          ┌─────────▼─────────┐
+                                          │ Canonical Registry│
+                                          └─────────┬─────────┘
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R6 Evaluate│
+                                              └─────┬──────┘
+                                                    │
+                                             Evaluation Gate
+                                                    │
+                                              Research Snapshot
+                                                    │
+                                                   H4
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R7 Deliver │
+                                              └─────┬──────┘
+                                                    │
+                                           Existing Build Core
+                                                    │
+                                              ┌─────▼──────┐
+                                              │ R8 Archive │
+                                              └────────────┘
 ```
 
-The key invariant is:
+The key invariants are:
 
 > **Delivery artifacts are projections of canonical research knowledge; they are not independently authored research sources.**
+
+> **Workflow Core defines reusable workflow structure; Research Runtime owns research-specific execution and recovery.**
+
+> **Canonical Core owns research meaning; Evaluation Core owns evaluation semantics; Build Core owns delivery rendering.**
 
 ---
 
@@ -1103,16 +1361,21 @@ The key invariant is:
 
 Research System v1 is a system design boundary, not a mandate to create every possible directory immediately.
 
-The repository currently has conceptual responsibilities for:
+The repository now has conceptual responsibilities for:
 
 | Area | Responsibility |
 |---|---|
-| `cases/` | real research cases and case-specific artifacts |
+| `cases/` | research cases, approved definitions, declared inputs, and durable runs |
 | `workflows/` | validated reusable workflows |
 | `skills/` | callable reusable capabilities extracted from workflows |
-| `agents/` | agent implementations when the workflow maturity justifies them |
+| `agents/` | agent implementations when workflow maturity justifies them |
 | `evaluations/` | reusable evaluation methods and results |
-| `docs/` | methodology, design decisions, and project-level documentation |
+| `src/ai_native_workbench/research/workflow/` | generic Workflow Core |
+| `src/ai_native_workbench/research/canonical/` | Canonical Knowledge Core |
+| `src/ai_native_workbench/research/evaluation/` | Evaluation Core |
+| `src/ai_native_workbench/research/build/` | Build / Delivery Core |
+| `src/ai_native_workbench/research/runtime/` | research-specific Runtime orchestration and durable execution |
+| `docs/` | methodology, architecture, plans, design decisions, and project documentation |
 
 New shared capabilities should appear only when the current roadmap reaches them.
 
@@ -1122,13 +1385,13 @@ The rule remains:
 
 ---
 
-# 22. Implementation Roadmap — Revised 2026-09-03
+# 22. Implementation Roadmap — Runtime-Aligned 2026-09-08
 
-The roadmap is intentionally **system-first**.
+The roadmap is intentionally **system-first** and now distinguishes established foundations from the executable Runtime and its validation.
 
-The former Case 001 Retrospective and Case 001 Reproducible Phase 8 Build are now **deferred legacy work**. They are not prerequisites for Research System v1.
+The former Case 001 Retrospective and Case 001 Reproducible Phase 8 Build are **deferred legacy work**. They are not prerequisites for Research System v1.
 
-## Step 1 — System Contract
+## Step 1 — System Contract — Complete
 
 Define and freeze the minimum contracts for:
 
@@ -1142,85 +1405,91 @@ Define and freeze the minimum contracts for:
 - Reproducible Build;
 - Delivery.
 
-Also define the minimum invariants, version declarations, and success criteria that make reusability and reproducibility testable.
-
 **Exit condition:** the system can state its inputs, outputs, invariants, versions, and human gates without relying on Case 001-specific phase names or file layout.
 
-## Step 2 — Workflow Core
+## Step 2 — Workflow Core — Complete
 
-Implement the minimal reusable workflow capability around the R0–R8 lifecycle and Workflow Step contract.
+Implement the minimal reusable workflow capability around the logical lifecycle and Workflow Step contract.
 
 Prompts remain implementation details. The system interface is the workflow contract.
 
-**Exit condition:** a new research case can be initialized and executed through stable workflow interfaces rather than manually recreating the Case 001 prompt sequence.
+**Exit condition:** reusable workflow definitions support dependency validation and deterministic ordering without becoming domain-specific Research Runtime code.
 
-## Step 3 — Canonical Knowledge + Provenance
+## Step 3 — Canonical Knowledge + Provenance — Complete
 
-Implement the canonical registry and the Claim / Evidence / Source relationships, including stable identifiers, authority rules, Unknown state, and research snapshot semantics.
+Implement the canonical registry and Claim / Evidence / Source relationships, including stable identifiers, authority rules, Unknown state, historical state, and Research Snapshot semantics.
 
-**Exit condition:** important research facts, judgments, and decisions can be represented independently of any delivery format and traced through their provenance.
+**Exit condition:** important research facts, judgments, and decisions can be represented independently of delivery format and traced through provenance.
 
-## Step 4 — Evaluation
+## Step 4 — Evaluation — Complete
 
 Implement reusable mechanical validators and the human evaluation protocol.
 
-Minimum automated checks should cover schema integrity, referential integrity, provenance completeness, invariant preservation, cross-artifact consistency, and build/render smoke tests.
+**Exit condition:** research quality has explicit evaluation semantics and required review records; evaluation failures are represented rather than hidden.
 
-**Exit condition:** a research package cannot be treated as complete without explicit evaluation results and required human gates.
+## Step 5 — Reproducible Build + Delivery — Complete
 
-## Step 5 — Reproducible Build + Delivery
+Implement the generic transformation and rendering chain from canonical knowledge to delivery assets.
 
-Implement the generic transformation and rendering chain:
+**Exit condition:** a canonical research state can generate multiple delivery forms from declared build inputs, with snapshot-bound resolution and auditable manifests.
+
+## Step 6 — Research Runtime v1 — Next Implementation Stage
+
+Implement the research-specific Runtime on top of the established Workflow, Canonical, Evaluation, and Build cores.
+
+Minimum Runtime scope:
 
 ```text
-Canonical Research Model
-        ↓
-Dataset Export
-        ↓
-Research Note
-        ↓
-HTML Explorer
-        ↓
-Executive Presentation
-        ↓
-Audit / Validation Package
+Case / Run Management
+Durable Filesystem Store
+Source Acquisition
+LLM Execution Boundary
+Standard Research Workflow
+Candidate Validation / Acceptance
+Human Gates
+Step Attempts
+Checkpoints
+Resume / Retry / Rerun
+Orchestration
+Canonical / Evaluation / Snapshot / Build integration
 ```
 
-Builds must capture declared inputs, versions, snapshot identity, configuration, and assumptions.
+The approved Runtime Architecture Spec and implementation plan are the authoritative implementation references for this stage.
 
-**Exit condition:** the same canonical research state can generate at least two delivery forms, and those forms can be rebuilt from declared state without manually re-authoring research content.
+**Exit condition:** an approved Case can execute durably through the standard workflow with explicit state, history, gates, recovery semantics, and downstream integration.
 
-## Step 6 — End-to-End Validation Case
+## Step 7 — End-to-End Validation Case
 
-Run one complete real research case through the **new** system.
+Run one complete real research case through the new Runtime.
 
-Case 001 may be selected as the reference validation case after the system is runnable, but its historical implementation is not repaired as a prerequisite.
+Case 001 may be selected as the reference validation case after the Runtime is runnable, but its historical implementation is not repaired as a prerequisite.
 
-**Exit condition:** one real case completes the full lifecycle with deviations, failures, and human decisions explicitly recorded.
+**Exit condition:** one real case completes the intended lifecycle with deviations, failures, and human decisions explicitly recorded.
 
-## Step 7 — Generalization Case
+## Step 8 — Generalization Case
 
-Run a **meaningfully different research problem** using the same core workflow.
+Run a **meaningfully different research problem** using the same core workflow and Runtime.
 
 The second case must differ materially enough to test whether the workflow abstractions are genuinely reusable.
 
 **Exit condition:** the same core workflow contracts are reused without embedding assumptions specific to the first validation case.
 
-## Step 8 — System Revision
+## Step 9 — System Revision
 
-Use the observed failures and adaptations from the validation and generalization cases to revise:
+Use the observed failures and adaptations from validation and generalization cases to revise:
 
 - workflow contracts;
+- Runtime semantics;
 - canonical schema;
 - provenance rules;
 - evaluation checks;
 - delivery interfaces.
 
-Version the result as v1.1 only when the observed evidence justifies a semantic change.
+Version the result as v1.1 only when observed evidence justifies a semantic change.
 
 **Exit condition:** the next version is evidence-driven rather than feature-driven.
 
-## Step 9 — Automation / Skills / Agentization
+## Step 10 — Automation / Skills / Agentization
 
 Only after the core system is validated should stable, repeated, evaluable workflow steps be promoted into Skills, stronger automation, or Agents.
 
@@ -1255,13 +1524,20 @@ Deferred does not mean abandoned. It means the work is intentionally postponed u
 
 The following are explicitly outside the minimum v1 implementation unless later evidence changes the scope:
 
+- embedded general-purpose research chatbot;
 - fully autonomous Research Agent;
+- autonomous web search or dynamic source discovery;
+- browser-agent retrieval;
+- MCP retrieval orchestration;
 - multi-agent research orchestration;
+- dynamic Agent-generated workflow graphs;
+- automatic multi-provider model fallback;
+- distributed workers / queues / database infrastructure;
 - universal source ingestion;
-- production-scale distributed infrastructure;
 - automatic final strategic decision making;
 - forcing all research into one domain-specific schema;
-- preserving Case 001's exact phase layout as a compatibility requirement.
+- preserving Case 001's exact phase layout as a compatibility requirement;
+- requiring a polished CLI before Runtime semantics stabilize.
 
 The goal is a **small, credible, reusable core**, not a complete research platform on the first implementation cycle.
 
@@ -1278,9 +1554,13 @@ Research System v1 is successful only when evidence demonstrates all of the foll
 5. **Evaluation gate** — mechanical checks and required human review are part of completion, not optional cleanup.
 6. **Reproducible build** — a declared research snapshot can regenerate its structured outputs and delivery assets without manually re-authoring research content.
 7. **Multi-delivery consistency** — at least two delivery forms are generated from the same canonical knowledge without semantic drift.
-8. **Reference validation** — one real end-to-end case is completed through the new system.
-9. **Generalization validation** — one meaningfully different research problem reuses the same core workflow.
-10. **Controlled evolution** — failures from validation cases become explicit changes to workflow/schema/evaluation rather than ad-hoc patches.
+8. **Runtime durability** — a Run can be stopped and resumed from durable state without relying on transient Python process memory.
+9. **Runtime recovery** — retry, rerun, checkpoints, and downstream invalidation behave according to explicit semantics.
+10. **Runtime gate control** — Human Gates block or release progression according to durable decisions rather than conversational state.
+11. **Source boundary** — only declared sources are acquired in v1, with required/optional failure semantics recorded.
+12. **Reference validation** — one real end-to-end case is completed through the new Runtime.
+13. **Generalization validation** — one meaningfully different research problem reuses the same core workflow.
+14. **Controlled evolution** — failures from validation cases become explicit changes to workflow, Runtime, schema, evaluation, or delivery rather than ad-hoc patches.
 
 A single successful Case 001 rerun is therefore **not sufficient** to claim that Research System v1 is reusable.
 
@@ -1291,9 +1571,11 @@ A single successful Case 001 rerun is therefore **not sufficient** to claim that
 The project should evolve through the following sequence:
 
 ```text
-Prompt-driven Research
+Human + General AI Research Framing
         ↓
-Workflow-driven Research
+Approved Research Case
+        ↓
+Workflow-driven Research Runtime
         ↓
 Canonical Research System
         ↓
@@ -1314,7 +1596,7 @@ and not:
 
 It is:
 
-> **a reusable system that allows a human to define a research problem, execute a structured evidence-first workflow, preserve canonical knowledge and provenance, evaluate the result, generate audience-specific deliveries, and update the research over time — while progressively turning stable parts of that workflow into automation, Skills, and eventually Agents.**
+> **a reusable system that allows a human to define a research problem, approve a bounded research package, execute a durable evidence-first workflow, preserve canonical knowledge and provenance, evaluate the result, generate audience-specific deliveries, and update the research over time — while progressively turning stable parts of that workflow into automation, Skills, and eventually Agents.**
 
 The most important architectural test is therefore:
 
