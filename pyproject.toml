@@ -14,3 +14,16 @@ test = ["pytest>=8,<9"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# pytest's default norecursedirs excludes any directory named "build",
+# silently skipping tests/unit/research/build and tests/integration/research/build.
+# Redefine the default list without "build" so Step 5 Build Core tests are collected.
+norecursedirs = [
+    "*.egg",
+    ".*",
+    "_darcs",
+    "CVS",
+    "dist",
+    "node_modules",
+    "venv",
+    "{arch}",
+]

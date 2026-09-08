@@ -8,7 +8,9 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
+# Anchored to repo root: an unanchored "build/" would also ignore
+# tests/unit/research/build and tests/integration/research/build.
+/build/
 develop-eggs/
 dist/
 downloads/
