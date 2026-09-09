@@ -3,8 +3,13 @@
 Source Acquisition happens before R1 and is a Runtime capability, never a
 research lifecycle number. The input is the Case's frozen ``inputs/urls.yaml``
 (Ruling 3): only those declared URLs may ever be fetched — there is no
-autonomous source discovery. The module is layered so each concern stays
-separable and testable:
+autonomous source discovery. Because a Run freezes its Case identity and
+declaration digests at creation (Spec 16.1), acquisition entry re-verifies the
+loaded Case's declaration identity/digest against the Run's ``case_binding``
+before anything is parsed, fetched, reused or written: a urls.yaml edited on
+disk after Run creation is refused under that Run — Case changes affect new
+Runs only. The module is layered so each concern stays separable and
+testable:
 
 * :mod:`declaration layer <parse_source_declarations>` — parses and validates
   the constrained urls.yaml subset (list items ``- id: <source id>`` with
@@ -101,7 +106,9 @@ class AcquisitionError(RuntimeContractError):
     """Raised when an acquisition request violates the Runtime contract.
 
     Covers non-record arguments, a Run that is not RUNNING, a Case/Run
-    mismatch, a frozen-declaration digest inconsistency and an unknown Run.
+    mismatch, a Case whose source declaration identity/digest drifted from
+    the declaration frozen into the Run's CaseBinding at creation (Spec
+    16.1), a frozen-declaration digest inconsistency and an unknown Run.
     Per-source *retrieval* failures are never raised: they are recorded in
     the AcquisitionResult with their disposition (architecture 11.3).
     """
@@ -471,8 +478,10 @@ class SourceAcquisitionService:
 
         Raises SourceDeclarationError when the frozen declarations violate
         the subset and AcquisitionError when the request violates the
-        Runtime contract; per-source retrieval failures are returned in the
-        AcquisitionResult with explicit dispositions and a ``blocked`` flag.
+        Runtime contract (including a Case whose declaration identity/digest
+        drifted from the Run's frozen CaseBinding, Spec 16.1); per-source
+        retrieval failures are returned in the AcquisitionResult with
+        explicit dispositions and a ``blocked`` flag.
         """
         if not isinstance(case, ResearchCase):
             raise AcquisitionError(
@@ -497,6 +506,29 @@ class SourceAcquisitionService:
                 f"case {case.case_id!r} does not match Run {run.run_id} "
                 f"(bound to case {run.case_binding.case_id!r}); a Run only "
                 "acquires its own frozen Case declarations."
+            )
+        # Spec 16.1 entry guard: the Run froze its Case declaration
+        # identity/digest at creation, so a loaded Case (a resumed Run has no
+        # choice but to re-load from disk) must still be that same frozen
+        # declaration. The check sits here — before any fetch, any reuse
+        # lookup decision and any artifact write — and names the drifted
+        # dimension; Case changes affect new Runs only.
+        binding = run.case_binding
+        if case.source_declaration_identity != binding.source_declaration_identity:
+            raise AcquisitionError(
+                f"case {case.case_id!r} source declaration identity "
+                f"{case.source_declaration_identity!r} does not match the "
+                f"identity frozen into Run {run.run_id!r} at creation "
+                f"({binding.source_declaration_identity!r}); case changes "
+                "affect new Runs only (Spec 16.1)."
+            )
+        if case.source_declaration_digest != binding.source_declaration_digest:
+            raise AcquisitionError(
+                f"case {case.case_id!r} source declaration digest "
+                f"{case.source_declaration_digest!r} does not match the digest "
+                f"frozen into Run {run.run_id!r} at creation "
+                f"({binding.source_declaration_digest!r}); case changes "
+                "affect new Runs only (Spec 16.1)."
             )
         # Ruling 3 consistency guard: only the frozen text may be parsed.
         if sha256_digest(case.source_declaration_text) != case.source_declaration_digest:

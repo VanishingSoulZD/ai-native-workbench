@@ -8,8 +8,11 @@ schemes, required/optional flags and the frozen declaration digest guard.
 Acquisition covers fetch success, redirect/transport handling through the
 injectable fetcher seam, oversized and unsupported content, required-failure
 blocking, optional-failure continuation, metadata capture, digesting and
-same-Run reuse of committed Source Artifacts (Spec 8). Tests never touch the
-network; the integration suite exercises a local HTTP server.
+same-Run reuse of committed Source Artifacts (Spec 8), plus the Spec 16.1
+entry guard: a Case whose source declaration identity/digest drifted from the
+declaration frozen into the Run's CaseBinding at creation is refused before
+any fetch, reuse decision or commit. Tests never touch the network; the
+integration suite exercises a local HTTP server.
 """
 
 import hashlib
@@ -20,7 +23,6 @@ import pytest
 
 from ai_native_workbench.research.runtime import (
     ArtifactEnvelope,
-    CaseBinding,
     EntryMode,
     EventEnvelope,
     EventType,
@@ -29,8 +31,12 @@ from ai_native_workbench.research.runtime import (
     RuntimeContractError,
     utc_now,
 )
-from ai_native_workbench.research.runtime.binding import ResearchCase
+from ai_native_workbench.research.runtime.binding import (
+    ResearchCase,
+    freeze_case_binding,
+)
 from ai_native_workbench.research.runtime.source.acquisition import (
+    AcquisitionError,
     FetchError,
     FetchResult,
     SourceAcquisitionService,
@@ -94,22 +100,22 @@ def make_case(**overrides) -> ResearchCase:
     return ResearchCase(**defaults)
 
 
-def case_binding(case_id: str = CASE_ID) -> CaseBinding:
-    return CaseBinding(
-        case_id=case_id,
-        charter_identity="00-research-charter.md",
-        charter_digest=sha256_digest("# charter\n"),
-        source_declaration_identity=URLS_IDENTITY,
-        source_declaration_digest=sha256_digest(URLS_TEXT),
-    )
+def make_run_record(
+    case: ResearchCase | None = None, run_id: str = RUN_ID, **overrides
+) -> RunRecord:
+    """A CREATED record for store.create_run (the Task 3 convention).
 
-
-def make_run_record(run_id: str = RUN_ID, case_id: str = CASE_ID, **overrides) -> RunRecord:
-    """A CREATED record for store.create_run (the Task 3 convention)."""
+    The record freezes *case* (default: the canonical make_case() package)
+    exactly like freeze_case_binding: a Run's binding digest must be the
+    digest of the very declaration text that case carries, or the Spec 16.1
+    entry guard in acquire() would refuse the pair.
+    """
+    if case is None:
+        case = make_case()
     defaults = dict(
         run_id=run_id,
-        case_id=case_id,
-        case_binding=case_binding(case_id),
+        case_id=case.case_id,
+        case_binding=freeze_case_binding(case),
         state=RunState.CREATED,
         cumulative_execution_scope=(),
         current_invocation_id=None,
@@ -119,14 +125,17 @@ def make_run_record(run_id: str = RUN_ID, case_id: str = CASE_ID, **overrides) -
     return RunRecord(**defaults)
 
 
-def running_record(run_id: str = RUN_ID, **overrides) -> RunRecord:
-    """The RUNNING record (with a current Invocation) an acquire call needs."""
+def running_record(
+    case: ResearchCase | None = None, run_id: str = RUN_ID, **overrides
+) -> RunRecord:
+    """The RUNNING record (with a current Invocation) an acquire call needs,
+    bound to the same *case* the acquire call will pass."""
     defaults = dict(
         state=RunState.RUNNING,
         current_invocation_id=INVOCATION_ID,
     )
     defaults.update(overrides)
-    return make_run_record(run_id=run_id, **defaults)
+    return make_run_record(case=case, run_id=run_id, **defaults)
 
 
 def one_source_case(**overrides) -> ResearchCase:
@@ -136,6 +145,19 @@ def one_source_case(**overrides) -> ResearchCase:
         "  url: https://example.com/source-a\n"
         "  required: true\n"
     )
+    defaults = dict(
+        source_declaration_text=text,
+        source_declaration_digest=sha256_digest(text),
+    )
+    defaults.update(overrides)
+    return make_case(**defaults)
+
+
+def stale_declaration_case(**overrides) -> ResearchCase:
+    """A Case over the same case_id whose urls.yaml changed after Run
+    creation: the canonical declaration plus one more source, self-consistent
+    (its digest covers its own text) but not the declaration the Run froze."""
+    text = URLS_TEXT + "- id: src-3\n  url: https://example.net/source-c\n"
     defaults = dict(
         source_declaration_text=text,
         source_declaration_digest=sha256_digest(text),
@@ -190,12 +212,16 @@ def invocation_completed_event(invocation_id: str = INVOCATION_ID, **kw) -> Even
 def build_running_invocation(
     store,
     *,
+    case: ResearchCase | None = None,
     run_id: str = RUN_ID,
-    case_id: str = CASE_ID,
     invocation_id: str = INVOCATION_ID,
 ) -> None:
-    """create_run + INVOCATION_STARTED: the Run a service may acquire for."""
-    store.create_run(make_run_record(run_id=run_id, case_id=case_id))
+    """create_run + INVOCATION_STARTED: the Run a service may acquire for.
+
+    The created Run freezes *case* (default: the canonical make_case()
+    package), so tests acquire that same case under the Run.
+    """
+    store.create_run(make_run_record(case=case, run_id=run_id))
     store.append_event(
         invocation_started_event(run_id=run_id, invocation_id=invocation_id)
     )
@@ -448,13 +474,14 @@ def test_acquire_commits_source_artifacts_with_metadata_and_digest(tmp_path):
 
 def test_acquire_required_failure_blocks_with_explicit_disposition(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     service = SourceAcquisitionService(
         store,
         fetcher=FakeFetcher(FetchError("HTTP_ERROR", "HTTP 404 Not Found", status=404)),
     )
 
-    result = service.acquire(one_source_case(), running_record())
+    result = service.acquire(case, running_record(case))
 
     assert result.blocked is True
     (status,) = result.sources
@@ -469,15 +496,6 @@ def test_acquire_required_failure_blocks_with_explicit_disposition(tmp_path):
 
 def test_acquire_optional_failure_is_non_blocking_and_continues(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
-    service = SourceAcquisitionService(
-        store,
-        fetcher=FakeFetcher(
-            FetchError("UNREACHABLE", "connection refused"),
-            ok_result("http://example.org/source-b", raw=b"beta body"),
-        ),
-    )
-
     urls = (
         "- id: src-1\n"
         "  url: https://example.com/a\n"
@@ -487,7 +505,16 @@ def test_acquire_optional_failure_is_non_blocking_and_continues(tmp_path):
     case = make_case(
         source_declaration_text=urls, source_declaration_digest=sha256_digest(urls)
     )
-    result = service.acquire(case, running_record())
+    build_running_invocation(store, case=case)
+    service = SourceAcquisitionService(
+        store,
+        fetcher=FakeFetcher(
+            FetchError("UNREACHABLE", "connection refused"),
+            ok_result("http://example.org/source-b", raw=b"beta body"),
+        ),
+    )
+
+    result = service.acquire(case, running_record(case))
 
     # src-1 is optional (no required flag): its failure is recorded but the
     # acquisition result is not blocked and src-2 is still acquired.
@@ -503,16 +530,16 @@ def test_acquire_optional_failure_is_non_blocking_and_continues(tmp_path):
 
 def test_acquire_all_optional_failures_still_return_a_result(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
     urls = "- id: src-1\n  url: https://example.com/a\n"
     case = make_case(
         source_declaration_text=urls,
         source_declaration_digest=sha256_digest(urls),
     )
+    build_running_invocation(store, case=case)
     service = SourceAcquisitionService(
         store, fetcher=FakeFetcher(FetchError("UNREACHABLE", "timed out"))
     )
-    result = service.acquire(case, running_record())
+    result = service.acquire(case, running_record(case))
     assert result.blocked is False
     assert len(result.sources) == 1
     assert commit_events(store) == ()
@@ -520,14 +547,15 @@ def test_acquire_all_optional_failures_still_return_a_result(tmp_path):
 
 def test_acquire_oversized_content_is_an_explicit_failure(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     # A bounded fetch contract limits raw bodies; the service re-checks so
     # every transport honors the same explicit OVERSIZED disposition.
     service = SourceAcquisitionService(
         store, fetcher=FakeFetcher(ok_result("https://e.com/a", raw=b"x" * 3000)),
         max_bytes=1024,
     )
-    result = service.acquire(one_source_case(), running_record())
+    result = service.acquire(case, running_record(case))
     assert result.blocked is True
     (status,) = result.sources
     assert status.state is SourceState.FAILED
@@ -537,14 +565,6 @@ def test_acquire_oversized_content_is_an_explicit_failure(tmp_path):
 
 def test_acquire_unsupported_content_is_an_explicit_failure(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
-    service = SourceAcquisitionService(
-        store,
-        fetcher=FakeFetcher(
-            ok_result("https://e.com/a", raw=b"%PDF", content_type="application/pdf"),
-            ok_result("https://e.com/b", raw=b"", content_type=""),
-        ),
-    )
     case = make_case(
         source_declaration_text=(
             "- id: src-1\n  url: https://e.com/a\n"
@@ -555,7 +575,15 @@ def test_acquire_unsupported_content_is_an_explicit_failure(tmp_path):
             "- id: src-2\n  url: https://e.com/b\n"
         ),
     )
-    result = service.acquire(case, running_record())
+    build_running_invocation(store, case=case)
+    service = SourceAcquisitionService(
+        store,
+        fetcher=FakeFetcher(
+            ok_result("https://e.com/a", raw=b"%PDF", content_type="application/pdf"),
+            ok_result("https://e.com/b", raw=b"", content_type=""),
+        ),
+    )
+    result = service.acquire(case, running_record(case))
     assert result.blocked is False  # both sources are optional
     assert [s.disposition for s in result.sources] == [
         "UNSUPPORTED_CONTENT",
@@ -568,12 +596,13 @@ def test_acquire_reuses_committed_source_artifacts_in_the_same_run(tmp_path):
     """A successful Source Artifact is reused during retry/rerun in the same
     Run: the fetcher is not called again and no new commit facts are made."""
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     fetcher = FakeFetcher(ok_result("https://example.com/source-a", raw=b"alpha"))
     service = SourceAcquisitionService(store, fetcher=fetcher)
 
-    first = service.acquire(one_source_case(), running_record())
-    second = service.acquire(one_source_case(), running_record())
+    first = service.acquire(case, running_record(case))
+    second = service.acquire(case, running_record(case))
 
     assert len(fetcher.calls) == 1
     assert len(commit_events(store)) == 1
@@ -589,15 +618,16 @@ def test_acquire_reuse_spans_invocations_within_a_run(tmp_path):
     """Resume opens a new Invocation in the same Run (Spec 15.3); acquisition
     on the resumed Invocation reuses the Run's committed Source Artifacts."""
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     fetcher = FakeFetcher(ok_result("https://example.com/source-a", raw=b"alpha"))
     service = SourceAcquisitionService(store, fetcher=fetcher)
-    first = service.acquire(one_source_case(), running_record())
+    first = service.acquire(case, running_record(case))
 
     store.append_event(invocation_completed_event())
     store.append_event(invocation_started_event(invocation_id=INVOCATION_ID_2))
-    resumed = running_record(current_invocation_id=INVOCATION_ID_2)
-    second = service.acquire(one_source_case(), resumed)
+    resumed = running_record(case, current_invocation_id=INVOCATION_ID_2)
+    second = service.acquire(case, resumed)
 
     assert len(fetcher.calls) == 1
     assert len(commit_events(store)) == 1
@@ -612,20 +642,21 @@ def test_acquire_a_new_run_refetches_declared_sources(tmp_path):
     """Reuse is Run-scoped (Spec 8): a new Run re-acquires, never silently
     borrowing another Run's committed Source Artifacts."""
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     fetcher = FakeFetcher(
         ok_result("https://example.com/source-a", raw=b"alpha"),
         ok_result("https://example.com/source-a", raw=b"alpha"),
     )
     service = SourceAcquisitionService(store, fetcher=fetcher)
-    first = service.acquire(one_source_case(), running_record())
+    first = service.acquire(case, running_record(case))
 
     build_running_invocation(
-        store, run_id="run-2", invocation_id="inv-run-2"
+        store, case=case, run_id="run-2", invocation_id="inv-run-2"
     )
     second = service.acquire(
-        one_source_case(),
-        running_record(run_id="run-2", current_invocation_id="inv-run-2"),
+        case,
+        running_record(case, run_id="run-2", current_invocation_id="inv-run-2"),
     )
 
     assert len(fetcher.calls) == 2
@@ -638,11 +669,12 @@ def test_acquire_a_new_run_refetches_declared_sources(tmp_path):
 
 def test_acquire_commits_under_the_runs_current_invocation(tmp_path):
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
     service = SourceAcquisitionService(
         store, fetcher=FakeFetcher(ok_result("https://example.com/source-a"))
     )
-    service.acquire(one_source_case(), running_record())
+    service.acquire(case, running_record(case))
     commit = commit_events(store)[0]
     assert commit.invocation_id == INVOCATION_ID
 
@@ -669,14 +701,89 @@ def test_acquire_rejects_case_run_mismatch(tmp_path):
 def test_acquire_verifies_the_frozen_declaration_digest(tmp_path):
     """Ruling 3: only the Case's frozen inputs/urls.yaml may be acquired; a
     digest mismatch means the frozen declaration is not the text being
-    parsed, which is never acquired silently."""
+    parsed, which is never acquired silently. (The Run freezes the same
+    bogus digest, so the Ruling 3 self-consistency guard — not the Spec 16.1
+    binding guard — is what refuses the pair.)"""
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
-    service = SourceAcquisitionService(store, fetcher=FakeFetcher())
     case = make_case(source_declaration_digest="sha256:" + "0" * 64)
+    build_running_invocation(store, case=case)
+    service = SourceAcquisitionService(store, fetcher=FakeFetcher())
     with pytest.raises(RuntimeContractError) as excinfo:
-        service.acquire(case, running_record())
+        service.acquire(case, running_record(case))
     assert "digest" in str(excinfo.value)
+
+
+def test_acquire_refuses_a_case_mutated_after_run_creation(tmp_path):
+    """Spec 16.1: a Run freezes its Case declaration at creation, so a
+    urls.yaml edited on disk afterwards is refused at acquisition entry —
+    before any fetch, any reuse decision or any commit — with the drifted
+    dimension named in the error."""
+    store = FileSystemRuntimeStore(tmp_path)
+    build_running_invocation(store)  # Run frozen over the canonical package
+    fetcher = FakeFetcher()  # any fetch attempt would fail the test loudly
+    service = SourceAcquisitionService(store, fetcher=fetcher)
+
+    with pytest.raises(AcquisitionError) as excinfo:
+        service.acquire(stale_declaration_case(), running_record())
+    message = str(excinfo.value)
+    assert "declaration digest" in message
+    assert "frozen into Run" in message
+    assert "run-1" in message
+    assert isinstance(excinfo.value, RuntimeContractError)
+
+    # A declaration *identity* drift is refused the same way, naming its own
+    # dimension.
+    drifted_identity = make_case(
+        source_declaration_identity="inputs/urls-2.yaml",
+        source_declaration_text=URLS_TEXT,
+        source_declaration_digest=sha256_digest(URLS_TEXT),
+    )
+    with pytest.raises(AcquisitionError) as excinfo_identity:
+        service.acquire(drifted_identity, running_record())
+    assert "declaration identity" in str(excinfo_identity.value)
+
+    assert fetcher.calls == []
+    assert commit_events(store) == ()
+
+
+def test_acquire_accepts_a_case_matching_the_runs_frozen_binding(tmp_path):
+    """The entry guard only refuses drift: a Case identical to the Run's
+    frozen declaration acquires normally."""
+    store = FileSystemRuntimeStore(tmp_path)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
+    fetcher = FakeFetcher(ok_result("https://example.com/source-a", raw=b"alpha"))
+    service = SourceAcquisitionService(store, fetcher=fetcher)
+
+    result = service.acquire(case, running_record(case))
+
+    assert result.blocked is False
+    (status,) = result.sources
+    assert status.state is SourceState.ACQUIRED
+    assert len(commit_events(store)) == 1
+    assert fetcher.calls == ["https://example.com/source-a"]
+
+
+def test_acquire_reuse_path_is_guarded_against_stale_declarations(tmp_path):
+    """The Spec 16.1 guard precedes the reuse decision: a stale Case is
+    refused even though the Run already committed a Source Artifact that an
+    unguarded acquire would have silently returned as REUSED."""
+    store = FileSystemRuntimeStore(tmp_path)
+    case = one_source_case()
+    build_running_invocation(store, case=case)
+    fetcher = FakeFetcher(ok_result("https://example.com/source-a", raw=b"alpha"))
+    service = SourceAcquisitionService(store, fetcher=fetcher)
+    first = service.acquire(case, running_record(case))
+    assert first.sources[0].state is SourceState.ACQUIRED
+    assert len(commit_events(store)) == 1
+
+    with pytest.raises(AcquisitionError) as excinfo:
+        service.acquire(stale_declaration_case(), running_record(case))
+    assert "declaration digest" in str(excinfo.value)
+
+    # No refetch of the stale declaration's URLs, nothing new committed.
+    assert fetcher.calls == ["https://example.com/source-a"]
+    assert len(commit_events(store)) == 1
 
 
 def test_acquire_rejects_unknown_run_in_the_store(tmp_path):
@@ -701,12 +808,12 @@ def test_acquire_surfaces_declaration_errors(tmp_path):
     """Invalid frozen declarations (here: an unsupported scheme) abort the
     whole acquisition explicitly before anything is fetched."""
     store = FileSystemRuntimeStore(tmp_path)
-    build_running_invocation(store)
     urls = "- id: src-1\n  url: ftp://example.com/file\n"
     case = make_case(
         source_declaration_text=urls, source_declaration_digest=sha256_digest(urls)
     )
+    build_running_invocation(store, case=case)
     service = SourceAcquisitionService(store, fetcher=FakeFetcher())
     with pytest.raises(SourceDeclarationError, match="scheme"):
-        service.acquire(case, running_record())
+        service.acquire(case, running_record(case))
     assert commit_events(store) == ()
