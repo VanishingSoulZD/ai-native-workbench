@@ -13,9 +13,13 @@ Invariants under test:
 - Rejection is a recorded disposition, never a deletion: a rejected
   candidate stays intact and remains reusable history.
 - Acceptance policies are explicit: automatic, human, canonical/domain.
-- ValidationResult distinguishes pass from fail with structured reasons;
-  AcceptanceResult carries the disposition plus per-dimension results so the
-  orchestrator's proceed/stop decision is mechanical.
+- ValidationResult distinguishes an evaluated pass from an evaluated fail
+  (structured reasons) and records an unevaluated dimension explicitly;
+  AcceptanceResult carries the disposition plus per-dimension results so
+  the orchestrator's proceed/stop decision is mechanical.
+- The not-evaluated disposition is representable and honest: no result can
+  claim a validation ran (passed) when it did not, so durable acceptance
+  evidence never overstates what was validated.
 """
 
 import pytest
@@ -348,12 +352,55 @@ def test_validation_result_requires_reasons_when_failed_only():
         )
     ok = ValidationResult(dimension=ValidationDimension.SCHEMA, passed=True)
     assert ok.reasons == ()
+    assert ok.evaluated is True
     failed = ValidationResult(
         dimension=ValidationDimension.SCHEMA,
         passed=False,
         reasons=("missing field",),
     )
     assert failed.passed is False
+    assert failed.evaluated is True
+
+
+def test_validation_result_records_not_evaluated_distinctly():
+    """A not-evaluated marker is representable and is neither a pass nor an
+    evaluated failure: the record layer can always tell "checked and
+    passed" apart from "not evaluated"."""
+    marker = ValidationResult(
+        dimension=ValidationDimension.DOMAIN, passed=False, evaluated=False
+    )
+    assert marker.dimension is ValidationDimension.DOMAIN
+    assert marker.passed is False
+    assert marker.reasons == ()
+    assert marker.evaluated is False
+    assert marker != _ok_result(ValidationDimension.DOMAIN)
+    assert marker != ValidationResult(
+        dimension=ValidationDimension.DOMAIN,
+        passed=False,
+        reasons=("a real evaluated failure",),
+    )
+
+
+def test_validation_result_not_evaluated_cannot_claim_a_pass_or_reasons():
+    with pytest.raises(RuntimeContractError):
+        # The vacuous-pass lie: claiming a pass without an evaluation.
+        ValidationResult(
+            dimension=ValidationDimension.DOMAIN, passed=True, evaluated=False
+        )
+    with pytest.raises(RuntimeContractError):
+        # Reasons belong to evaluated failures; a marker carries none.
+        ValidationResult(
+            dimension=ValidationDimension.DOMAIN,
+            passed=False,
+            reasons=("not really a failure",),
+            evaluated=False,
+        )
+    with pytest.raises(RuntimeContractError):
+        ValidationResult(
+            dimension=ValidationDimension.DOMAIN,
+            passed=False,
+            evaluated="yes",  # type: ignore[arg-type]
+        )
 
 
 def test_validation_result_rejects_malformed_fields():
@@ -436,7 +483,9 @@ def test_validate_provenance_is_optional_when_not_required():
 
 def test_validate_domain_passes_and_fails_with_declared_hook():
     pipeline = make_pipeline(domain_check=evidence_domain_check)
-    assert pipeline.validate_domain(make_candidate()).passed is True
+    ok = pipeline.validate_domain(make_candidate())
+    assert ok.passed is True
+    assert ok.evaluated is True
     incoherent = make_candidate(
         content={
             "kind": "evidence-set",
@@ -446,19 +495,24 @@ def test_validate_domain_passes_and_fails_with_declared_hook():
     )
     result = pipeline.validate_domain(incoherent)
     assert result.passed is False
+    assert result.evaluated is True
     assert any("art-ghost" in reason for reason in result.reasons)
 
 
-def test_validate_domain_without_declared_hook_is_vacuous_pass():
-    """A pipeline with no declared domain rule claims no domain verdict.
+def test_validate_domain_without_declared_hook_records_not_evaluated():
+    """A pipeline with no declared domain rule records the dimension as not
+    evaluated — never as a pass — so the result cannot be mistaken for a
+    checked-and-passed verdict.
 
-    Documented: automatic acceptance over such a pipeline gates on schema and
+    Automatic acceptance over such a pipeline gates on schema and
     provenance only; canonical/domain acceptance refuses to run without a
     declared domain check.
     """
     result = make_pipeline(domain_check=None).validate_domain(make_candidate())
     assert result.dimension is ValidationDimension.DOMAIN
-    assert result.passed is True
+    assert result.passed is False
+    assert result.reasons == ()
+    assert result.evaluated is False
 
 
 def test_validate_domain_refuses_malformed_hook_results():
@@ -493,15 +547,27 @@ def test_accept_automatic_accepts_when_all_dimensions_pass():
         ValidationDimension.DOMAIN,
     }
     assert all(item.passed for item in result.validation.values())
+    assert all(item.evaluated for item in result.validation.values())
     assert result.reasons == ()
 
 
-def test_accept_automatic_accepts_without_a_domain_hook():
+def test_accept_automatic_accepts_without_a_domain_hook_recording_not_evaluated():
+    """Automatic acceptance over a hook-less pipeline gates on schema and
+    provenance only: the unevaluated domain is acceptable by policy, and the
+    disposition record keeps it as not evaluated — never as a domain pass."""
     result = make_pipeline(domain_check=None).accept(
         make_candidate(), AcceptancePolicy.AUTOMATIC
     )
     assert result.disposition is AcceptanceDisposition.ACCEPTED
-    assert result.validation[ValidationDimension.DOMAIN].passed is True
+    domain = result.validation[ValidationDimension.DOMAIN]
+    assert domain.evaluated is False
+    assert domain.passed is False
+    assert domain.reasons == ()
+    assert result.validation[ValidationDimension.SCHEMA].evaluated is True
+    assert result.validation[ValidationDimension.SCHEMA].passed is True
+    assert result.validation[ValidationDimension.PROVENANCE].evaluated is True
+    assert result.validation[ValidationDimension.PROVENANCE].passed is True
+    assert result.reasons == ()
 
 
 def test_accept_automatic_rejects_on_schema_failure():
@@ -536,8 +602,26 @@ def test_accept_automatic_rejects_on_domain_failure():
     )
     assert result.disposition is AcceptanceDisposition.REJECTED
     assert result.validation[ValidationDimension.DOMAIN].passed is False
+    assert result.validation[ValidationDimension.DOMAIN].evaluated is True
     assert any("domain" in reason for reason in result.reasons)
     assert any("art-ghost" in reason for reason in result.reasons)
+
+
+def test_accept_automatic_rejection_names_only_evaluated_failures():
+    """A rejection never lists an unevaluated dimension as a cause: the
+    hook-less domain stays not-evaluated while schema reasons explain the
+    rejection."""
+    candidate = make_candidate(content={"kind": "claim-set", "inputs": [], "rows": []})
+    result = make_pipeline(domain_check=None).accept(
+        candidate, AcceptancePolicy.AUTOMATIC
+    )
+    assert result.disposition is AcceptanceDisposition.REJECTED
+    assert result.validation[ValidationDimension.SCHEMA].passed is False
+    domain = result.validation[ValidationDimension.DOMAIN]
+    assert domain.evaluated is False
+    assert domain.passed is False
+    assert any("schema" in reason for reason in result.reasons)
+    assert not any(reason.startswith("domain:") for reason in result.reasons)
 
 
 def test_accept_rejected_candidate_remains_durable_history():
@@ -591,7 +675,24 @@ def test_accept_human_defers_on_domain_failure_with_advisory_reasons():
     )
     assert result.disposition is AcceptanceDisposition.DEFERRED_TO_HUMAN
     assert result.validation[ValidationDimension.DOMAIN].passed is False
+    assert result.validation[ValidationDimension.DOMAIN].evaluated is True
     assert any("art-ghost" in reason for reason in result.reasons)
+
+
+def test_accept_human_without_a_domain_hook_defers_without_domain_claims():
+    """The machine records no domain verdict under the human policy either:
+    the candidate defers to the human reviewer and the domain dimension
+    stays not-evaluated — no fabricated pass rides into the record."""
+    result = make_pipeline(domain_check=None).accept(
+        make_candidate(), AcceptancePolicy.HUMAN
+    )
+    assert result.disposition is AcceptanceDisposition.DEFERRED_TO_HUMAN
+    domain = result.validation[ValidationDimension.DOMAIN]
+    assert domain.evaluated is False
+    assert domain.passed is False
+    assert domain.reasons == ()
+    assert any("human" in reason for reason in result.reasons)
+    assert not any(reason.startswith("domain:") for reason in result.reasons)
 
 
 def test_accept_canonical_domain_requires_a_declared_domain_check():

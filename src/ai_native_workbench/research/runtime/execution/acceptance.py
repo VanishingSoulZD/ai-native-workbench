@@ -16,15 +16,18 @@ the orchestrator's proceed/stop decision. Invariants:
   the step being validated.
 - Domain validation is a declared hook ``(content) -> (passed, reasons)``
   — the seam real domain knowledge plugs into. With no hook the domain
-  verdict is a documented vacuous pass under the automatic and human
-  policies; canonical/domain acceptance refuses to run without a declared
-  hook.
-- Policies are explicit: ``automatic`` (schema, provenance and domain all
-  gate acceptance), ``human`` (mechanical schema + provenance gates only;
-  the human is the domain judge, so machine domain failures defer with
-  advisory reasons), ``canonical/domain`` (domain gates are canonical and
-  the hook is mandatory; structural failures still reject).
-- ValidationResult distinguishes pass from fail with structured reasons;
+  dimension is recorded as explicitly not evaluated (never as a pass), so
+  a durable result can never claim a validation ran when it did not;
+  canonical/domain acceptance refuses to run without a declared hook.
+- Policies are explicit: ``automatic`` (schema, provenance and, when a
+  hook is declared, domain gate acceptance; an unevaluated domain is
+  acceptable by policy and stays recorded as not evaluated), ``human``
+  (mechanical schema + provenance gates only; the human is the domain
+  judge, so machine domain failures defer with advisory reasons),
+  ``canonical/domain`` (domain gates are canonical and the hook is
+  mandatory; structural failures still reject).
+- ValidationResult distinguishes an evaluated pass from an evaluated fail
+  (structured reasons) and records an unevaluated dimension explicitly;
   AcceptanceResult carries the disposition plus every per-dimension result
   so the orchestrator's proceed/stop decision is mechanical.
 """
@@ -209,11 +212,19 @@ class AcceptanceDisposition(str, Enum):
 
 @dataclass(frozen=True)
 class ValidationResult:
-    """One dimension's verdict: pass, or fail with structured reasons."""
+    """One dimension's verdict.
+
+    An evaluated validation either passes (``passed=True``, no reasons) or
+    fails (``passed=False`` with structured reasons). An unevaluated
+    dimension is a distinct, explicit marker — ``evaluated=False`` with no
+    pass and no reasons — so a record can never claim a validation ran
+    when it did not.
+    """
 
     dimension: ValidationDimension
     passed: bool
     reasons: tuple[str, ...] = ()
+    evaluated: bool = True
 
     def __post_init__(self) -> None:
         if not isinstance(self.dimension, ValidationDimension):
@@ -221,6 +232,18 @@ class ValidationResult:
         if not isinstance(self.passed, bool):
             raise RuntimeContractError("passed must be a bool.")
         _require_reason_tuple(self.reasons, "reasons")
+        if not isinstance(self.evaluated, bool):
+            raise RuntimeContractError("evaluated must be a bool.")
+        if not self.evaluated:
+            # A not-evaluated result claims no verdict: it can neither pass
+            # nor carry failure reasons, so it can never be mistaken for an
+            # evaluated pass or an evaluated failure.
+            if self.passed or self.reasons:
+                raise RuntimeContractError(
+                    f"a not-evaluated {self.dimension.value} result cannot "
+                    "claim a pass or carry reasons."
+                )
+            return
         if self.passed and self.reasons:
             raise RuntimeContractError(
                 f"a passing {self.dimension.value} validation cannot carry "
@@ -353,16 +376,19 @@ class AcceptancePipeline:
     def validate_domain(self, candidate: CandidateOutput) -> ValidationResult:
         """Run the declared domain hook over the candidate content.
 
-        Without a declared hook the dimension passes vacuously: the
-        pipeline claims no domain verdict (automatic acceptance then gates
-        on schema and provenance only; canonical/domain acceptance refuses
-        to run, see ``accept``).
+        Without a declared hook the dimension is recorded as explicitly
+        not evaluated — ``evaluated=False``, never a pass — so the result
+        cannot overstate what was validated (automatic acceptance then
+        gates on schema and provenance only; canonical/domain acceptance
+        refuses to run, see ``accept``).
         """
         if not isinstance(candidate, CandidateOutput):
             raise RuntimeContractError("candidate must be a CandidateOutput.")
         if self.domain_check is None:
             return ValidationResult(
-                dimension=ValidationDimension.DOMAIN, passed=True
+                dimension=ValidationDimension.DOMAIN,
+                passed=False,
+                evaluated=False,
             )
         outcome = self.domain_check(candidate.content)
         if (
@@ -398,8 +424,10 @@ class AcceptancePipeline:
     ) -> AcceptanceResult:
         """Evaluate *candidate* under the explicit *policy*.
 
-        automatic: every declared gate (schema, provenance, and the domain
-        hook when present) must pass.
+        automatic: every evaluated gate must pass — schema and provenance
+        always gate; the domain hook gates when one is declared, and an
+        unevaluated domain is acceptable by policy (recorded as not
+        evaluated, never as a domain pass).
         human: mechanical schema/provenance failures reject; everything
         else defers to a human reviewer, with machine domain failures
         riding along as advisory reasons.
@@ -433,7 +461,8 @@ class AcceptancePipeline:
             if mechanical_failed:
                 return self._rejected(policy, results)
             reasons = ["human review required for the candidate."]
-            if not results[ValidationDimension.DOMAIN].passed:
+            domain = results[ValidationDimension.DOMAIN]
+            if domain.evaluated and not domain.passed:
                 reasons.extend(
                     self._reasons(results, only_dimensions=(
                         ValidationDimension.DOMAIN,
@@ -445,13 +474,20 @@ class AcceptancePipeline:
                 validation=results,
                 reasons=tuple(reasons),
             )
-        if all(results[dimension].passed for dimension in _VALIDATION_DIMENSIONS):
-            return AcceptanceResult(
-                disposition=AcceptanceDisposition.ACCEPTED,
-                policy=policy,
-                validation=results,
-            )
-        return self._rejected(policy, results)
+        # automatic and canonical/domain accept only when every evaluated
+        # dimension passes. canonical/domain refuses a missing hook above,
+        # so its domain dimension is always evaluated; under automatic a
+        # hook-less pipeline accepts on schema and provenance, keeping the
+        # domain recorded as not evaluated rather than as a domain pass.
+        for dimension in _VALIDATION_DIMENSIONS:
+            result = results[dimension]
+            if result.evaluated and not result.passed:
+                return self._rejected(policy, results)
+        return AcceptanceResult(
+            disposition=AcceptanceDisposition.ACCEPTED,
+            policy=policy,
+            validation=results,
+        )
 
     @staticmethod
     def _rejected(
@@ -470,12 +506,13 @@ class AcceptancePipeline:
         *,
         only_dimensions: tuple[ValidationDimension, ...] = _VALIDATION_DIMENSIONS,
     ) -> tuple[str, ...]:
-        """Flatten the failed dimensions' reasons, each prefixed with its
+        """Flatten the evaluated failures' reasons, each prefixed with its
         dimension token so the disposition's reasons name the failing
-        dimension."""
+        dimension. Not-evaluated dimensions never appear: they carry no
+        reasons and cannot be a cause of rejection."""
         return tuple(
             f"{dimension.value}: {reason}"
             for dimension in only_dimensions
-            if not results[dimension].passed
+            if results[dimension].evaluated and not results[dimension].passed
             for reason in results[dimension].reasons
         )
