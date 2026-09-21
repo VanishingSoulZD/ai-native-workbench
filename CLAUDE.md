@@ -4,81 +4,142 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目定位
 
-本仓库是「AI-native 工作能力实验场」：通过真实任务、工作流与逐步工程化，训练一套使用 AI 高质量完成复杂知识工作的能力体系。完整背景叙述见 `README.md`，此处只保留对工作有约束力的部分。
+本仓库是「AI-native 工作能力实验场」：
 
-核心工作链：
+> **通过真实任务，学习、实践和沉淀 AI 原生工作能力。**
 
-```text
-Real Task → Problem Framing → Research → Reasoning → Judgment
-→ Communication → Decision → Delivery → Evaluation → Agentization
-```
+项目不是以构建某个 Research Agent、AI Agent 或自动化平台为目的，而是训练如何利用当前 AI 生态完成真实复杂工作，并把经过验证、稳定且有价值的工作方式逐步工程化。
 
-两条定位约束：
+## 核心工作链
 
-- **Agentization 是成熟工作流程的产物，不是项目起点。**
-- 训练目标是从 Knowledge Collector 成长为 Capability Builder，衡量标准不是工具数量或代码量。
+~~~text
+Real Task
+→ Problem Framing
+→ Research Charter
+→ AI Work Planning
+→ AI Capability / Product / Model Selection
+→ AI Tool Configuration
+→ AI Orchestration
+→ Artifacts / Evidence
+→ Human Judgment
+→ Final Delivery
+→ Evaluation
+~~~
+
+核心能力目标：
+
+1. **AI Task → AI Selection** — 从真实任务识别所需能力，并选择合适的 AI。
+2. **AI Selection → AI Orchestration** — 决定一个还是多个 AI、如何配置、如何交接、如何验证。
+
+固定的是选择与调度的方法，不是永久的产品映射。
 
 ## 核心原则
 
-以下原则在每次工作中适用：
-
 1. **真实任务优先** — 解决真实问题，不为展示技术制造 Demo。
-2. **能力建设优先于工具数量** — 目标是建立可独立解决问题的能力。
-3. **Workflow before Agent** — 先人工理解、实践、验证工作流，再 Agent 化。
-4. **Human judgment remains central** — 问题定义、关键判断、最终决策和最终审查由人负责，不能交给 AI。
-5. **Evaluation before Automation** — 扩大自动化之前，先建立质量验证机制。
-6. **Deliverables over code volume** — 重视最终交付物，不追求代码量。
-7. **Just-in-Time Learning** — 由真实任务暴露的能力缺口驱动学习，不为完成课程而学习。
-8. 不为了使用新技术而使用新技术。
-9. 避免过度工程化。
-10. 每一次工程实现都应服务于真实工作能力的提升。
+2. **能力优先于工具数量** — 目标是建立可迁移的工作能力，而不是收集产品。
+3. **Current over Memorized** — 产品、模型、套餐、功能、入口等可能变化的信息需要按需获取并核查。
+4. **Capability over Brand** — 先识别需要什么能力，再比较具体产品。
+5. **Minimal Effective Tool Set** — 一个 AI 足够时，不增加第二个 AI；不要为了“完整”堆工具。
+6. **Existing AI over Rebuilding** — 已有 AI 能可靠完成的工作，不优先自建等价系统。
+7. **Human judgment remains central** — 人负责问题定义、范围、关键判断、最终决策和最终审查。
+8. **Evidence before Assertion** — 重要事实与判断尽量有可追溯证据。
+9. **Workflow before Agent** — 先通过真实工作验证方法，再决定哪些部分值得工程化。
+10. **Deliverables over code volume** — 重视实际交付物、证据和结果，不追求代码量。
+11. **Just-in-Time Learning** — 由真实任务暴露的能力缺口驱动学习。
+12. **避免过度工程化** — 任何工程实现都必须服务于真实工作能力。
 
-## 当前阶段与路线
+## AI Work Guidance
 
-当前处于**第一阶段**。阶段按顺序推进、不跳级：只有当前阶段通过真实任务完整走通后，才进入下一阶段。
+标准规划关系：
 
-### 第一阶段：先不做复杂 Agent
+~~~text
+Research Charter
+        ↓
+AI Work Advisor Prompt
+        ↓
+AI Work Plan
+        ↓
+Actual Execution
+~~~
 
-先由人完整走完一个 Research Case 的整个生命周期。
+### Research Charter
 
-当前 Case：**`cases/001-ai-coding-agent-landscape/` — 2026 AI Coding Agent Landscape**
+负责定义 **What / Why**：objective、research questions、scope、population、definitions、inclusion / exclusion、comparison / ranking、evidence requirements、cutoff、deliverables、success criteria、human decisions。
 
-该 Case 至少形成：Research Question、Research Plan、Source Map、Evidence Matrix、Analysis、Final Report。
+### AI Work Advisor
 
-重点不是结论多复杂，而是完整走完研究工作的生命周期。本阶段禁止创建 Research Agent、Multi-Agent、Memory、MCP 等复杂结构。
+使用路径：docs/methodology/ai-work-advisor-v1.md
 
-### 第二阶段：研究 OpenAI / Anthropic 的 Research 方法
+它负责 **How**：根据具体任务动态研究当前 AI 生态，进行能力、产品、模型、配置和编排决策。
 
-理解成熟 Research 系统在以下方面的设计与方法：问题定义、Research Planning、Source Selection、Multi-step Research、Citation、Report Generation、Agent Coordination、Evaluation、Reliability。
+不要把 Advisor 变成永久产品目录、Global Playbook 或固定的“任务 → 产品”映射。
 
-目标不是学 API，而是理解方法与设计思想。
+### AI Work Plan
 
-### 第三阶段：Human + AI
+使用路径：docs/methodology/templates/ai-work-plan.md
 
-把人工 Research 流程中适合的部分交给 AI，寻找最佳分工：
+它是 case-specific execution manual，回答每个重要 Task：用什么 AI、为什么、怎么配置、输入是什么、产物是什么、如何交接、如何验证、哪些责任仍由人承担。
 
-- Human 负责：Problem Framing、Research Scope、Final Judgment、Final Review。
-- AI 负责：Search、Extraction、Summarization、Candidate Analysis、Draft Generation。
+### Session Templates
 
-### 第四阶段：Research Agent
+Research Charter Discussion：docs/methodology/templates/research-charter-discussion-session.md
+AI Work Plan Generation：docs/methodology/templates/ai-work-plan-generation-session.md
 
-把稳定、重复、可程序化的工作自动化。第一版保持简单：
+两者分别负责“定义问题”和“生成执行计划”，不要在 Charter Session 中提前选工具，也不要在 Work Plan Session 中执行实际研究。
 
-```text
-Query → Plan → Search → Collect Evidence → Synthesize → Citation → Report
-```
+## Research System / Runtime 边界
 
-基础流程稳定后，再考虑：Dynamic Research、Parallel Agents、Evidence Store、Citation Verification、Research Evaluation。
+Research 是项目的重要能力实验场，但不是整个项目的顶层身份。
 
-### 第五阶段：把 Research 能力扩展到不同任务
+### Research System
 
-依次用真实任务测试：Technology Research、Competitive Analysis、Product Comparison、Technical Selection、Decision Support。
+docs/methodology/research-system-v1.md
 
-观察：哪些能力通用？哪些必须领域化？
+负责研究方法与研究语义，包括 Research lifecycle、evidence-first methodology、canonical research knowledge、evaluation、reproducible research delivery。
 
-### 第六阶段：形成 Evaluation
+### Research Runtime
 
-建立 Research 质量评估体系，覆盖：Research Quality、Coverage、Source Quality、Citation Accuracy、Factual Accuracy、Contradiction Handling、Reasoning Quality、Final Answer Usefulness。
+docs/architecture/research-runtime-v1.md
+
+负责已经进入 Research execution context 后的运行时机制，包括 execution state、workflow coordination、artifacts、gates、control。
+
+Research Runtime 不负责当前 AI 生态发现、用户级 AI 产品选择、模型选择、Session / Connector / Skill 等上层 AI 调度决策，也不维护永久 AI 产品 Playbook。
+
+### Workflow Core
+
+Workflow Core 保持 domain-agnostic。不要把 model selection、product selection、AI brand mapping、user-level orchestration methodology、session policy、tool-selection policy 塞进 Workflow Core。
+
+## 当前项目推进方式
+
+项目以真实任务驱动，而不是按固定的 Research Agent 阶段路线推进。
+
+标准新 Research / 复杂知识工作流程：
+
+~~~text
+真实任务
+↓
+Problem Framing
+↓
+Research Charter
+↓
+AI Work Plan Generation
+↓
+Human Review
+↓
+Actual AI Execution
+↓
+Artifacts / Evidence
+↓
+Human Judgment
+↓
+Final Delivery
+↓
+Evaluation
+~~~
+
+当前不要求先完成 Research Agent，也不要求先完成未来的 Runtime 扩张。
+
+只有当真实工作明确暴露出稳定、重复且值得工程化的问题时，才考虑增加 Workflow、Skill、Agent、Automation 或 System。
 
 ## 目录说明与维护规则
 
@@ -86,51 +147,45 @@ Query → Plan → Search → Collect Evidence → Synthesize → Citation → R
 
 | 目录 | 职责 |
 | --- | --- |
-| `cases/` | 真实任务与 Research Case，每个 Case 一个编号子目录（如 `001-ai-coding-agent-landscape/`） |
-| `workflows/` | 经过实践验证的工作流程（现有 `workflows/research/`） |
-| `skills/` | 可复用的 Skills |
-| `agents/` | Agent 实现（当前为空，第四阶段后才会有实际内容） |
-| `evaluations/` | 评估与验证（当前为空） |
-| `docs/` | 项目方法论、设计决策和长期文档（现有 `decisions/`、`methodology/`、`foundation/`） |
+| cases/ | 真实任务与 Research Case |
+| workflows/ | 经过实践验证的工作流程 |
+| skills/ | 可复用的 Skills |
+| agents/ | Agent 实现与实验 |
+| evaluations/ | 评估与验证 |
+| docs/ | 方法论、设计决策和长期文档 |
 
-### docs/foundation/
-
-保存定义项目存在原因、核心目标、总体理念和长期方向的基础文档。
-
-除非项目整体定位发生变化，否则不应随意修改其中的核心原则。
-
-结构演化规则：
-
-- 目录随真实任务逐步演化，**不为「看起来完整」而提前创建目录或工程结构**。
-- 当一级核心目录新增、删除、重命名，或其职责发生变化时，需同步更新 `README.md` 的「仓库结构」和本文件的「目录说明」，保证二者与实际结构一致；二级目录（如 `docs/foundation/`）若影响新成员或 Claude Code 对整体结构、工作方式的理解，同样需要同步；Case 内部文件与临时实验目录不纳入同步范围。
-- 不在文档中描述尚未实际建立的结构。
+目录随真实任务逐步演化，不为“看起来完整”而提前创建结构。
+当一级核心目录新增、删除、重命名或职责发生变化时，同步更新 README 与本文件。
+不在文档中描述尚未实际建立的结构。
 
 ## 工作方式
 
 在仓库中工作时：
 
-1. 先判断任务属于哪个 Case / Workflow / System，在已有结构中定位。
-2. 动手前先检查已有文档、工作流和项目原则；优先复用已有 Workflow / Skill，不重复创建。
-3. `docs/foundation/` 中的文档属于项目基础约束：实施具体任务时，应优先遵循其中已经确定的项目定位、阶段路线和核心原则；若新的实践发现与其发生冲突，应先记录并分析冲突，再决定是否修改基础文档。
-4. 未经必要性判断，不创建 Agent、Multi-Agent、Memory、MCP 或复杂架构；保持修改范围与当前阶段匹配。
-5. 不为了「看起来完整」而提前实现未来阶段的功能。
-6. 重大结构变化先说明设计意图，再动手。
-7. 文档是项目的一等产物：研究报告、证据矩阵、决策记录与代码同等重要；最终交付体现真实工作成果，而非代码数量。
-8. 本仓库目前没有代码、构建、测试或 lint 命令。后续出现时，应在相关目录的文档中记录，并补充到本文件。
+1. 先判断任务属于哪个 Case / Workflow / System，并读取相关文档。
+2. 对 Research Case 优先使用 Research Charter → AI Work Plan 的规划链。
+3. 对复杂 AI-assisted work，优先使用 AI Work Advisor；不要直接凭记忆指定产品。
+4. 涉及变化快的产品、模型、价格、入口、功能和限制时，主动获取当前信息并保留不确定性。
+5. 优先使用最小有效工具集；一个 AI 足够时不要为了编排而编排。
+6. 不未经必要性判断创建 Agent、Multi-Agent、Memory、MCP 或复杂基础设施。
+7. 不扩展 Research Runtime，除非真实 Research 工作已经证明需要该能力。
+8. 文档是项目的一等产物；研究报告、证据矩阵、决策记录、Work Plan 与代码同等重要。
+9. 重大结构变化先说明设计意图，再动手。
+10. 如果新的实践发现与 foundation 文档发生冲突，先记录并分析，再决定是否修改基础约束。
 
 ## Git 提交规范
 
-格式：`<类型>: <描述>`
+格式：<类型>: <描述>
 
-类型：`research`、`analysis`、`workflow`、`feat`、`eval`、`docs`、`refactor`、`chore`、`fix`
+类型：research、analysis、workflow、feat、eval、docs、refactor、chore、fix
 
 示例：
-
-```text
+~~~text
 research: 完成 AI Coding Agent 信息源收集
 analysis: 建立 Coding Agent 对比维度
 workflow: 沉淀 Research 工作流
 eval: 增加引用准确性评估
-```
+docs: 对齐 AI-native workbench 项目指导
+~~~
 
-每次提交对应一个明确的工作成果、认知增量或工程增量；禁止 `update stuff` 这类无信息量的提交。
+每次提交对应一个明确的工作成果、认知增量或工程增量；禁止使用无信息量的提交说明。
