@@ -226,54 +226,6 @@ docs: 明确 Research System 与 Runtime 边界
 
 ---
 
-### Task 4: Final Repository Consistency Check and Case 002 Readiness
-
-**Files:**
-- Verify: all documents changed or created in Tasks 1–3
-- Verify: `cases/001-ai-coding-agent-landscape/00-research-charter.md`
-- Verify: `cases/002-ai-work-agent-landscape/` references where available
-
-**Interfaces:**
-- Consumes: the complete synchronized guidance layer.
-- Produces: verified readiness for Case 002; no code implementation.
-
-- [ ] **Step 1: Repository-wide stale-language search**
-
-Search the repository for the obsolete active-roadmap phrases and inspect matches. The search must specifically check for:
-`核心工作链：`, `第一阶段：先不做复杂 Agent`, `第二阶段：研究 OpenAI / Anthropic`, `第三阶段：Human + AI`, `第四阶段：Research Agent`, `第五阶段：把 Research 能力扩展`, `第六阶段：形成 Evaluation`.
-
-Expected result: these phrases may remain only in historical records when they document past decisions; they must not remain as the current active project roadmap.
-
-- [ ] **Step 2: Verify canonical artifact references**
-
-Search active documents for:
-- `docs/methodology/ai-work-advisor-v1.md`
-- `docs/methodology/templates/research-charter-discussion-session.md`
-- `docs/methodology/templates/ai-work-plan-generation-session.md`
-- `docs/methodology/templates/ai-work-plan.md`
-- `cases/<case>/01-ai-work-plan.md`
-
-Expected result: active guidance points to the canonical artifacts and does not introduce a Global Playbook.
-
-- [ ] **Step 3: Verify Case 002 entry contract**
-
-Confirm the repository contains the Case 002 directory or clearly record its absence without inventing files. Confirm the active guidance still specifies:
-`Research Charter Discussion → 00-research-charter.md → AI Work Plan Generation → 01-ai-work-plan.md → Human Review → Actual AI Execution`.
-
-- [ ] **Step 4: Verify no source-code changes**
-
-Inspect repository changes for this alignment pass and confirm only Markdown documentation files were touched.
-
-- [ ] **Step 5: Commit final consistency corrections, if any**
-
-If verification exposes a documentation-only inconsistency, correct it before the final report and use:
-
-```text
-docs: 完成 AI-native workbench 方向同步校验
-```
-
-If no correction is required, do not create an empty commit.
-
 ---
 
 ## Verification Commands / Checks
@@ -290,7 +242,7 @@ git diff --name-only
 
 Expected:
 - `git diff --check` exits successfully with no whitespace errors;
-- `git diff --name-only` contains only the files listed in Tasks 1–4;
+- `git diff --name-only` contains only the files listed in Tasks 1–3;
 - no application source code or test file is changed by this alignment.
 
 No new test suite is required because this plan changes documentation only.
