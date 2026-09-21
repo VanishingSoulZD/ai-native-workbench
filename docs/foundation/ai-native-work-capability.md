@@ -328,55 +328,55 @@ Automation
 
 ---
 
-## 5.3 方案三：任务驱动 + 学习 + Agent 化
+## 5.3 方案三：真实任务驱动 + AI-native 工作编排
 
 模式：
 
-```text
+~~~text
 真实问题
 ↓
-Human Research
+Problem Framing
 ↓
-Human Analysis
+Research Charter / Task Intent
 ↓
-AI-assisted Workflow
+AI Work Planning
 ↓
-形成 Deliverable
+AI Capability / Product / Model Selection
 ↓
-识别重复工作
+AI Configuration
 ↓
-Agent 化
+AI Orchestration
+↓
+Artifacts / Evidence
+↓
+Human Judgment
+↓
+Delivery
 ↓
 Evaluation
 ↓
-沉淀为 Workflow / Skill / System
-```
+必要时工程化
+~~~
 
 ### 优势
 
-同时训练：
+同时训练 Research、Reasoning、Writing、Information Architecture、Delivery、AI Collaboration、Engineering，并且不会把项目锁定在 Research Agent 或某一类 AI 工具上。
 
-- Research
-- Reasoning
-- Writing
-- Information Architecture
-- Delivery
-- AI Collaboration
-- Engineering
+### 核心原则
 
-### 局限
+真正需要固定的是：
 
-前期速度比“直接让 Agent 写代码”慢。
+> **如何识别任务能力、获取当前 AI 生态知识、选择 AI、配置 AI、组织协作并验证结果。**
 
-### 我的判断
+而不是：
 
-**这是当前最适合我的方案。**
+> **某种任务永远使用某一个产品。**
 
-因为它同时兼顾：
+Agentization / Automation 是真实工作被验证后可能产生的工程结果，不是当前必须完成的阶段。
 
-> **求职、工作能力和长期 AI-native 能力。**
+### 当前判断
 
----
+> **AI-native Workbench 是当前主线；Research 是重要能力实验场。**
 
 # 6. 我的理解和判断
 
@@ -698,172 +698,57 @@ Deployment
 
 ---
 
-# 8. 下一步行动
+# 8. 当前实践方式
 
-## 第一阶段：先不做复杂 Agent
+项目不再采用“第一阶段 → 第二阶段 → … → Research Agent”的固定研究路线。
 
-第一个 Research Case：
+当前统一工作方式：
 
-> **2026 AI Coding Agent Landscape**
-
-先人工完成完整研究。
-
-要求至少形成：
-
-```text
-1. Research Question
-2. Research Plan
-3. Source Map
-4. Evidence Matrix
-5. Analysis
-6. Final Report
-```
-
-重点不是“研究结论有多牛”，而是：
-
-> **完整走一遍研究工作的生命周期。**
-
----
-
-## 第二阶段：研究 OpenAI / Anthropic 的 Research 方法
-
-重点阅读：
-
-**必读：**
-
-- OpenAI Deep Research 官方介绍与工作机制
-- OpenAI Academy：Research with ChatGPT
-- Anthropic：How we built our multi-agent research system
-
-关注的问题不是：
-
-> “他们用了什么 API？”
-
-而是：
-
-> **他们如何定义 Research？**
-
-> **为什么需要 Planning？**
-
-> **为什么需要多 Agent？**
-
-> **怎样控制搜索成本？**
-
-> **怎样验证结果？**
-
-> **怎样保证引用和可靠性？**
-
----
-
-## 第三阶段：Human + AI
-
-把人工流程逐步交给 AI：
-
-```text
-Human
-├── Problem Framing
-├── Research Scope
-├── Final Judgment
-└── Final Review
-
-AI
-├── Search
-├── Extraction
-├── Summarization
-├── Candidate Analysis
-└── Draft Generation
-```
-
-目标：
-
-> **找到 Human 和 AI 的最佳分工。**
-
----
-
-## 第四阶段：Research Agent
-
-把其中稳定、重复、可程序化的部分自动化。
-
-第一版不应该追求多 Agent、复杂 Memory、复杂架构。
-
-只需要实现：
-
-```text
-Query
+~~~text
+Real Task
 ↓
-Plan
+Problem Framing
 ↓
-Search
+Research Charter / Task Intent
 ↓
-Collect Evidence
+AI Work Advisor
 ↓
-Synthesize
+AI Work Plan
 ↓
-Citation
+Human Review
 ↓
-Report
-```
-
-之后再逐步加入：
-
-- Dynamic Research
-- Parallel Agents
-- Evidence Store
-- Citation Verification
-- Research Evaluation
-
-Anthropic 自己也强调，多 Agent Research 并非越复杂越好，它在高度可并行、信息量超出单一上下文、需要大量工具交互的任务上更有价值，同时会显著增加 token 和协调成本。
-
----
-
-## 第五阶段：把 Research 能力扩展到不同任务
-
-Research Agent 形成基本能力后，再测试几个不同任务：
-
-```text
-Technology Research
+Actual AI Execution
 ↓
-Competitive Analysis
+Artifacts / Evidence
 ↓
-Product Comparison
+Human Judgment
 ↓
-Technical Selection
+Final Delivery
 ↓
-Decision Support
-```
+Evaluation
+~~~
 
-观察：
+## 8.1 Research Case
 
-> 哪些部分可以通用？
+Research Case 仍然是重要训练场。
 
-> 哪些必须领域化？
+每个新的 Research Case 原则上先通过 Research Charter Discussion Session，形成 cases/<case-id>/00-research-charter.md；然后通过 AI Work Plan Generation Session，形成 cases/<case-id>/01-ai-work-plan.md；再进入实际执行。
 
-这才是判断 General Research Architecture 是否成立的正确方式。
+## 8.2 AI Work Advisor
 
----
+Advisor 不维护永久产品映射。
 
-## 第六阶段：形成 Evaluation
+它在当前任务需要时主动研究当前产品与模型、能力与模式、价格与使用限制、Connector / MCP / Skill、当前入口与可用性。
 
-Research Agent 一旦能跑，就必须开始验证：
+其目标是形成一个**当下可执行的、case-specific 的 AI Work Plan**。
 
-```text
-Research Quality
-├── Coverage
-├── Source Quality
-├── Citation Accuracy
-├── Factual Accuracy
-├── Contradiction Handling
-├── Reasoning Quality
-└── Final Answer Usefulness
-```
+## 8.3 Research System / Runtime
 
-这一步会自然连接到后续的：
+Research System 与 Research Runtime 保留作为 Research 能力的工程基础。
 
-> **LLM Evaluation Platform**
+当前不要求为了项目推进继续扩张 Runtime，也不要求先完成 Research Agent。
 
-因此，项目 1 与项目 2 并不是两个孤立项目。
-
----
+只有当真实工作明确暴露出稳定、重复且值得工程化的问题时，才增加 Workflow、Skill、Agent、Automation 或 System。
 
 # 9. 来源和延伸阅读
 
@@ -935,50 +820,47 @@ Research Quality
 
 更合理的目标是：
 
-> **建立一套能够让我用 AI 高质量完成真实复杂工作的能力体系，并把其中稳定、重复、有价值的工作流程逐步工程化。**
+> **建立一套能够让我用 AI 高质量完成真实复杂工作的能力体系，并把其中经过验证、稳定、有价值的工作方式逐步工程化。**
 
-因此：
+因此，项目的核心不再是 Research Agent，而是：
 
-> **Research-to-Delivery AI Workbench**
+> **AI-native Workbench：通过真实任务学习什么问题应该交给什么 AI，以及如何调度整个 AI 生态。**
 
-比单纯的：
+Research 仍然是重要能力实验场，但它服务于更大的工作能力目标。
 
-> Research Agent
+当前核心链路：
 
-更适合作为第一个长期实验载体。
-
-它的第一课题：
-
-> **2026 AI Coding Agent Landscape**
-
-只是一个 Case。
-
-真正训练的是：
-
-```text
+~~~text
+Real Task
+↓
 Problem Framing
-→ Research
-→ Reasoning
-→ Judgment
-→ Information Architecture
-→ Communication
-→ Decision
-→ Delivery
-→ Evaluation
-→ Agentization
-```
+↓
+AI Work Planning
+↓
+AI Capability / Product / Model Selection
+↓
+AI Configuration
+↓
+AI Orchestration
+↓
+Evidence / Artifacts
+↓
+Human Judgment
+↓
+Delivery
+↓
+Evaluation
+↓
+Optional Engineering / Automation
+~~~
 
-最终，我希望形成的不是“一个会写 Agent 的人”，而是：
+最终希望形成的不是“一个会写 Agent 的人”，而是：
 
-> **一个能够定义问题、独立研究、利用 AI、形成判断、完成高质量交付，并能够进一步把工作流程工程化的人。**
+> **一个能够定义问题、选择并调度 AI、形成可验证交付、承担关键判断，并在必要时把稳定工作方式工程化的人。**
 
-这比单纯提升 AI Coding 能力更接近我未来真正需要的能力，也更有可能成为我长期“AI时代个人认知操作系统”的基础工作范式。
-
-**核心原则：**
+核心原则：
 
 > **先成为一个优秀的 AI-native Worker，再把优秀的工作方式变成 Agent。**
-
----
 
 # 附：当前阶段的能力地图
 
