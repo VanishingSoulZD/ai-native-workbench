@@ -1,6 +1,6 @@
 # AI Native Workbench Direction Alignment Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Synchronize the active repository guidance layer with the approved AI-native Workbench direction and install the four reusable AI-work-guidance document artifacts without changing application code.
 
@@ -46,7 +46,7 @@
 - Consumes: The locked Step 3 Advisor Prompt design, locked Step 4 Session Opening Template designs, and approved AI Work Plan schema from the direction-alignment spec.
 - Produces: Four canonical reusable document artifacts referenced by active project guidance and consumed by Case-specific planning sessions.
 
-- [ ] **Step 1: Create the AI Work Advisor Prompt document**
+- [x] **Step 1: Create the AI Work Advisor Prompt document**
 
 Write `docs/methodology/ai-work-advisor-v1.md` with:
 1. title, status, purpose, and scope;
@@ -64,7 +64,7 @@ Write `docs/methodology/ai-work-advisor-v1.md` with:
 
 Keep product examples, if any, explicitly illustrative rather than permanent mappings.
 
-- [ ] **Step 2: Create the Research Charter Discussion Session template**
+- [x] **Step 2: Create the Research Charter Discussion Session template**
 
 Write `docs/methodology/templates/research-charter-discussion-session.md` with:
 1. session purpose;
@@ -76,7 +76,7 @@ Write `docs/methodology/templates/research-charter-discussion-session.md` with:
 7. explicit end condition;
 8. explicit prohibition on premature tool/model/agent selection and research execution.
 
-- [ ] **Step 3: Create the AI Work Plan Generation Session template**
+- [x] **Step 3: Create the AI Work Plan Generation Session template**
 
 Write `docs/methodology/templates/ai-work-plan-generation-session.md` with:
 1. session purpose;
@@ -91,7 +91,7 @@ Write `docs/methodology/templates/ai-work-plan-generation-session.md` with:
 10. explicit planning-only output boundary;
 11. final output path `01-ai-work-plan.md`.
 
-- [ ] **Step 4: Create the reusable AI Work Plan template**
+- [x] **Step 4: Create the reusable AI Work Plan template**
 
 Write `docs/methodology/templates/ai-work-plan.md` with the locked schema:
 `0. Plan Metadata`, `1. Executive Work Strategy`, `2. AI Ecosystem Selection Summary`, `3. Global Execution Rules`, `4. Detailed Work Plan`, `5. Artifact & Handoff Map`, `6. Verification & Human Review`, and `7. Plan Assumptions / Uncertainties`.
@@ -101,7 +101,7 @@ Under each meaningful Task include the exact fixed fields:
 
 The template must be structural rather than a filled product recommendation.
 
-- [ ] **Step 5: Verify the four artifacts**
+- [x] **Step 5: Verify the four artifacts**
 
 Fetch all four new files and verify:
 - every file exists at the canonical path;
@@ -129,7 +129,7 @@ docs: 建立 AI-native 工作规划核心文档
 - Consumes: Task 1 artifact paths and the approved direction-alignment spec.
 - Produces: A consistent active project guidance layer that describes AI Workbench as the top-level system and Research as a capability subsystem.
 
-- [ ] **Step 1: Update README canonical language**
+- [x] **Step 1: Update README canonical language**
 
 Preserve the already-updated mission and work chain, then correct any remaining ambiguity so that:
 - Current AI Ecosystem Knowledge is described as information dynamically acquired by the Advisor, not a required third artifact input;
@@ -139,7 +139,7 @@ Preserve the already-updated mission and work chain, then correct any remaining 
 - Case 002 is the current next execution point;
 - the Runtime expansion is retained but deferred.
 
-- [ ] **Step 2: Replace stale CLAUDE staged roadmap**
+- [x] **Step 2: Replace stale CLAUDE staged roadmap**
 
 Rewrite the active operating guidance so it starts from:
 `Real Task → Problem Framing → Research Charter → AI Work Planning → AI Selection / Configuration → AI Orchestration → Artifacts / Evidence → Human Judgment → Delivery → Evaluation`.
@@ -157,7 +157,7 @@ Add explicit instructions for:
 - Research System / Runtime boundary;
 - no Runtime expansion without demonstrated need.
 
-- [ ] **Step 3: Align the foundation document**
+- [x] **Step 3: Align the foundation document**
 
 Preserve the document's original personal motivation and capability rationale, but replace the obsolete project-level roadmap conclusions with the approved AI-native Workbench model.
 
@@ -165,7 +165,7 @@ Make Agentization optional and downstream of demonstrated workflow value.
 
 Keep Research, Reasoning, Communication, Delivery, and Engineering as capability areas rather than redefining the whole repository as a Research Agent project.
 
-- [ ] **Step 4: Verify active guidance consistency**
+- [x] **Step 4: Verify active guidance consistency**
 
 Fetch all three documents and confirm:
 - mission is consistent;
@@ -192,7 +192,7 @@ docs: 对齐 AI-native workbench 项目指导
 - Consumes: Task 1 canonical artifact definitions and Task 2 active guidance.
 - Produces: Explicit boundaries between Workbench-level planning, Research methodology, and Research execution infrastructure.
 
-- [ ] **Step 1: Update Research System positioning**
+- [x] **Step 1: Update Research System positioning**
 
 Add a concise top-level statement that Research System v1 is a reusable research capability subsystem inside AI Native Workbench.
 
@@ -204,7 +204,7 @@ Add boundary language stating:
 
 Do not rewrite the historical Research lifecycle, evidence model, canonical model, evaluation model, or Case 001 semantics except where this boundary requires a small wording correction.
 
-- [ ] **Step 2: Update Research Runtime positioning**
+- [x] **Step 2: Update Research Runtime positioning**
 
 Add a clear architecture boundary near the Runtime entry point:
 - Runtime starts after an approved research execution context / plan exists;
@@ -214,7 +214,7 @@ Add a clear architecture boundary near the Runtime entry point:
 
 Keep all existing Runtime interfaces and implementation descriptions unchanged.
 
-- [ ] **Step 3: Verify boundary language**
+- [x] **Step 3: Verify boundary language**
 
 Fetch both documents and confirm there is no statement assigning AI ecosystem selection to Runtime and no duplication of Advisor methodology inside Workflow Core.
 
@@ -246,3 +246,12 @@ Expected:
 - no application source code or test file is changed by this alignment.
 
 No new test suite is required because this plan changes documentation only.
+
+
+## Execution Record
+
+- **Scope adjustment:** Task 4 (Case 002 Readiness) was removed before execution by explicit user instruction. The plan therefore executed Tasks 1–3 only.
+- **Execution method:** Native, direct repository document updates.
+- **Verification:** All nine alignment target documents were fetched after writing; required artifact sections and boundary statements were checked; no TODO/TBD placeholders were found; commit comparison from the execution-plan baseline showed only Markdown files changed.
+- **Case 002:** Not created or inspected as a work item in this pass.
+- **Case 001:** No existing Case 001 artifact was modified.
