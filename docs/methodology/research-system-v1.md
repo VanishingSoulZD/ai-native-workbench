@@ -12,7 +12,7 @@
 
 ## 0. Executive Definition
 
-`ai-native-workbench` is intended to evolve from a collection of AI-assisted research cases into a reusable **Human-in-the-loop, Evidence-first, Evaluation-driven Research Workbench**.
+`Research System v1` is a reusable **research capability subsystem inside AI Native Workbench**. It provides Human-in-the-loop, Evidence-first, Evaluation-driven research methodology and semantics; it does not define the top-level purpose of the Workbench.
 
 The system does not aim to make research fully autonomous. Its purpose is to transform high-quality research from a prompt-dependent, person-dependent activity into a process that is:
 
@@ -29,6 +29,41 @@ The central architectural principle is:
 > **One Workflow, Many Cases. One Canonical Research Model, Many Deliveries. Human Judgment around Automation, not replaced by Automation.**
 
 This document is the methodology-level design baseline. It defines the Research System lifecycle, principles, contracts, and boundaries. It is intentionally separate from `docs/architecture/research-runtime-v1.md`, which defines how an approved Research Case is durably executed by the Runtime.
+## 0.1 Workbench Boundary
+
+The broader AI Native Workbench owns the project-level work model:
+
+~~~text
+Real Task
+→ Problem Framing
+→ AI Work Planning
+→ AI Capability / Product / Model Selection
+→ AI Configuration
+→ AI Orchestration
+→ Artifacts / Evidence
+→ Human Judgment
+→ Delivery
+→ Evaluation
+~~~
+
+For Research Cases, the planning relationship is:
+
+~~~text
+Research Charter
+→ AI Work Advisor
+→ AI Work Plan
+→ Research Execution
+~~~
+
+Responsibilities are intentionally separated:
+
+- Research Charter defines task intent, scope, questions, evidence requirements, and human decisions.
+- AI Work Advisor dynamically determines how the current AI ecosystem should be used. It is outside Research Workflow Core.
+- Research System defines research lifecycle, evidence, canonical knowledge, evaluation, and reproducible research delivery.
+- Research Runtime executes an approved Research context and owns runtime control, workflow coordination, artifacts, gates, and execution state.
+
+AI product / model / session / connector / Skill selection is not Research Runtime authority.
+
 
 ---
 
