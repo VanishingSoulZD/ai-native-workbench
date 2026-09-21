@@ -32,7 +32,7 @@ Build / Delivery
 Archive
 ```
 
-The Runtime is not a chatbot and does not own the external research-framing conversation. Human + general-purpose AI tools may be used outside the system to turn a research idea into an approved Research Charter and source list. The Runtime begins after those inputs have been approved.
+The Runtime is not a chatbot and does not own the external research-framing conversation or user-level AI selection. Human + general-purpose AI tools, including the AI Work Advisor, may be used outside the system to turn a research idea into an approved Research Charter and an executable AI Work Plan. The Runtime begins after the research execution context has been approved.
 
 The design goal is **minimal sufficient engineering**: durable single-machine execution, human-in-the-loop control, explicit provenance, resumability, and reuse of the existing Workflow, Canonical, Evaluation, and Build cores without prematurely introducing databases, queues, distributed workers, browser agents, or multi-agent orchestration.
 
@@ -88,6 +88,26 @@ R8 Archive
 ```
 
 The Runtime does not perform autonomous web search in v1. It fetches sources explicitly declared by the Case.
+### 2.3 Upstream AI Work Planning Boundary
+
+AI Work planning happens before Runtime execution.
+
+The upstream planning layer may determine:
+
+- required AI capabilities;
+- current AI product / model;
+- reasoning / thinking configuration;
+- session / context strategy;
+- files;
+- connectors / MCP;
+- Skills / instructions;
+- AI-to-AI orchestration;
+- artifact and verification strategy.
+
+The Runtime does not own these decisions and must not become a permanent AI product catalog, Global Playbook, or user-level AI Work Advisor.
+
+The Runtime receives an approved research execution context and is responsible for executing that context reliably and durably.
+
 
 ---
 
