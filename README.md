@@ -122,10 +122,8 @@ Evaluation
 
 ```text
 Research Charter
-        +
+        ↓
 AI Work Advisor Prompt
-        +
-Current AI Ecosystem Knowledge
         ↓
 Case-specific AI Work Plan
         ↓
@@ -149,6 +147,25 @@ Actual AI Tool Execution
 它不是一个硬编码的工具说明书，而是一套 AI 工作调度与选择方法。
 
 Advisor 应主动分析当前任务需要什么能力，并在涉及实时变化的产品、模型、套餐、入口、功能和可用性时主动获取最新信息，再比较候选 AI 工具和配置方案。
+
+### 四个正式工作指导资产
+
+| 资产 | Canonical Path | 作用 |
+| --- | --- | --- |
+| AI Work Advisor Prompt v1 | docs/methodology/ai-work-advisor-v1.md | 可复用的 AI 选择与调度方法 |
+| Research Charter Discussion Session | docs/methodology/templates/research-charter-discussion-session.md | 把真实目标变成 approved Charter |
+| AI Work Plan Generation Session | docs/methodology/templates/ai-work-plan-generation-session.md | 根据 Charter 生成 case-specific Work Plan |
+| AI Work Plan Template | docs/methodology/templates/ai-work-plan.md | Work Plan 的固定结构 |
+
+其中 Current AI Ecosystem Knowledge 不是第三个固定输入文件，而是 Advisor 在需要时主动获取的当前信息。
+
+Case 中的具体实例统一放在：
+
+~~~text
+cases/<case-id>/00-research-charter.md
+cases/<case-id>/01-ai-work-plan.md
+~~~
+
 
 ### Case-specific AI Work Plan
 
