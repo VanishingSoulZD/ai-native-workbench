@@ -410,6 +410,22 @@ Research Note / PPT / HTML
 
 ##### Task 2.3.1 — Produce representative product work-positioning and capability cards
 
+- Execution Status: **Completed — 2026-09-25**
+- Completed Artifact: `research-packets/product-cards.md`
+- Completion Note:
+  - Produced one structured product card for each of the 10 Global Representative Top 10 product families selected by Task 2.2.1.
+  - Applied the common Product Cards schema from `research-packets/task-briefs.md`, including work positioning, task fit, work interaction model, agentic execution, artifact model, integration/context, usage model, orchestration role, constraints/economics, and evidence/uncertainty.
+  - Preserved product-family normalization: Deep Research, Researcher, Cowork, Computer Use, Comet, and similar modes are treated as capabilities/modes of the selected parent family rather than additional products.
+  - Separated product facts from vendor claims, analysis, and unknowns; did not use the cards as a quality ranking or permanent product-to-task map.
+  - Product Cards status is **REVIEW** pending the downstream Task 5.1.1 source-register / claim-evidence audit.
+- Verification Completed:
+  - [x] Ten cards match the Global Representative Top 10.
+  - [x] Required card dimensions are present and cross-product schema is consistent.
+  - [x] Snapshot framing is preserved at 2026-09-24.
+  - [x] No universal ranking, score, or overall recommendation was introduced.
+  - [ ] Atomic claim → evidence → source → date normalization — Task 5.1.1.
+  - [ ] Final evidence audit / freeze — Task 5.1.1.
+
 - Purpose:
   - For every Global Top 10 product, characterize actual Work AI positioning and workflow contribution.
 - Required Capability:
