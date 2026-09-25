@@ -35,7 +35,7 @@ Execute Case 002 exactly against the approved Charter:
 
 The research must therefore move beyond feature inventory toward an operational model:
 
-\`\`\`
+```
 Knowledge Work Task
 → Required Capability
 → Work AI Category / Role
@@ -44,7 +44,7 @@ Knowledge Work Task
 → Usage Pattern
 → Human / AI Allocation
 → Potential Multi-AI Handoff
-\`\`\`
+```
 
 The Global Representative Top 10 and China Representative Top 5 are representative research sets, not universal quality rankings.
 
@@ -85,7 +85,7 @@ A one-AI workflow was explicitly considered.
 
 The resulting minimum effective architecture is:
 
-\`\`\`
+```
 Human
   ↓ approves Charter + Work Plan
 ChatGPT Deep Research
@@ -97,7 +97,7 @@ ChatGPT synthesis / QA
 Human
   ↓ final judgment / delivery approval
 Research Note / PPT / HTML
-\`\`\`
+```
 
 ## 2. AI Ecosystem Selection Summary
 
@@ -489,6 +489,15 @@ Research Note / PPT / HTML
 #### Step 3.1 — Regional candidate universe and representative set
 
 ##### Task 3.1.1 — Build and select the China Representative Top 5
+
+- Execution Status: **Completed — 2026-09-25**
+- Completed Artifact: `research-packets/china-landscape.md`
+- Selection Note:
+  - The task was executed as a representative-set selection, not a universal quality ranking.
+  - No fixed numeric scoring formula was used.
+  - Product-family normalization was preserved: Kimi modes, 豆包/Feishu surfaces, QoderWork + 悟空 + MuleRun, and WPS AI + 灵犀 + Comate were not double-counted as independent product families.
+  - The completed packet records the broad China candidate universe, selected China Representative Top 5, meaningful exclusions, borderline cases, mainland-availability constraints, global-overlap fields, evidence anchors, confidence, and downstream verification items.
+  - Final selection packet status: **REVIEW** pending Task 5.1.1 evidence audit and human review.
 
 - Purpose:
   - Produce an independent China-market view using Chinese-language and region-specific research, while allowing overlap with the Global Top 10.
