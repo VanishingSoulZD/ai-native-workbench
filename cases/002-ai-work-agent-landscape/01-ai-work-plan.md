@@ -350,6 +350,15 @@ Research Note / PPT / HTML
 
 ##### Task 2.2.1 — Select the Global Representative Top 10 and record inclusion/exclusion logic
 
+- Execution Status: **Completed — 2026-09-25**
+- Completed Artifact: `research-packets/global-landscape.md`
+- Selection Note:
+  - The task was executed as a representative-set selection, not a universal quality ranking.
+  - No fixed numeric scoring formula was used.
+  - Product-family normalization was preserved, so Deep Research / Researcher / Computer Use / Cowork-style modes were not double-counted as independent product families.
+  - The completed packet records the selected Global Representative Top 10, meaningful exclusions, borderline cases, evidence anchors, confidence, and downstream verification items.
+  - Final selection packet status: **REVIEW** pending Task 5.1.1 evidence audit and human review.
+
 - Purpose:
   - Convert the broad candidate universe into an evidence-traceable representative Global Top 10.
 - Required Capability:
