@@ -15,15 +15,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ~~~text
 Real Task
 → Problem Framing
-→ Research Charter
-→ AI Work Planning
-→ AI Capability / Product / Model Selection
-→ AI Tool Configuration
-→ AI Orchestration
+→ Research Charter or concise task brief (as needed)
+→ Existing Work Agent executes the task
 → Artifacts / Evidence
 → Human Judgment
 → Final Delivery
 → Evaluation
+
+Optional when a concrete gap requires it:
+AI Work Advisor → Explicit AI Work Plan → Multi-AI / Multi-tool execution
 ~~~
 
 核心能力目标：
@@ -50,7 +50,17 @@ Real Task
 
 ## AI Work Guidance
 
-标准规划关系：
+默认直接执行路径：
+
+~~~text
+Research Charter or task brief
+        ↓
+Existing Work Agent (plans internally and executes)
+        ↓
+Artifacts / Evidence / Final Delivery
+~~~
+
+只有需要明确的跨产品选择、复杂交接，或现成 Agent 已暴露实质能力缺口时，才采用显式规划路径：
 
 ~~~text
 Research Charter
@@ -59,7 +69,7 @@ AI Work Advisor Prompt
         ↓
 AI Work Plan
         ↓
-Actual Execution
+Multi-AI / Multi-tool execution
 ~~~
 
 ### Research Charter
@@ -84,8 +94,9 @@ Actual Execution
 
 Research Charter Discussion：docs/methodology/templates/research-charter-discussion-session.md
 AI Work Plan Generation：docs/methodology/templates/ai-work-plan-generation-session.md
+中文直接委托示例：docs/methodology/examples/work-agent-research-session-examples-zh.md
 
-两者分别负责“定义问题”和“生成执行计划”，不要在 Charter Session 中提前选工具，也不要在 Work Plan Session 中执行实际研究。
+Research Charter Discussion 与 AI Work Plan Generation 仍适用于需要显式界定范围或规划多工具协作的任务，但不是所有 Case 的必经步骤。对已有 Charter 的 Case 应优先复用；对目标清晰、可由一个 Work Agent 端到端完成的任务，直接提供 Charter/任务简报及产物验收要求即可，不必为了形式生成 Work Plan。
 
 ## Research System / Runtime 边界
 
@@ -113,20 +124,16 @@ Workflow Core 保持 domain-agnostic。不要把 model selection、product selec
 
 项目以真实任务驱动，而不是按固定的 Research Agent 阶段路线推进。
 
-标准新 Research / 复杂知识工作流程：
+默认新 Research / 复杂知识工作流程：
 
 ~~~text
 真实任务
 ↓
 Problem Framing
 ↓
-Research Charter
+Research Charter 或充分的任务简报（按需）
 ↓
-AI Work Plan Generation
-↓
-Human Review
-↓
-Actual AI Execution
+现成 Work Agent 自主规划并直接执行
 ↓
 Artifacts / Evidence
 ↓
@@ -136,6 +143,8 @@ Final Delivery
 ↓
 Evaluation
 ~~~
+
+只有在当前 Agent 无法可靠完成、确实需要多产品/多工具协作或 handoff 管理时，才增加 AI Work Advisor 与显式 AI Work Plan。
 
 当前不要求先完成 Research Agent，也不要求先完成未来的 Runtime 扩张。
 
@@ -163,8 +172,8 @@ Evaluation
 在仓库中工作时：
 
 1. 先判断任务属于哪个 Case / Workflow / System，并读取相关文档。
-2. 对 Research Case 优先使用 Research Charter → AI Work Plan 的规划链。
-3. 对复杂 AI-assisted work，优先使用 AI Work Advisor；不要直接凭记忆指定产品。
+2. 对已有 Research Case 先读取并复用 Research Charter；如果任务边界清晰且一个 Work Agent 能完成端到端交付，默认直接委托执行，不要求先生成 AI Work Plan。
+3. 只有存在需要解决的跨产品选择、复杂 handoff 或能力缺口时，才使用 AI Work Advisor 生成显式计划；涉及变化快的信息仍应核查当前来源。
 4. 涉及变化快的产品、模型、价格、入口、功能和限制时，主动获取当前信息并保留不确定性。
 5. 优先使用最小有效工具集；一个 AI 足够时不要为了编排而编排。
 6. 不未经必要性判断创建 Agent、Multi-Agent、Memory、MCP 或复杂基础设施。
