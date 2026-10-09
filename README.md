@@ -51,15 +51,9 @@ Real Task
     ↓
 Problem Framing
     ↓
-AI Work Planning
+Task Definition (Research Charter or concise task brief, as needed)
     ↓
-AI Capability Selection
-    ↓
-AI Product / Model Selection
-    ↓
-AI Tool Configuration
-    ↓
-AI Orchestration
+Existing AI Work Agent executes the task
     ↓
 Artifacts / Evidence
     ↓
@@ -68,15 +62,18 @@ Human Judgment
 Final Delivery
     ↓
 Evaluation
+
+Optional branch, only when it adds concrete value:
+AI Work Advisor → Explicit AI Work Plan → Multi-AI / Multi-tool execution
 ```
 
 其中：
 
-> **AI Work Planning 决定如何利用 AI，具体工作由现有 AI 工具完成。**
+> **目标和验收要求必须清楚；显式 AI Work Planning 则是可选项。** 当一个现成工作 Agent 能够可靠地自行规划并完成交付时，不需要人为增加一份 AI Work Plan。
 
-> **固定的是 AI 调度与选择的方法，不固定“永远应该使用哪个 AI 产品”。**
+> **固定的是问题定义、证据质量与交付验收标准，不是每次任务都必须走完的流程。**
 
-> **AI Work Advisor 应根据当前任务主动获取和核查最新的 AI Ecosystem Knowledge，再生成具体的 Case-specific AI Work Plan。**
+> **只有当跨产品选择、复杂交接或可靠性缺口确实影响结果时，才调用 AI Work Advisor 生成 Case-specific AI Work Plan。**
 
 ---
 
@@ -118,7 +115,19 @@ Evaluation
 
 ## AI Work Guidance
 
-项目采用以下工作指导关系：
+项目保留两种工作路径，不再把 AI Work Plan 设为每个 Case 的必经中间产物。
+
+**默认直接执行路径：**
+
+```text
+Research Charter 或任务简报
+        ↓
+现成 Work Agent（自主规划并执行）
+        ↓
+Artifacts / Evidence / Final Delivery
+```
+
+**仅在有实际必要时采用显式规划路径：**
 
 ```text
 Research Charter
@@ -127,8 +136,10 @@ AI Work Advisor Prompt
         ↓
 Case-specific AI Work Plan
         ↓
-Actual AI Tool Execution
+多 AI / 多工具执行与交接
 ```
+
+使用何种路径取决于任务和实际能力缺口，而不是为了遵循文档流程。
 
 ### Research Charter
 
@@ -155,7 +166,8 @@ Advisor 应主动分析当前任务需要什么能力，并在涉及实时变化
 | AI Work Advisor Prompt v1 | docs/methodology/ai-work-advisor-v1.md | 可复用的 AI 选择与调度方法 |
 | Research Charter Discussion Session | docs/methodology/templates/research-charter-discussion-session.md | 把真实目标变成 approved Charter |
 | AI Work Plan Generation Session | docs/methodology/templates/ai-work-plan-generation-session.md | 根据 Charter 生成 case-specific Work Plan |
-| AI Work Plan Template | docs/methodology/templates/ai-work-plan.md | Work Plan 的固定结构 |
+| AI Work Plan Template | docs/methodology/templates/ai-work-plan.md | 仅在需要显式多工具规划时使用的 Work Plan 结构 |
+| Direct Work Agent Research Session Examples | docs/methodology/examples/work-agent-research-session-examples-zh.md | Case 001–004 的中文直接委托示例；包含具体研究上下文、交付要求与 Charter 使用方式 |
 
 其中 Current AI Ecosystem Knowledge 不是第三个固定输入文件，而是 Advisor 在需要时主动获取的当前信息。
 
@@ -296,20 +308,16 @@ Automation
 
 ## Case 工作方式
 
-新的研究或复杂工作任务，原则上采用以下流程：
+新任务优先选择能够以最少额外成本完成目标的方式。Research Charter 用于固定大型研究的目标、范围、证据与验收要求；一次性任务也可以在委托消息中提供一份充分的简报。
+
+**默认路径：直接委托现成 Work Agent。** 如果它能够自主完成研究、证据核验、文件生成和交付检查，就不必另行生成 AI Work Plan。
 
 ```text
 新任务
 ↓
-Research Charter Discussion
+Research Charter 或任务简报（按需）
 ↓
-Research Charter
-↓
-AI Work Advisor
-↓
-Case-specific AI Work Plan
-↓
-实际 AI 工具执行
+现成 Work Agent 直接执行
 ↓
 Artifacts / Evidence
 ↓
@@ -320,7 +328,21 @@ Final Delivery
 Evaluation
 ```
 
-因此，一个 Case 不仅记录“研究出了什么”，还记录“为了完成这个任务，AI 应该如何被调度”。
+**可选路径：只有任务需要明确的跨产品选择、复杂交接，或现成 Agent 暴露出实际能力缺口时，才使用 AI Work Advisor 与显式 Work Plan。**
+
+```text
+Research Charter
+↓
+AI Work Advisor
+↓
+Case-specific AI Work Plan
+↓
+多 AI / 多工具执行与交接
+↓
+Artifacts / Evidence → Human Judgment → Final Delivery
+```
+
+因此，一个 Case 的核心产物仍然是可核验的研究结果和实际交付物；只有经过真实工作验证的工具选择与编排经验，才值得额外沉淀。
 
 ---
 
