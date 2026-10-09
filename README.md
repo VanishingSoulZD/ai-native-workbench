@@ -171,11 +171,12 @@ Advisor 应主动分析当前任务需要什么能力，并在涉及实时变化
 
 其中 Current AI Ecosystem Knowledge 不是第三个固定输入文件，而是 Advisor 在需要时主动获取的当前信息。
 
-Case 中的具体实例统一放在：
+Case 级任务定义与交付物按需保存在：
 
 ~~~text
-cases/<case-id>/00-research-charter.md
-cases/<case-id>/01-ai-work-plan.md
+cases/<case-id>/00-research-charter.md     # 复杂/长期 Case 的稳定任务定义，可选但推荐
+cases/<case-id>/01-ai-work-plan.md        # 仅在需要显式规划与多工具编排时创建
+cases/<case-id>/...                      # 实际研究报告、证据表、数据与交付物
 ~~~
 
 
