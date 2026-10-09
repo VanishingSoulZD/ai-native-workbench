@@ -36,23 +36,22 @@ The broader AI Native Workbench owns the project-level work model:
 ~~~text
 Real Task
 → Problem Framing
-→ AI Work Planning
-→ AI Capability / Product / Model Selection
-→ AI Configuration
-→ AI Orchestration
+→ Research Charter or concise task brief (as needed)
+→ Existing Work Agent executes (plans internally where capable)
 → Artifacts / Evidence
 → Human Judgment
 → Delivery
 → Evaluation
+
+Optional when explicit orchestration adds value:
+AI Work Advisor → AI Work Plan → Multi-AI / Multi-tool execution
 ~~~
 
-For Research Cases, the planning relationship is:
+For Research Cases, Research Charter / task intent defines the research contract. The execution path may be direct or explicitly planned:
 
 ~~~text
-Research Charter
-→ AI Work Advisor
-→ AI Work Plan
-→ Research Execution
+Default: Research Charter or task brief → capable Work Agent → Research Execution / Deliverables
+Optional: Research Charter → AI Work Advisor → AI Work Plan → Multi-AI / Multi-tool Research Execution
 ~~~
 
 Responsibilities are intentionally separated:
