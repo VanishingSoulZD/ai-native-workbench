@@ -730,9 +730,11 @@ Evaluation
 
 ## 8.1 Research Case
 
-Research Case 仍然是重要训练场。
+Research Case 仍然是重要训练场，但不意味着每个 Case 都必须先产出一份独立的 AI Work Plan。
 
-每个新的 Research Case 原则上先通过 Research Charter Discussion Session，形成 cases/<case-id>/00-research-charter.md；然后通过 AI Work Plan Generation Session，形成 cases/<case-id>/01-ai-work-plan.md；再进入实际执行。
+对于范围复杂、涉及排名/多阶段研究或需要长期复用的任务，应明确保存稳定的任务定义，优先复用 cases/<case-id>/00-research-charter.md；对于一次性或目标清晰的任务，完整的委托简报也可以承担这一作用。
+
+默认优先检验现成 Work Agent 能否直接完成研究、证据核验、文件生成与交付检查。只有真实任务存在跨产品选择、复杂交接或 Agent 能力缺口时，才通过 AI Work Advisor 生成 cases/<case-id>/01-ai-work-plan.md。
 
 ## 8.2 AI Work Advisor
 
@@ -740,7 +742,7 @@ Advisor 不维护永久产品映射。
 
 它在当前任务需要时主动研究当前产品与模型、能力与模式、价格与使用限制、Connector / MCP / Skill、当前入口与可用性。
 
-其目标是形成一个**当下可执行的、case-specific 的 AI Work Plan**。
+当任务确实需要显式 AI 选择与编排时，其目标是形成一个**当下可执行的、case-specific 的 AI Work Plan**；它不是所有研究任务的强制入口。
 
 ## 8.3 Research System / Runtime
 
